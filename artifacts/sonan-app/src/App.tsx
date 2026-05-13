@@ -2,6 +2,7 @@ import { Switch, Route, Router as WouterRouter } from "wouter";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import Navigation from "@/components/Navigation";
 import NotFound from "@/pages/not-found";
 import Home from "@/pages/Home";
 import AdhkarList from "@/pages/AdhkarList";
@@ -11,6 +12,15 @@ import SonanDetail from "@/pages/SonanDetail";
 import Advices from "@/pages/Advices";
 import ForgettableSonan from "@/pages/ForgettableSonan";
 import SonanWithWife from "@/pages/SonanWithWife";
+import Tasbeeh from "@/pages/Tasbeeh";
+import PrayerTimes from "@/pages/PrayerTimes";
+import Qibla from "@/pages/Qibla";
+import Favorites from "@/pages/Favorites";
+import Notifications from "@/pages/Notifications";
+import Settings from "@/pages/Settings";
+import Share from "@/pages/Share";
+import Quran from "@/pages/Quran";
+import QuranAudio from "@/pages/QuranAudio";
 
 const queryClient = new QueryClient();
 
@@ -25,6 +35,15 @@ function Router() {
       <Route path="/advices" component={Advices} />
       <Route path="/forgettable" component={ForgettableSonan} />
       <Route path="/wife" component={SonanWithWife} />
+      <Route path="/tasbeeh" component={Tasbeeh} />
+      <Route path="/prayer-times" component={PrayerTimes} />
+      <Route path="/qibla" component={Qibla} />
+      <Route path="/favorites" component={Favorites} />
+      <Route path="/notifications" component={Notifications} />
+      <Route path="/settings" component={Settings} />
+      <Route path="/share" component={Share} />
+      <Route path="/quran" component={Quran} />
+      <Route path="/quran-audio" component={QuranAudio} />
       <Route component={NotFound} />
     </Switch>
   );
@@ -35,7 +54,21 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
-          <Router />
+          <div className="flex">
+            {/* Desktop sidebar - hidden on mobile */}
+            <div className="hidden md:block md:w-72 md:fixed md:inset-y-0 md:left-0">
+              <Navigation />
+            </div>
+            
+            {/* Main content */}
+            <div className="flex-1 md:ml-72">
+              {/* Mobile menu button */}
+              <div className="md:hidden">
+                <Navigation />
+              </div>
+              <Router />
+            </div>
+          </div>
         </WouterRouter>
         <Toaster />
       </TooltipProvider>

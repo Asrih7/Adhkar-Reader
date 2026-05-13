@@ -1,0 +1,110 @@
+{
+  "name": "تطبيق الأذكار - Adhkar Reader",
+  "short_name": "الأذكار",
+  "description": "تطبيق إسلامي شامل للأذكار والسنن والأدعية - A beautiful Islamic lifestyle app with Adhkar, Sunnah, Prayer Times, Qibla Compass, and more.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "theme_color": "#1a1a1a",
+  "background_color": "#0a0a0a",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-192-maskable.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/icon-512-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "categories": ["religion", "lifestyle"],
+  "screenshots": [
+    {
+      "src": "/screenshot-narrow.png",
+      "sizes": "540x720",
+      "type": "image/png",
+      "form_factor": "narrow"
+    },
+    {
+      "src": "/screenshot-wide.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "مسبحة إلكترونية",
+      "short_name": "مسبحة",
+      "description": "عداد مسبحة إلكترونية سريع",
+      "url": "/tasbeeh",
+      "icons": [
+        {
+          "src": "/icon-tasbeeh.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "أوقات الصلاة",
+      "short_name": "الصلاة",
+      "description": "مواقيت الصلاة والآذان",
+      "url": "/prayer-times",
+      "icons": [
+        {
+          "src": "/icon-prayer.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "القبلة",
+      "short_name": "القبلة",
+      "description": "بوصلة القبلة الدقيقة",
+      "url": "/qibla",
+      "icons": [
+        {
+          "src": "/icon-qibla.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
+  ],
+  "prefer_related_applications": false,
+  "related_applications": [],
+  "share_target": {
+    "action": "/share",
+    "method": "POST",
+    "enctype": "multipart/form-data",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url",
+      "files": [
+        {
+          "name": "image",
+          "accept": [
+            "image/*"
+          ]
+        }
+      ]
+    }
+  }
+}
