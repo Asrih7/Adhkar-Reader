@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Bookmark } from "lucide-react";
+import { Bookmark, Copy, Share2, Check } from "lucide-react";
 import PageLayout from "@/components/PageLayout";
 import { useTranslation } from "@/hooks/useTranslation";
 import { useContentTranslation } from "@/hooks/useContentTranslation";
@@ -15,6 +15,45 @@ function ProgressBar({ progress }: { progress: number }) {
     <div className="fixed top-0 left-0 right-0 z-50 h-1" style={{ background: "rgba(0,0,0,0.1)" }}>
       <motion.div className="h-full" style={{ background: "linear-gradient(90deg, var(--gold), var(--teal))" }}
         initial={{ width: "0%" }} animate={{ width: `${progress}%` }} transition={{ duration: 0.4 }} />
+    </div>
+  );
+}
+
+/* ── Card action bar ── */
+function CardActions({
+  arabic, translatedText, source, isFav, onToggleFavorite, language,
+}: {
+  arabic: string; translatedText?: string; source?: string;
+  isFav: boolean; onToggleFavorite: () => void; language: string;
+}) {
+  const [copied, setCopied] = useState(false);
+  const isRtl = language === "ar";
+  const shareText = arabic + (translatedText && translatedText !== arabic ? "\n\n" + translatedText : "") + (source ? "\n📚 " + source : "");
+
+  const handleCopy = async () => {
+    try { await navigator.clipboard.writeText(shareText); setCopied(true); setTimeout(() => setCopied(false), 2000); } catch { /**/ }
+  };
+  const handleShare = async () => {
+    if (navigator.share) { try { await navigator.share({ title: "سنن مع الزوجة", text: shareText }); } catch { /**/ } }
+    else handleCopy();
+  };
+
+  return (
+    <div className="flex items-center justify-between px-3 py-2.5 mt-1" style={{ borderTop: "1px solid var(--gold-border)" }}>
+      <span className="text-xs flex-1 min-w-0 flex items-center gap-1" style={{ color: "var(--text-muted)" }}>
+        {source && <><span>📚</span><span className="truncate">{source}</span></>}
+      </span>
+      <div className="flex items-center gap-0.5">
+        <motion.button whileTap={{ scale: 0.8 }} onClick={onToggleFavorite} className="p-2 rounded-xl" style={{ background: isFav ? "var(--gold-muted)" : "transparent" }} title={isRtl ? "حفظ" : "Save"}>
+          <Bookmark className="w-4 h-4" fill={isFav ? "var(--gold)" : "none"} style={{ color: isFav ? "var(--gold)" : "var(--text-muted)" }} />
+        </motion.button>
+        <motion.button whileTap={{ scale: 0.8 }} onClick={handleCopy} className="p-2 rounded-xl" style={{ background: copied ? "var(--teal-muted)" : "transparent" }} title={isRtl ? "نسخ" : "Copy"}>
+          {copied ? <Check className="w-4 h-4" style={{ color: "var(--text-teal)" }} /> : <Copy className="w-4 h-4" style={{ color: "var(--text-muted)" }} />}
+        </motion.button>
+        <motion.button whileTap={{ scale: 0.8 }} onClick={handleShare} className="p-2 rounded-xl" title={isRtl ? "مشاركة" : "Share"}>
+          <Share2 className="w-4 h-4" style={{ color: "var(--text-muted)" }} />
+        </motion.button>
+      </div>
     </div>
   );
 }
@@ -114,7 +153,7 @@ export default function SonanWithWife() {
         <div className="space-y-3">
           {isTranslating
             ? [...Array(4)].map((_, i) => (
-                <div key={i} className="rounded-2xl animate-pulse" style={{ height: "90px", background: "var(--gold-muted)", border: "1px solid var(--gold-border)" }} />
+                <div key={i} className="rounded-2xl animate-pulse" style={{ height: "110px", background: "var(--gold-muted)", border: "1px solid var(--gold-border)" }} />
               ))
             : translatedItems.map((item, idx) => {
                 const fav = isFavorite(item.id);
@@ -122,23 +161,12 @@ export default function SonanWithWife() {
                   <motion.div key={item.id} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: Math.min(idx * 0.04, 0.4) }} className="rounded-2xl overflow-hidden"
                     style={{ background: "hsl(var(--card))", border: "1px solid var(--gold-border)" }}>
-                    {/* Top row */}
-                    <div className="px-4 pt-3 flex items-center justify-between">
+                    {/* Index */}
+                    <div className="px-4 pt-3">
                       <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold"
                         style={{ background: "var(--gold-muted)", color: "var(--text-gold)", border: "1px solid var(--gold-border)" }}>
                         {idx + 1}
                       </span>
-                      <div className="flex items-center gap-2">
-                        {item.source && (
-                          <span className="text-xs flex items-center gap-1" style={{ color: "var(--text-muted)" }}>
-                            <span>📚</span><span>{item.source}</span>
-                          </span>
-                        )}
-                        <motion.button whileTap={{ scale: 0.85 }} onClick={() => toggleFavorite(item)}
-                          className="p-1.5 rounded-lg" style={{ background: fav ? "var(--gold-muted)" : "transparent" }}>
-                          <Bookmark className="w-4 h-4" fill={fav ? "var(--gold)" : "none"} style={{ color: fav ? "var(--gold)" : "var(--text-muted)" }} />
-                        </motion.button>
-                      </div>
                     </div>
 
                     {/* Arabic */}
@@ -158,14 +186,19 @@ export default function SonanWithWife() {
                     )}
 
                     {!isArabic && item.translatedText && item.translatedText !== item.arabic && (
-                      <div className="mx-4 mb-3 mt-1 px-3 py-2 rounded-xl" style={{ background: "var(--teal-muted)", border: "1px solid var(--teal-border)", direction: "ltr" }}>
+                      <div className="mx-4 mb-2 mt-1 px-3 py-2 rounded-xl" style={{ background: "var(--teal-muted)", border: "1px solid var(--teal-border)", direction: "ltr" }}>
                         <p className="text-sm leading-relaxed" style={{ color: "var(--text-teal)", lineHeight: "1.75" }}>
                           {item.translatedText}
                         </p>
                       </div>
                     )}
 
-                    {isArabic && <div className="pb-3" />}
+                    {/* Action bar */}
+                    <CardActions
+                      arabic={item.arabic} translatedText={item.translatedText}
+                      source={item.source} isFav={fav}
+                      onToggleFavorite={() => toggleFavorite(item)} language={language}
+                    />
                   </motion.div>
                 );
               })}
