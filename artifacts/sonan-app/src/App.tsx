@@ -12,6 +12,7 @@ import AdhkarDetail from "@/pages/AdhkarDetail";
 import SonanList from "@/pages/SonanList";
 import SonanDetail from "@/pages/SonanDetail";
 import Advices from "@/pages/Advices";
+import AdvicesDetail from "@/pages/AdvicesDetail";
 import ForgettableSonan from "@/pages/ForgettableSonan";
 import SonanWithWife from "@/pages/SonanWithWife";
 import Tasbeeh from "@/pages/Tasbeeh";
@@ -35,6 +36,7 @@ function Router() {
       <Route path="/sonan" component={SonanList} />
       <Route path="/sonan/:id" component={SonanDetail} />
       <Route path="/advices" component={Advices} />
+      <Route path="/advices/:id" component={AdvicesDetail} />
       <Route path="/forgettable" component={ForgettableSonan} />
       <Route path="/wife" component={SonanWithWife} />
       <Route path="/tasbeeh" component={Tasbeeh} />
