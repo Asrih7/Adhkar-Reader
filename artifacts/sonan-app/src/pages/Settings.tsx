@@ -17,6 +17,7 @@ import {
 import PageLayout from "@/components/PageLayout";
 import { useTheme } from "@/hooks/useTheme";
 import { useTranslation } from "@/hooks/useTranslation";
+import { useToast } from "@/hooks/use-toast";
 import type { Language } from "@/lib/translations";
 
 /* ─────────────────────────────────────────
@@ -105,6 +106,27 @@ function StarRating({
 export default function Settings() {
   const { theme, setTheme } = useTheme();
   const { t, language, switchLanguage } = useTranslation();
+  const { toast } = useToast();
+
+  const handleSwitchLanguage = (lang: Language) => {
+    if (lang === language) return;
+    switchLanguage(lang);
+    if (lang !== "ar") {
+      toast({
+        title: "جاري الترجمة... Translating content",
+        description: lang === "en"
+          ? "Content is being translated in the background"
+          : lang === "fr"
+          ? "Le contenu est en cours de traduction"
+          : lang === "es"
+          ? "El contenido se está traduciendo"
+          : lang === "tr"
+          ? "İçerik çevriliyor"
+          : "Konten sedang diterjemahkan",
+        duration: 4000,
+      });
+    }
+  };
 
   const [fontSize, setFontSize] = useState(() =>
     parseInt(localStorage.getItem("fontSize") || "16")
@@ -224,7 +246,7 @@ export default function Settings() {
                   key={lang.code}
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.97 }}
-                  onClick={() => switchLanguage(lang.code)}
+                  onClick={() => handleSwitchLanguage(lang.code)}
                   className="p-3.5 rounded-xl transition-all flex items-center gap-2.5"
                   style={{
                     background: active ? "var(--gold-muted)" : "hsl(var(--card))",

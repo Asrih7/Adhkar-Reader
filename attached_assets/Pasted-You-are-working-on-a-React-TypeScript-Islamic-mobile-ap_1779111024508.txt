@@ -1,0 +1,137 @@
+You are working on a React + TypeScript Islamic mobile app called "Sonan App" 
+built with Vite, Tailwind CSS, Wouter, and Framer Motion.
+
+The app has these pages: Home, Adhkar, Sonan, Advices, Wife tips, Tasbeeh, 
+Prayer Times, Qibla, Quran, Quran Audio, Notifications, Favorites, Settings.
+
+Currently ALL content (adhkar text, sonan text, category names, UI labels, 
+descriptions) is hardcoded in Arabic only. When the user changes language in 
+Settings, only UI labels change — the actual Islamic content stays in Arabic.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+YOUR MISSION: Build a complete real translation system
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+## 1. Translation Service — src/lib/translationService.ts
+
+Create a real translation service using the LibreTranslate public API 
+(https://libretranslate.com) with fallback to MyMemory API 
+(https://api.mymemory.translated.net) if LibreTranslate fails.
+
+The service must:
+- translateText(text: string, targetLang: string): Promise<string>
+  → Translates a single string from Arabic ("ar") to target language
+  → Try LibreTranslate first, fallback to MyMemory
+  → Return original Arabic text if both APIs fail
+
+- translateBatch(texts: string[], targetLang: string): Promise<string[]>
+  → Translate an array of strings efficiently (batch or Promise.all with 
+    concurrency limit of 3 to avoid rate limits)
+  → Return original texts as fallback on error
+
+- Cache results in localStorage with key format:
+  "tr_cache_{lang}_{hash}" where hash = btoa(text).slice(0,16)
+  → On cache hit, return instantly without API call
+  → Cache is persistent across sessions
+
+- Supported target languages: en, fr, es, tr, id
+  (Arabic "ar" = no translation needed, return as-is)
+
+- Export: { translateText, translateBatch, clearCache }
+
+
+## 2. Content Data — src/lib/contentData.ts
+
+All Islamic content must be stored in a typed structure with the original 
+Arabic text. Example shape:
+
+interface ContentItem {
+  id: string;
+  arabic: string;          // original, never changes
+  transliteration?: string; // optional romanization
+  source?: string;         // hadith reference
+  category: string;        // category key
+}
+
+Create realistic sample data (minimum 10 items per category) for:
+- adhkar: morning adhkar (أذكار الصباح), evening adhkar (أذكار المساء), 
+  sleep adhkar (أذكار النوم), after prayer adhkar (أذكار بعد الصلاة)
+- sonan: daily sonan (السنن اليومية), eating sonan, sleeping sonan, 
+  entering/leaving home
+- advices: Islamic life advice, marriage advice
+- wife: husband-wife relationship tips from Quran and Sunnah
+
+The arabic field is the SOURCE OF TRUTH. Never translate it — display it 
+always in Arabic script alongside the translation.
+
+
+## 3. Translation Hook — src/hooks/useContentTranslation.ts
+
+Create a custom hook:
+
+useContentTranslation(items: ContentItem[], language: string)
+
+Returns:
+{
+  translatedItems: Array<ContentItem & { translatedText: string }>,
+  isTranslating: boolean,
+  translationProgress: number  // 0–100
+}
+
+Behavior:
+- If language === "ar": translatedText = arabic (no API call)
+- If language !== "ar": 
+  → Check cache for each item first
+  → Batch-translate only uncached items
+  → Show isTranslating = true and update progress during translation
+  → Merge cached + freshly translated results
+  → On complete, isTranslating = false
+
+
+## 4. Update ALL content pages
+
+For every page that shows Islamic content (Adhkar, Sonan, Advices, Wife, 
+Notifications, Favorites), do the following:
+
+a) Import useContentTranslation and useTranslation hooks
+b) Replace hardcoded Arabic strings with data from contentData.ts
+c) Each content card must show:
+   - Arabic text ALWAYS (top, large, Amiri font, RTL)  
+   - Translated text BELOW the Arabic (smaller, language direction aware)
+   - A small loading skeleton while isTranslating is true
+   - Source/reference if available
+d) Show a progress bar or spinner at the top of the page while translating
+e) If language is Arabic, show only Arabic text (no duplicate)
+
+## 5. Settings page — language switch UX
+
+When user selects a new language in Settings:
+- Immediately switch all UI labels (already working)
+- Show a global toast/banner: "جاري الترجمة... Translating content"  
+- Translation happens in background — user can navigate freely
+- Translation is cached so switching back to same language is instant
+
+
+## 6. Technical constraints
+
+- NO external translation library/package — use fetch() only
+- NO breaking changes to existing routing (wouter) or theme system
+- Keep Arabic text always visible — translation is ADDITIVE not REPLACEMENT
+- TypeScript strict mode — no `any` types
+- All new files go in src/lib/ or src/hooks/
+- Use the existing useTranslation hook for UI strings (don't replace it)
+- Use the existing CSS variables (--gold, --teal) for styling loading states
+
+
+## 7. Deliverables
+
+Provide these files in full, no truncation:
+1. src/lib/translationService.ts
+2. src/lib/contentData.ts  
+3. src/hooks/useContentTranslation.ts
+4. src/pages/Adhkar.tsx  (updated)
+5. src/pages/Sonan.tsx   (updated)
+6. src/pages/Advices.tsx (updated, create if missing)
+7. src/pages/Wife.tsx    (updated, create if missing)
+
+Each file must be complete and ready to paste — no placeholders, 

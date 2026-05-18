@@ -1,0 +1,12 @@
+npm warn config optional Use `--omit=optional` to exclude optional dependencies, or
+npm warn config `--include=optional` to include them.
+npm warn config
+npm warn config       Default value does install optional deps unless otherwise omitted.
+npm warn Unknown project config "auto-install-peers". This will stop working in the next major version of npm.
+npm warn Unknown project config "supportedArchitectures.os". This will stop working in the next major version of npm.
+npm warn Unknown project config "supportedArchitectures.cpu". This will stop working in the next major version of npm.
+
+  VITE v5.4.21  ready in 600 ms
+
+  ➜  Local:   http://localhost:8081/sonan-app/
+  ➜  Network: http://172.31.72.98:8081/sonan-app/
