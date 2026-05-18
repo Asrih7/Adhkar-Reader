@@ -1,0 +1,11 @@
+{
+  "name": "sonan-app",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react",
+  "devServer": {
+    "url": "http://localhost:5173",
+    "port": 5173
+  }
+}

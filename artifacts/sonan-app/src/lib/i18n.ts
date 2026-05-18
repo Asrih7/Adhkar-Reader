@@ -177,7 +177,7 @@ export const translations = {
   },
 };
 
-export type Language = "ar" | "en";
+export type Language = "ar" | "en" | "fr" | "es" | "tr" | "id";
 
 export function getLanguage(): Language {
   const saved = localStorage.getItem("language");
@@ -197,5 +197,9 @@ export function setLanguage(lang: Language) {
 
 export function t(key: keyof typeof translations.ar, lang?: Language): string {
   const language = lang || getLanguage();
-  return translations[language as Language][key as keyof typeof translations.ar] || key;
+  // Fallback to English for unsupported languages, then Arabic
+  if (language in translations) {
+    return (translations as any)[language][key as keyof typeof translations.ar] || key;
+  }
+  return translations.en[key as keyof typeof translations.en] || translations.ar[key as keyof typeof translations.ar] || key;
 }

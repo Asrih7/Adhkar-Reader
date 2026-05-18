@@ -1,12 +1,14 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import PageLayout from "@/components/PageLayout";
+import { useTranslation } from "@/hooks/useTranslation";
 
 const TOTAL = 30;
 
 export default function ForgettableSonan() {
   const [current, setCurrent] = useState(1);
   const [direction, setDirection] = useState(0);
+  const { t } = useTranslation();
 
   const goTo = (next: number) => {
     if (next < 1 || next > TOTAL) return;
@@ -15,7 +17,7 @@ export default function ForgettableSonan() {
   };
 
   return (
-    <PageLayout title="السنن المنسية" subtitle={`${current} من ${TOTAL}`} backHref="/">
+    <PageLayout title={t("forgettableSonan")} subtitle={`${current} من ${TOTAL}`} backHref="/">
       <div className="pt-6 pb-10">
         {/* Image viewer */}
         <div className="relative rounded-2xl overflow-hidden mb-6" style={{ background: "rgba(13,35,24,0.8)", border: "1px solid rgba(212,175,55,0.15)", minHeight: "70vw", maxHeight: "70vh" }}>
@@ -82,7 +84,7 @@ export default function ForgettableSonan() {
         </div>
 
         {/* Page indicator */}
-        <p className="text-center text-amber-200/30 text-xs mt-4">
+        <p className="text-center text-emerald-200/30 text-xs mt-4">
           {current} / {TOTAL}
         </p>
       </div>

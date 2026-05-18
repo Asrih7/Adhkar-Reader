@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 type Theme = "dark" | "light";
 
@@ -8,32 +8,31 @@ export function useTheme() {
     return (saved as Theme) || "dark";
   });
 
+  // Apply theme on mount and whenever theme changes
   useEffect(() => {
-    // Apply theme to document
-    const root = document.documentElement;
-
+    const html = document.documentElement;
     if (theme === "dark") {
-      root.classList.add("dark");
-      root.style.colorScheme = "dark";
-      document.body.style.backgroundColor = "hsl(150, 35%, 4%)";
-      document.body.style.color = "#d4af37";
+      html.classList.add("dark");
+      html.style.colorScheme = "dark";
+      // Remove any previously applied inline bg/color so CSS takes over
+      document.body.style.removeProperty("background-color");
+      document.body.style.removeProperty("color");
     } else {
-      root.classList.remove("dark");
-      root.style.colorScheme = "light";
-      document.body.style.backgroundColor = "#ffffff";
-      document.body.style.color = "#000000";
+      html.classList.remove("dark");
+      html.style.colorScheme = "light";
+      document.body.style.removeProperty("background-color");
+      document.body.style.removeProperty("color");
     }
-
     localStorage.setItem("theme", theme);
   }, [theme]);
 
-  const toggleTheme = () => {
-    setThemeState((prev) => (prev === "dark" ? "light" : "dark"));
-  };
-
-  const setTheme = (newTheme: Theme) => {
+  const setTheme = useCallback((newTheme: Theme) => {
     setThemeState(newTheme);
-  };
+  }, []);
+
+  const toggleTheme = useCallback(() => {
+    setThemeState((prev) => (prev === "dark" ? "light" : "dark"));
+  }, []);
 
   return { theme, setTheme, toggleTheme };
 }

@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Compass, MapPin, RefreshCw } from "lucide-react";
 import PageLayout from "@/components/PageLayout";
+import { useTranslation } from "@/hooks/useTranslation";
+import { getTranslation } from "@/lib/translations";
 
 interface Location {
   latitude: number;
@@ -10,6 +12,7 @@ interface Location {
 }
 
 export default function Qibla() {
+  const { language } = useTranslation();
   const [location, setLocation] = useState<Location | null>(null);
   const [qiblaDirection, setQiblaDirection] = useState(0);
   const [userHeading, setUserHeading] = useState(0);
@@ -119,7 +122,7 @@ export default function Qibla() {
   const relativeDirection = ((qiblaDirection - userHeading) + 360) % 360;
 
   return (
-    <PageLayout title="القبلة" subtitle="Qibla Compass">
+    <PageLayout title={getTranslation("qiblaCompass", language)} subtitle={getTranslation("qibla", language)}>
       <div className="pb-20 md:pb-8">
         {error && (
           <motion.div
@@ -134,9 +137,9 @@ export default function Qibla() {
         {loading && !location ? (
           <div className="text-center py-12">
             <div className="inline-block animate-spin mb-4">
-              <div className="w-12 h-12 border-3 border-amber-400 border-t-transparent rounded-full" />
+              <div className="w-12 h-12 border-3 border-emerald-400 border-t-transparent rounded-full" />
             </div>
-            <p className="text-amber-200/60">جاري تحديد موقعك...</p>
+            <p className="text-emerald-200/60">{language === "ar" ? "جاري تحديد موقعك..." : "Locating you..."}</p>
           </div>
         ) : location ? (
           <>
@@ -148,14 +151,14 @@ export default function Qibla() {
             >
               <div className="relative mx-auto w-80 h-80 flex items-center justify-center">
                 {/* Outer circle */}
-                <div className="absolute inset-0 rounded-full border-4 border-amber-400/40" />
-                <div className="absolute inset-2 rounded-full border border-amber-400/20" />
+                <div className="absolute inset-0 rounded-full border-4 border-emerald-400/40" />
+                <div className="absolute inset-2 rounded-full border border-emerald-400/20" />
 
                 {/* Compass directions */}
-                <div className="absolute top-4 text-sm font-bold text-amber-400">ش</div>
-                <div className="absolute bottom-4 text-sm font-bold text-amber-400">ج</div>
-                <div className="absolute left-4 text-sm font-bold text-amber-400">غ</div>
-                <div className="absolute right-4 text-sm font-bold text-amber-400">ق</div>
+                <div className="absolute top-4 text-sm font-bold text-emerald-400">ش</div>
+                <div className="absolute bottom-4 text-sm font-bold text-emerald-400">ج</div>
+                <div className="absolute left-4 text-sm font-bold text-emerald-400">غ</div>
+                <div className="absolute right-4 text-sm font-bold text-emerald-400">ق</div>
 
                 {/* Rotating compass background */}
                 <motion.div
@@ -167,7 +170,7 @@ export default function Qibla() {
                   {[...Array(36)].map((_, i) => (
                     <div
                       key={i}
-                      className="absolute w-0.5 h-3 bg-amber-400/50 left-1/2 origin-bottom"
+                      className="absolute w-0.5 h-3 bg-emerald-400/50 left-1/2 origin-bottom"
                       style={{
                         top: "10%",
                         transform: `translateX(-50%) rotate(${i * 10}deg)`,
@@ -182,11 +185,11 @@ export default function Qibla() {
                   transition={{ type: "spring", stiffness: 50, damping: 20 }}
                   className="absolute inset-1/4 flex items-end justify-center pointer-events-none"
                 >
-                  <div className="w-2 h-24 bg-gradient-to-t from-green-400 to-green-200 rounded-full shadow-lg shadow-green-500/50" />
+                  <div className="w-2 h-24 bg-gradient-to-t from-teal-400 to-teal-200 rounded-full shadow-lg shadow-teal-500/50" />
                 </motion.div>
 
                 {/* Center circle */}
-                <div className="absolute inset-1/3 rounded-full bg-gradient-to-br from-amber-600 to-amber-800 border-2 border-amber-400 shadow-lg shadow-amber-500/50" />
+                <div className="absolute inset-1/3 rounded-full bg-gradient-to-br from-emerald-600 to-emerald-800 border-2 border-emerald-400 shadow-lg shadow-emerald-500/50" />
 
                 {/* Kaaba icon in center */}
                 <div className="absolute text-3xl">🕋</div>
@@ -199,9 +202,9 @@ export default function Qibla() {
               animate={{ opacity: 1, y: 0 }}
               className="text-center mb-8"
             >
-              <p className="text-amber-200/60 text-sm mb-2">اتجاه القبلة</p>
-              <p className="text-4xl font-bold gold-text mb-4">{Math.round(qiblaDirection)}°</p>
-              <p className="text-amber-200/70 mb-6">وجه هاتفك بحيث يشير السهم الأخضر نحو الأسفل</p>
+              <p className="text-emerald-200/60 text-sm mb-2">{getTranslation("direction", language)}</p>
+              <p className="text-4xl font-bold emerald-text mb-4">{Math.round(qiblaDirection)}°</p>
+              <p className="text-emerald-200/70 mb-6">{language === "ar" ? "وجه هاتفك بحيث يشير السهم الأزرق نحو الأسفل" : "Point your phone so the arrow points downward"}</p>
             </motion.div>
 
             {/* Location Info */}
@@ -209,17 +212,17 @@ export default function Qibla() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="p-4 rounded-lg bg-amber-900/20 border border-amber-500/20 mb-6"
+              className="p-4 rounded-lg bg-emerald-900/20 border border-emerald-500/20 mb-6"
             >
               <div className="flex items-start gap-3">
-                <MapPin className="w-5 h-5 text-amber-400 flex-shrink-0 mt-1" />
+                <MapPin className="w-5 h-5 text-emerald-400 flex-shrink-0 mt-1" />
                 <div>
-                  <p className="text-sm text-amber-200/70">موقعك</p>
-                  <p className="text-sm font-medium text-amber-300">
+                  <p className="text-sm text-emerald-200/70">{language === "ar" ? "موقعك" : "Your location"}</p>
+                  <p className="text-sm font-medium text-emerald-300">
                     {location.latitude.toFixed(4)}°, {location.longitude.toFixed(4)}°
                   </p>
-                  <p className="text-xs text-amber-200/50 mt-1">
-                    دقة: ±{Math.round(location.accuracy)} متر
+                  <p className="text-xs text-emerald-200/50 mt-1">
+                    {language === "ar" ? "دقة" : "Accuracy"}: ±{Math.round(location.accuracy)} {language === "ar" ? "متر" : "m"}
                   </p>
                 </div>
               </div>
@@ -230,17 +233,17 @@ export default function Qibla() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={getLocation}
-              className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-lg bg-amber-600/20 hover:bg-amber-600/40 border border-amber-500/30 text-amber-300 transition-colors"
+              className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-lg bg-emerald-600/20 hover:bg-emerald-600/40 border border-emerald-500/30 text-emerald-300 transition-colors"
             >
               <RefreshCw className="w-5 h-5" />
-              تحديث الموقع
+              {language === "ar" ? "تحديث الموقع" : "Refresh location"}
             </motion.button>
           </>
         ) : null}
 
         {/* Offline note */}
-        <p className="text-center text-amber-200/40 text-xs mt-6">
-          لا تحتاج إلى إنترنت بعد التحميل الأول
+        <p className="text-center text-emerald-200/40 text-xs mt-6">
+          {language === "ar" ? "لا تحتاج إلى إنترنت بعد التحميل الأول" : "No internet needed after first load"}
         </p>
       </div>
     </PageLayout>

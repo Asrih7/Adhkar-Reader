@@ -2,23 +2,27 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { RotateCcw, Volume2, Smartphone } from "lucide-react";
 import PageLayout from "@/components/PageLayout";
+import { useTranslation } from "@/hooks/useTranslation";
+import { getTranslation } from "@/lib/translations";
 
 interface TasbeehPreset {
   name: string;
   nameAr: string;
   count: number;
   target: number;
+  key?: string;
 }
 
 const presets: TasbeehPreset[] = [
-  { name: "Subhanallah", nameAr: "سبحان الله", count: 33, target: 33 },
-  { name: "Alhamdulillah", nameAr: "الحمد لله", count: 33, target: 33 },
-  { name: "Allahu Akbar", nameAr: "الله أكبر", count: 34, target: 34 },
-  { name: "La ilaha illallah", nameAr: "لا إله إلا الله", count: 100, target: 100 },
-  { name: "Astaghfirullah", nameAr: "أستغفر الله", count: 100, target: 100 },
+  { name: "Subhanallah", nameAr: "سبحان الله", count: 33, target: 33, key: "subhanallah" },
+  { name: "Alhamdulillah", nameAr: "الحمد لله", count: 33, target: 33, key: "alhamdulillah" },
+  { name: "Allahu Akbar", nameAr: "الله أكبر", count: 34, target: 34, key: "allahuakbar" },
+  { name: "La ilaha illallah", nameAr: "لا إله إلا الله", count: 100, target: 100, key: "laeilaha" },
+  { name: "Astaghfirullah", nameAr: "أستغفر الله", count: 100, target: 100, key: "astaghfir" },
 ];
 
 export default function Tasbeeh() {
+  const { language } = useTranslation();
   const [selectedPreset, setSelectedPreset] = useState(0);
   const [count, setCount] = useState(0);
   const [totalToday, setTotalToday] = useState(0);
@@ -120,7 +124,7 @@ export default function Tasbeeh() {
   };
 
   return (
-    <PageLayout title="مسبحة إلكترونية" subtitle="Electronic Tasbeeh Counter">
+    <PageLayout title={getTranslation("tasbeeh", language)} subtitle={getTranslation("counter", language)}>
       <div className="pb-20 md:pb-8">
         {/* Main Counter */}
         <motion.div
@@ -136,7 +140,7 @@ export default function Tasbeeh() {
                 opacity: [0.5, 0.8, 0.5],
               }}
               transition={{ duration: 3, repeat: Infinity }}
-              className="absolute inset-0 rounded-full border-2 border-amber-400/30"
+              className="absolute inset-0 rounded-full border-2 border-emerald-400/30"
             />
 
             {/* Progress circle */}
@@ -146,7 +150,7 @@ export default function Tasbeeh() {
                 cy="100"
                 r="90"
                 fill="none"
-                stroke="rgba(217,119,6,0.1)"
+                stroke="rgba(20,184,166,0.1)"
                 strokeWidth="3"
               />
               <motion.circle
@@ -164,8 +168,8 @@ export default function Tasbeeh() {
               />
               <defs>
                 <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#d4af37" />
-                  <stop offset="100%" stopColor="#9d7f1e" />
+                  <stop offset="0%" stopColor="#14b8a6" />
+                  <stop offset="100%" stopColor="#0d9488" />
                 </linearGradient>
               </defs>
             </svg>
@@ -180,19 +184,19 @@ export default function Tasbeeh() {
                 key={count}
                 initial={{ scale: 0.8, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
-                className="text-6xl font-bold gold-text"
+                className="text-6xl font-bold emerald-text"
               >
                 {count}
               </motion.div>
-              <p className="text-amber-200/60 text-sm mt-2">من {preset.target}</p>
+              <p className="text-emerald-200/60 text-sm mt-2">{getTranslation("until", language)} {preset.target}</p>
             </motion.div>
           </div>
         </motion.div>
 
         {/* Preset Info */}
         <div className="text-center mb-8">
-          <h2 className="text-2xl font-bold gold-text mb-2">{preset.nameAr}</h2>
-          <p className="text-amber-200/50">{preset.name}</p>
+          <h2 className="text-2xl font-bold emerald-text mb-2">{preset.nameAr}</h2>
+          <p className="text-emerald-200/50">{preset.name}</p>
         </div>
 
         {/* Control Buttons */}
@@ -204,7 +208,7 @@ export default function Tasbeeh() {
             className="flex items-center gap-2 px-6 py-3 rounded-xl bg-red-900/30 hover:bg-red-900/50 border border-red-500/30 text-red-400 transition-colors"
           >
             <RotateCcw className="w-5 h-5" />
-            إعادة تعيين
+            {getTranslation("reset", language)}
           </motion.button>
 
           <motion.button
@@ -213,12 +217,12 @@ export default function Tasbeeh() {
             onClick={() => setSoundEnabled(!soundEnabled)}
             className={`flex items-center gap-2 px-6 py-3 rounded-xl border transition-colors ${
               soundEnabled
-                ? "bg-amber-600/30 border-amber-500/30 text-amber-400"
-                : "bg-amber-900/20 border-amber-500/20 text-amber-300/50"
+                ? "bg-emerald-600/30 border-emerald-500/30 text-emerald-400"
+                : "bg-emerald-900/20 border-emerald-500/20 text-emerald-300/50"
             }`}
           >
             <Volume2 className="w-5 h-5" />
-            {soundEnabled ? "صوت" : "صامت"}
+            {soundEnabled ? (language === "ar" ? "صوت" : "Sound") : (language === "ar" ? "صامت" : "Muted")}
           </motion.button>
 
           {/* Haptic toggle can be added here */}
@@ -230,36 +234,36 @@ export default function Tasbeeh() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="p-4 rounded-lg bg-gradient-to-br from-green-900/30 to-green-800/10 border border-green-500/20"
+            className="p-4 rounded-lg bg-gradient-to-br from-emerald-900/30 to-emerald-800/10 border border-emerald-500/20"
           >
-            <p className="text-amber-200/50 text-sm">اليوم</p>
-            <p className="text-2xl font-bold gold-text">{totalToday}</p>
+            <p className="text-emerald-200/50 text-sm">{getTranslation("daily", language)}</p>
+            <p className="text-2xl font-bold emerald-text">{totalToday}</p>
           </motion.div>
 
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="p-4 rounded-lg bg-gradient-to-br from-blue-900/30 to-blue-800/10 border border-blue-500/20"
+            className="p-4 rounded-lg bg-gradient-to-br from-teal-900/30 to-teal-800/10 border border-teal-500/20"
           >
-            <p className="text-amber-200/50 text-sm">السلسلة</p>
-            <p className="text-2xl font-bold text-blue-300">{streak}</p>
+            <p className="text-emerald-200/50 text-sm">{getTranslation("streak", language)}</p>
+            <p className="text-2xl font-bold text-teal-300">{streak}</p>
           </motion.div>
 
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="p-4 rounded-lg bg-gradient-to-br from-purple-900/30 to-purple-800/10 border border-purple-500/20"
+            className="p-4 rounded-lg bg-gradient-to-br from-cyan-900/30 to-cyan-800/10 border border-cyan-500/20"
           >
-            <p className="text-amber-200/50 text-sm">التقدم</p>
-            <p className="text-2xl font-bold text-purple-300">{Math.round(progress)}%</p>
+            <p className="text-emerald-200/50 text-sm">{getTranslation("loading", language).replace("الم", "ال%")}</p>
+            <p className="text-2xl font-bold text-cyan-300">{Math.round(progress)}%</p>
           </motion.div>
         </div>
 
         {/* Presets */}
         <div className="mb-8">
-          <h3 className="text-lg font-bold gold-text mb-4">الأحراز</h3>
+          <h3 className="text-lg font-bold emerald-text mb-4">{getTranslation("tasbeehs", language)}</h3>
           <div className="space-y-2">
             {presets.map((p, idx) => (
               <motion.button
@@ -269,13 +273,13 @@ export default function Tasbeeh() {
                 onClick={() => switchPreset(idx)}
                 className={`w-full px-4 py-3 rounded-lg transition-all ${
                   selectedPreset === idx
-                    ? "bg-gradient-to-r from-amber-600/40 to-amber-500/20 border border-amber-400/50"
-                    : "bg-amber-900/20 border border-amber-500/20 hover:bg-amber-900/30"
+                    ? "bg-gradient-to-r from-emerald-600/40 to-emerald-500/20 border border-emerald-400/50"
+                    : "bg-emerald-900/20 border border-emerald-500/20 hover:bg-emerald-900/30"
                 }`}
               >
                 <div className="flex justify-between items-center">
                   <p className="font-medium">{p.nameAr}</p>
-                  <p className="text-sm text-amber-200/50">{p.target} مرات</p>
+                  <p className="text-sm text-emerald-200/50">{p.target} {language === "ar" ? "مرات" : "times"}</p>
                 </div>
               </motion.button>
             ))}
@@ -283,9 +287,9 @@ export default function Tasbeeh() {
         </div>
 
         {/* Offline indicator */}
-        <div className="flex items-center gap-2 text-sm text-green-400/60">
+        <div className="flex items-center gap-2 text-sm text-teal-400/60">
           <Smartphone className="w-4 h-4" />
-          <p>يعمل بدون إنترنت</p>
+          <p>{language === "ar" ? "يعمل بدون إنترنت" : "Works offline"}</p>
         </div>
       </div>
     </PageLayout>

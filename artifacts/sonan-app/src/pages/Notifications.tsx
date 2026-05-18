@@ -11,14 +11,14 @@ export default function Notifications() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="p-4 rounded-lg bg-amber-900/20 border border-amber-500/20"
+            className="p-4 rounded-lg bg-emerald-900/20 border border-emerald-500/20"
           >
             <div className="flex items-center justify-between mb-4">
-              <h3 className="font-medium gold-text">إشعارات الصلاة</h3>
+              <h3 className="font-medium emerald-text">إشعارات الصلاة</h3>
               <input type="checkbox" defaultChecked className="w-5 h-5" />
             </div>
             <div className="space-y-3 text-sm">
-              <label className="flex items-center gap-2 text-amber-200/70">
+              <label className="flex items-center gap-2 text-emerald-200/70">
                 <input type="checkbox" defaultChecked />
                 <span>قبل الصلاة بـ 5 دقائق</span>
               </label>
@@ -34,16 +34,16 @@ export default function Notifications() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="p-4 rounded-lg bg-amber-900/20 border border-amber-500/20"
+            className="p-4 rounded-lg bg-emerald-900/20 border border-emerald-500/20"
           >
             <div className="flex items-center justify-between mb-4">
-              <h3 className="font-medium gold-text">أذكار الصباح والمساء</h3>
+              <h3 className="font-medium emerald-text">أذكار الصباح والمساء</h3>
               <input type="checkbox" defaultChecked className="w-5 h-5" />
             </div>
             <input
               type="time"
               defaultValue="06:00"
-              className="w-full px-3 py-2 rounded-lg bg-amber-900/40 border border-amber-500/30 text-amber-300 text-sm"
+              className="w-full px-3 py-2 rounded-lg bg-emerald-900/40 border border-emerald-500/30 text-emerald-300 text-sm"
             />
           </motion.div>
 
@@ -52,12 +52,12 @@ export default function Notifications() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="p-4 rounded-lg bg-amber-900/20 border border-amber-500/20"
+            className="p-4 rounded-lg bg-emerald-900/20 border border-emerald-500/20"
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Volume2 className="w-5 h-5 text-amber-400" />
-                <span className="font-medium gold-text">الصوت</span>
+                <Volume2 className="w-5 h-5 text-emerald-400" />
+                <span className="font-medium emerald-text">الصوت</span>
               </div>
               <input type="checkbox" defaultChecked className="w-5 h-5" />
             </div>
@@ -68,23 +68,23 @@ export default function Notifications() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="p-4 rounded-lg bg-amber-900/20 border border-amber-500/20"
+            className="p-4 rounded-lg bg-emerald-900/20 border border-emerald-500/20"
           >
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
-                <Moon className="w-5 h-5 text-amber-400" />
-                <span className="font-medium gold-text">ساعات الهدوء</span>
+                <Moon className="w-5 h-5 text-emerald-400" />
+                <span className="font-medium emerald-text">ساعات الهدوء</span>
               </div>
               <input type="checkbox" className="w-5 h-5" />
             </div>
             <div className="space-y-2 text-sm">
-              <label className="flex items-center gap-2 text-amber-200/70">
+              <label className="flex items-center gap-2 text-emerald-200/70">
                 من:
-                <input type="time" defaultValue="22:00" className="px-2 py-1 rounded bg-amber-900/40 border border-amber-500/30" />
+                <input type="time" defaultValue="22:00" className="px-2 py-1 rounded bg-emerald-900/40 border border-emerald-500/30" />
               </label>
               <label className="flex items-center gap-2 text-amber-200/70">
                 إلى:
-                <input type="time" defaultValue="06:00" className="px-2 py-1 rounded bg-amber-900/40 border border-amber-500/30" />
+                <input type="time" defaultValue="06:00" className="px-2 py-1 rounded bg-emerald-900/40 border border-emerald-500/30" />
               </label>
             </div>
           </motion.div>

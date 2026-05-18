@@ -1,46 +1,47 @@
 import { useLocation } from "wouter";
 import { motion } from "framer-motion";
+import { useTranslation } from "@/hooks/useTranslation";
 
 const cards = [
   {
     href: "/adhkar",
     icon: "🤲",
-    title: "الأذكار",
-    subtitle: "أذكار الصباح والمساء والأدعية المأثورة",
-    gradient: "from-green-900/60 to-green-800/40",
-    accent: "#40916c",
+    titleKey: "adhkar",
+    subtitleKey: "adhkarSubtitle",
+    gradient: "from-yellow-900/60 to-teal-900/30",
+    accent: "#d4af37",
   },
   {
     href: "/sonan",
     icon: "☀️",
-    title: "السنن اليومية",
-    subtitle: "مئة سنة من سنن النبي ﷺ في يومك",
-    gradient: "from-amber-900/50 to-amber-800/30",
+    titleKey: "sonan",
+    subtitleKey: "sonanSubtitle",
+    gradient: "from-yellow-900/60 to-teal-900/30",
     accent: "#d4af37",
   },
   {
     href: "/advices",
     icon: "📖",
-    title: "النصائح النبوية",
-    subtitle: "ستون نصيحة نبوية للحياة اليومية",
-    gradient: "from-teal-900/50 to-teal-800/30",
-    accent: "#38b2ac",
+    titleKey: "advice",
+    subtitleKey: "adviceSubtitle",
+    gradient: "from-yellow-900/60 to-teal-900/30",
+    accent: "#d4af37",
   },
   {
     href: "/wife",
     icon: "💚",
-    title: "سنن مع الزوجة",
-    subtitle: "سنن النبي ﷺ مع زوجاته الكريمات",
-    gradient: "from-emerald-900/50 to-emerald-800/30",
-    accent: "#68d391",
+    titleKey: "wife",
+    subtitleKey: "wifeSubtitle",
+    gradient: "from-yellow-900/60 to-teal-900/30",
+    accent: "#d4af37",
   },
   {
     href: "/forgettable",
     icon: "⭐",
-    title: "سنن منسية",
-    subtitle: "سنن نبوية كثيرًا ما تُنسى",
-    gradient: "from-yellow-900/50 to-yellow-800/30",
-    accent: "#f6c90e",
+    titleKey: "forgettableSonan",
+    subtitleKey: "forgettableSonanSubtitle",
+    gradient: "from-yellow-900/60 to-teal-900/30",
+    accent: "#d4af37",
   },
 ];
 
@@ -51,17 +52,18 @@ const container = {
 
 const item = {
   hidden: { opacity: 0, y: 20 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.4, ease: "easeOut" } },
+  show: { opacity: 1, y: 0, transition: { duration: 0.4 } },
 };
 
 export default function Home() {
   const [, navigate] = useLocation();
+  const { t } = useTranslation();
 
   return (
     <div
       className="min-h-screen flex flex-col"
       style={{
-        background: "linear-gradient(160deg, hsl(150,35%,4%) 0%, hsl(150,30%,7%) 60%, hsl(150,35%,5%) 100%)",
+        background: "linear-gradient(160deg, hsl(201,30%,8%) 0%, hsl(201,35%,12%) 60%, hsl(201,30%,10%) 100%)",
       }}
     >
       {/* Hero */}
@@ -80,7 +82,7 @@ export default function Home() {
           <div
             className="inline-flex items-center justify-center w-20 h-20 rounded-3xl mb-5 shadow-2xl"
             style={{
-              background: "linear-gradient(135deg, rgba(26,71,42,0.9), rgba(13,35,24,0.95))",
+              background: "linear-gradient(135deg, rgba(212,175,55,0.9), rgba(20,184,166,0.95))",
               border: "2px solid rgba(212,175,55,0.4)",
               boxShadow: "0 0 40px rgba(212,175,55,0.15)",
             }}
@@ -90,16 +92,16 @@ export default function Home() {
           <h1
             className="text-3xl font-black mb-2 amiri"
             style={{
-              background: "linear-gradient(135deg, #b8960c, #d4af37, #f0d060)",
+              background: "linear-gradient(135deg, #d4af37, #14b8a6, #fbbf24)",
               WebkitBackgroundClip: "text",
               WebkitTextFillColor: "transparent",
               backgroundClip: "text",
             }}
           >
-            السنن النبوية
+            {t("homeTitle")}
           </h1>
-          <p className="text-amber-200/60 text-sm font-medium">
-            طريقك لاتباع سنة النبي ﷺ
+          <p className="text-yellow-200/70 dark:text-yellow-100/70 text-sm font-medium">
+            {t("homeDescription")}
           </p>
         </motion.div>
 
@@ -111,7 +113,7 @@ export default function Home() {
           className="mt-5 inline-block"
         >
           <div
-            className="px-5 py-2 rounded-full text-sm amiri text-amber-300/70"
+            className="px-5 py-2 rounded-full text-sm amiri text-yellow-200/80 bg-yellow-500/5"
             style={{ border: "1px solid rgba(212,175,55,0.2)" }}
           >
             بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ
@@ -138,8 +140,8 @@ export default function Home() {
               <div
                 className="relative overflow-hidden rounded-2xl p-5 flex items-center gap-4 card-hover"
                 style={{
-                  background: `linear-gradient(135deg, rgba(13,35,24,0.9) 0%, rgba(26,71,42,0.4) 100%)`,
-                  border: "1px solid rgba(212,175,55,0.15)",
+                  background: `linear-gradient(135deg, rgba(10,54,67,0.9) 0%, rgba(13,75,94,0.4) 100%)`,
+                  border: "1px solid rgba(20,184,166,0.15)",
                   boxShadow: "0 4px 20px rgba(0,0,0,0.3)",
                 }}
               >
@@ -151,10 +153,10 @@ export default function Home() {
 
                 {/* Icon */}
                 <div
-                  className="flex-shrink-0 w-13 h-13 rounded-xl flex items-center justify-center text-2xl"
+                  className="flex-shrink-0 rounded-xl flex items-center justify-center text-2xl"
                   style={{
-                    background: `linear-gradient(135deg, rgba(${card.accent === '#d4af37' ? '212,175,55' : card.accent === '#40916c' ? '64,145,108' : card.accent === '#38b2ac' ? '56,178,172' : card.accent === '#68d391' ? '104,211,145' : '246,201,14'},0.2), rgba(0,0,0,0.1))`,
-                    border: `1px solid ${card.accent}30`,
+                    background: `linear-gradient(135deg, rgba(212,175,55,0.2), rgba(0,0,0,0.1))`,
+                    border: `1px solid rgba(212,175,55,0.35)`,
                     width: "52px",
                     height: "52px",
                   }}
@@ -164,13 +166,17 @@ export default function Home() {
 
                 {/* Text */}
                 <div className="flex-1 min-w-0">
-                  <h2 className="text-lg font-bold text-amber-100 mb-0.5">{card.title}</h2>
-                  <p className="text-xs text-amber-200/50 leading-relaxed">{card.subtitle}</p>
+                  <h2 className="text-lg font-bold text-yellow-100 mb-0.5">
+                    {t(card.titleKey)}
+                  </h2>
+                  <p className="text-xs text-yellow-200/70 leading-relaxed">
+                    {t(card.subtitleKey)}
+                  </p>
                 </div>
 
                 {/* Arrow */}
                 <div
-                  className="flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center text-amber-400/60"
+                  className="flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center text-yellow-300/60"
                   style={{ background: "rgba(212,175,55,0.08)" }}
                 >
                   <svg className="w-4 h-4 rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -187,7 +193,7 @@ export default function Home() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.8 }}
-          className="text-center text-amber-200/25 text-xs mt-8"
+          className="text-center text-yellow-200/35 dark:text-yellow-100/35 text-xs mt-8"
         >
           اللهم صلِّ وسلم على نبينا محمد
         </motion.p>

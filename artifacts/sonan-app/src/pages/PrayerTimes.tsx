@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { MapPin, RefreshCw, Volume2, Settings } from "lucide-react";
 import PageLayout from "@/components/PageLayout";
+import { useTranslation } from "@/hooks/useTranslation";
+import { getTranslation } from "@/lib/translations";
 
 interface PrayerTime {
   name: string;
@@ -19,6 +21,7 @@ interface PrayerData {
 }
 
 export default function PrayerTimes() {
+  const { language } = useTranslation();
   const [prayers, setPrayers] = useState<PrayerTime[]>([]);
   const [city, setCity] = useState("Current Location");
   const [loading, setLoading] = useState(true);
@@ -124,30 +127,30 @@ export default function PrayerTimes() {
   }, [nextPrayer]);
 
   return (
-    <PageLayout title="مواقيت الصلاة" subtitle="Prayer Times">
+    <PageLayout title={getTranslation("prayerTimes", language)} subtitle={getTranslation("location", language) || "Locations"}>
       <div className="pb-20 md:pb-8">
         {/* Location */}
         <div className="flex items-center justify-between mb-8 mt-6">
           <div className="flex items-center gap-2">
-            <MapPin className="w-5 h-5 text-amber-400" />
-            <span className="text-amber-200">{city}</span>
+            <MapPin className="w-5 h-5 text-yellow-400 dark:text-yellow-300" />
+            <span className="text-yellow-200 dark:text-yellow-100">{city}</span>
           </div>
           <div className="flex gap-2">
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => fetchPrayerTimes()}
-              className="p-2 rounded-lg hover:bg-amber-400/10 transition-colors"
+              className="p-2 rounded-lg hover:bg-yellow-600/10 dark:hover:bg-yellow-500/10 transition-colors"
             >
-              <RefreshCw className="w-5 h-5 text-amber-400" />
+              <RefreshCw className="w-5 h-5 text-yellow-400 dark:text-yellow-300" />
             </motion.button>
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => setShowSettings(!showSettings)}
-              className="p-2 rounded-lg hover:bg-amber-400/10 transition-colors"
+              className="p-2 rounded-lg hover:bg-yellow-600/10 dark:hover:bg-yellow-500/10 transition-colors"
             >
-              <Settings className="w-5 h-5 text-amber-400" />
+              <Settings className="w-5 h-5 text-yellow-400 dark:text-yellow-300" />
             </motion.button>
           </div>
         </div>
@@ -155,7 +158,7 @@ export default function PrayerTimes() {
         {loading ? (
           <div className="text-center py-12">
             <div className="inline-block animate-spin">
-              <div className="w-8 h-8 border-2 border-amber-400 border-t-transparent rounded-full" />
+              <div className="w-8 h-8 border-2 border-emerald-400 border-t-transparent rounded-full" />
             </div>
           </div>
         ) : (
@@ -165,14 +168,14 @@ export default function PrayerTimes() {
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="mb-8 p-6 rounded-2xl bg-gradient-to-r from-green-900/40 to-emerald-900/20 border border-green-500/40"
+                className="mb-8 p-6 rounded-2xl bg-gradient-to-r from-yellow-900/30 to-teal-900/20 border border-yellow-600/30 dark:border-yellow-500/30"
               >
-                <p className="text-amber-200/60 text-sm mb-2">الصلاة القادمة</p>
+                <p className="text-yellow-200/60 dark:text-yellow-100/60 text-sm mb-2">{getTranslation("nextPrayer", language)}</p>
                 <h2 className="text-3xl font-bold gold-text mb-2">{nextPrayer.nameAr}</h2>
-                <p className="text-amber-200/80 text-lg mb-4">{nextPrayer.time}</p>
+                <p className="text-yellow-200/80 dark:text-yellow-100/80 text-lg mb-4">{nextPrayer.time}</p>
                 <div className="flex items-center justify-between">
-                  <p className="text-amber-200/60">يتبقى</p>
-                  <p className="text-2xl font-bold text-green-300">{countdown}</p>
+                  <p className="text-yellow-200/60 dark:text-yellow-100/60">{getTranslation("until", language)}</p>
+                  <p className="text-2xl font-bold text-teal-300 dark:text-teal-200">{countdown}</p>
                 </div>
               </motion.div>
             )}
@@ -187,15 +190,15 @@ export default function PrayerTimes() {
                   transition={{ delay: idx * 0.05 }}
                   className={`p-4 rounded-xl transition-all ${
                     prayer.nextTime
-                      ? "bg-gradient-to-br from-amber-600/30 to-yellow-500/10 border border-amber-400/50"
-                      : "bg-amber-900/20 border border-amber-500/20"
+                      ? "bg-gradient-to-br from-yellow-600/25 to-teal-500/10 border border-yellow-500/40"
+                      : "bg-yellow-900/15 dark:bg-yellow-900/10 border border-yellow-600/20 dark:border-yellow-500/20"
                   }`}
                 >
                   <div className="flex justify-between items-center">
-                    <p className={prayer.nextTime ? "font-bold gold-text" : "text-amber-200/70"}>
+                    <p className={prayer.nextTime ? "font-bold text-yellow-200 dark:text-yellow-100" : "text-yellow-200/70 dark:text-yellow-100/60"}>
                       {prayer.nameAr}
                     </p>
-                    <p className={`text-lg font-medium ${prayer.nextTime ? "text-amber-300" : "text-amber-200"}`}>
+                    <p className={`text-lg font-medium ${prayer.nextTime ? "text-teal-300 dark:text-teal-200" : "text-yellow-200 dark:text-yellow-100"}`}>
                       {prayer.time}
                     </p>
                   </div>
@@ -204,8 +207,8 @@ export default function PrayerTimes() {
             </div>
 
             {/* Hijri Date */}
-            <div className="text-center text-amber-200/50 text-sm">
-              <p>استخدام طريقة الحساب: الإمام الشافعي</p>
+            <div className="text-center text-emerald-200/50 text-sm">
+              <p>{language === "ar" ? "استخدام طريقة الحساب: الإمام الشافعي" : "Using calculation method: Imam Shafi'i"}</p>
             </div>
           </>
         )}
