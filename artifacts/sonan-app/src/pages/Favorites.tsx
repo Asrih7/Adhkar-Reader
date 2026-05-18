@@ -1,5 +1,6 @@
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Bookmark, Trash2 } from "lucide-react";
+import { Bookmark, Trash2, Copy, Share2, Check } from "lucide-react";
 import PageLayout from "@/components/PageLayout";
 import { useTranslation } from "@/hooks/useTranslation";
 import { useContentTranslation } from "@/hooks/useContentTranslation";
@@ -29,6 +30,44 @@ function ProgressBar({ progress }: { progress: number }) {
     <div className="fixed top-0 left-0 right-0 z-50 h-1" style={{ background: "rgba(0,0,0,0.1)" }}>
       <motion.div className="h-full" style={{ background: "linear-gradient(90deg, var(--gold), var(--teal))" }}
         initial={{ width: "0%" }} animate={{ width: `${progress}%` }} transition={{ duration: 0.4 }} />
+    </div>
+  );
+}
+
+/* ── Item action row ── */
+function ItemActions({
+  arabic, translatedText, source, onRemove, language,
+}: {
+  arabic: string; translatedText?: string; source?: string;
+  onRemove: () => void; language: string;
+}) {
+  const [copied, setCopied] = useState(false);
+  const isRtl = language === "ar";
+  const shareText = arabic + (translatedText && translatedText !== arabic ? "\n\n" + translatedText : "") + (source ? "\n📚 " + source : "");
+
+  const handleCopy = async () => {
+    try { await navigator.clipboard.writeText(shareText); setCopied(true); setTimeout(() => setCopied(false), 2000); } catch { /**/ }
+  };
+  const handleShare = async () => {
+    if (navigator.share) { try { await navigator.share({ title: "تطبيق الأذكار", text: shareText }); } catch { /**/ } }
+    else handleCopy();
+  };
+
+  return (
+    <div className="flex items-center justify-between px-3 py-2" style={{ borderTop: "1px solid var(--gold-border)" }}>
+      <div className="flex items-center gap-0.5">
+        <motion.button whileTap={{ scale: 0.8 }} onClick={handleCopy} className="p-2 rounded-xl" style={{ background: copied ? "var(--teal-muted)" : "transparent" }} title={isRtl ? "نسخ" : "Copy"}>
+          {copied ? <Check className="w-4 h-4" style={{ color: "var(--text-teal)" }} /> : <Copy className="w-4 h-4" style={{ color: "var(--text-muted)" }} />}
+        </motion.button>
+        <motion.button whileTap={{ scale: 0.8 }} onClick={handleShare} className="p-2 rounded-xl" title={isRtl ? "مشاركة" : "Share"}>
+          <Share2 className="w-4 h-4" style={{ color: "var(--text-muted)" }} />
+        </motion.button>
+      </div>
+      <motion.button whileTap={{ scale: 0.85 }} onClick={onRemove} className="p-2 rounded-lg flex items-center gap-1 text-xs font-semibold"
+        style={{ color: "rgba(239,68,68,0.6)" }} title={isRtl ? "حذف" : "Remove"}>
+        <Trash2 className="w-4 h-4" />
+        <span className="hidden sm:inline">{isRtl ? "حذف" : "Remove"}</span>
+      </motion.button>
     </div>
   );
 }
@@ -81,66 +120,61 @@ export default function Favorites() {
         )}
 
         {/* List */}
-        {translatedItems.length > 0 && (
-          <div className="space-y-3">
-            {translatedItems.map((item, idx) => (
-              <motion.div key={item.id} layout
-                initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, x: 60, transition: { duration: 0.2 } }}
-                transition={{ delay: Math.min(idx * 0.04, 0.3) }}
-                className="rounded-2xl overflow-hidden"
-                style={{ background: "hsl(var(--card))", border: "1px solid var(--gold-border)", boxShadow: "0 2px 12px rgba(0,0,0,0.06)" }}>
+        <AnimatePresence>
+          {translatedItems.length > 0 && (
+            <div className="space-y-3">
+              {translatedItems.map((item, idx) => (
+                <motion.div key={item.id} layout
+                  initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, x: 60, transition: { duration: 0.2 } }}
+                  transition={{ delay: Math.min(idx * 0.04, 0.3) }}
+                  className="rounded-2xl overflow-hidden"
+                  style={{ background: "hsl(var(--card))", border: "1px solid var(--gold-border)", boxShadow: "0 2px 12px rgba(0,0,0,0.06)" }}>
 
-                {/* Category + remove */}
-                <div className="px-4 pt-3 flex items-center justify-between">
-                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold"
-                    style={{ background: "var(--teal-muted)", color: "var(--text-teal)", border: "1px solid var(--teal-border)" }}>
-                    <Bookmark className="w-3 h-3" fill="currentColor" />
-                    <span>{isArabic ? (CATEGORY_LABEL[item.category] ?? item.category) : (CATEGORY_LABEL_EN[item.category] ?? item.category)}</span>
-                  </span>
-                  <motion.button whileTap={{ scale: 0.85 }} onClick={() => removeFavorite(item.id)}
-                    className="p-1.5 rounded-lg" style={{ color: "rgba(239,68,68,0.6)" }}>
-                    <Trash2 className="w-4 h-4" />
-                  </motion.button>
-                </div>
-
-                {/* Arabic */}
-                <div className="px-4 pt-3 pb-1">
-                  <p className="amiri leading-loose text-right"
-                    style={{ fontSize: "1.08rem", lineHeight: "2.1", direction: "rtl", color: "var(--text-primary)" }}>
-                    {item.arabic}
-                  </p>
-                </div>
-
-                {item.transliteration && (
-                  <div className="px-4 pb-1">
-                    <p className="text-xs italic" style={{ color: "var(--text-muted)", direction: "ltr", textAlign: isArabic ? "right" : "left" }}>
-                      {item.transliteration}
-                    </p>
-                  </div>
-                )}
-
-                {!isArabic && item.translatedText && item.translatedText !== item.arabic && (
-                  <div className="mx-4 mb-3 mt-1 px-3 py-2 rounded-xl" style={{ background: "var(--teal-muted)", border: "1px solid var(--teal-border)", direction: "ltr" }}>
-                    <p className="text-sm leading-relaxed" style={{ color: "var(--text-teal)", lineHeight: "1.75" }}>
-                      {item.translatedText}
-                    </p>
-                  </div>
-                )}
-
-                {item.source && (
-                  <div className="px-4 pb-3">
-                    <span className="text-xs flex items-center gap-1" style={{ color: "var(--text-muted)" }}>
-                      <span>📚</span><span>{item.source}</span>
+                  {/* Category badge */}
+                  <div className="px-4 pt-3">
+                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold"
+                      style={{ background: "var(--teal-muted)", color: "var(--text-teal)", border: "1px solid var(--teal-border)" }}>
+                      <Bookmark className="w-3 h-3" fill="currentColor" />
+                      <span>{isArabic ? (CATEGORY_LABEL[item.category] ?? item.category) : (CATEGORY_LABEL_EN[item.category] ?? item.category)}</span>
                     </span>
                   </div>
-                )}
 
-                {!item.source && <div className="pb-3" />}
-              </motion.div>
-            ))}
-          </div>
-        )}
+                  {/* Arabic */}
+                  <div className="px-4 pt-3 pb-1">
+                    <p className="amiri leading-loose text-right"
+                      style={{ fontSize: "1.08rem", lineHeight: "2.1", direction: "rtl", color: "var(--text-primary)" }}>
+                      {item.arabic}
+                    </p>
+                  </div>
+
+                  {item.transliteration && (
+                    <div className="px-4 pb-1">
+                      <p className="text-xs italic" style={{ color: "var(--text-muted)", direction: "ltr", textAlign: isArabic ? "right" : "left" }}>
+                        {item.transliteration}
+                      </p>
+                    </div>
+                  )}
+
+                  {!isArabic && item.translatedText && item.translatedText !== item.arabic && (
+                    <div className="mx-4 mb-2 mt-1 px-3 py-2 rounded-xl" style={{ background: "var(--teal-muted)", border: "1px solid var(--teal-border)", direction: "ltr" }}>
+                      <p className="text-sm leading-relaxed" style={{ color: "var(--text-teal)", lineHeight: "1.75" }}>
+                        {item.translatedText}
+                      </p>
+                    </div>
+                  )}
+
+                  {/* Actions: copy / share / remove */}
+                  <ItemActions
+                    arabic={item.arabic} translatedText={item.translatedText}
+                    source={item.source} language={language}
+                    onRemove={() => removeFavorite(item.id)}
+                  />
+                </motion.div>
+              ))}
+            </div>
+          )}
+        </AnimatePresence>
 
         {/* Clear all */}
         {favorites.length > 1 && (
