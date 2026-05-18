@@ -818,6 +818,22 @@ button:disabled { opacity: 0.45; cursor: not-allowed; }
 input, textarea, select { transition: all 0.2s ease; }
 
 /* ========================================
+   MOBILE UTILITIES
+   ======================================== */
+.hide-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Safe-area bottom (iOS notch) */
+.safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* ========================================
    MOTION PREFERENCE
    ======================================== */
 @media (prefers-reduced-motion: reduce) {

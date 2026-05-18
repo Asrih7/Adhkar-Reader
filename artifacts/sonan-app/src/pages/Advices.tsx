@@ -17,7 +17,7 @@ const TABS: { key: TabKey; labelAr: string; labelEn: string; icon: string }[] = 
 
 function ProgressBar({ progress }: { progress: number }) {
   return (
-    <div className="fixed top-0 left-0 right-0 z-50 h-1" style={{ background: "rgba(0,0,0,0.15)" }}>
+    <div className="fixed top-0 left-0 right-0 z-50 h-1" style={{ background: "rgba(0,0,0,0.1)" }}>
       <motion.div className="h-full" style={{ background: "linear-gradient(90deg, var(--gold), var(--teal))" }}
         initial={{ width: "0%" }} animate={{ width: `${progress}%` }} transition={{ duration: 0.4 }} />
     </div>
@@ -45,22 +45,19 @@ export default function Advices() {
     >
       {isTranslating && <ProgressBar progress={translationProgress} />}
 
-      <div className="pt-4 pb-10">
+      <div className="pt-4 pb-4">
         {/* Tabs */}
         <div className="flex gap-2 mb-5">
           {TABS.map((tab) => {
             const active = activeTab === tab.key;
             return (
-              <button
-                key={tab.key}
-                onClick={() => { setActiveTab(tab.key); setExpanded(null); }}
+              <button key={tab.key} onClick={() => { setActiveTab(tab.key); setExpanded(null); }}
                 className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all"
                 style={{
-                  background: active ? "linear-gradient(135deg, rgba(212,175,55,0.25), rgba(212,175,55,0.08))" : "rgba(13,35,24,0.6)",
-                  border: `${active ? 1.5 : 1}px solid ${active ? "rgba(212,175,55,0.5)" : "rgba(212,175,55,0.12)"}`,
-                  color: active ? "#d4af37" : "rgba(212,175,55,0.5)",
-                }}
-              >
+                  background: active ? "var(--gold-muted-strong)" : "hsl(var(--card))",
+                  border: `${active ? 1.5 : 1}px solid ${active ? "var(--gold)" : "var(--gold-border)"}`,
+                  color: active ? "var(--text-gold)" : "var(--text-muted)",
+                }}>
                 <span>{tab.icon}</span>
                 <span>{isArabic ? tab.labelAr : tab.labelEn}</span>
               </button>
@@ -71,103 +68,85 @@ export default function Advices() {
         {/* Translating indicator */}
         <AnimatePresence>
           {isTranslating && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }}
+            <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }}
               className="mb-4 px-4 py-2.5 rounded-xl flex items-center gap-3 text-sm"
-              style={{ background: "rgba(64,145,108,0.1)", border: "1px solid rgba(64,145,108,0.25)", color: "var(--teal)" }}
-            >
+              style={{ background: "var(--teal-muted)", border: "1px solid var(--teal-border)", color: "var(--text-teal)" }}>
               <div className="w-4 h-4 rounded-full border-2 border-current border-t-transparent animate-spin flex-shrink-0" />
               <span>{isArabic ? "جاري الترجمة..." : "Translating…"} <span className="font-bold">{translationProgress}%</span></span>
             </motion.div>
           )}
         </AnimatePresence>
 
-        {/* Advice accordion cards */}
+        {/* Accordion cards */}
         <AnimatePresence mode="wait">
           <motion.div key={activeTab} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="space-y-2">
             {isTranslating
               ? [...Array(6)].map((_, i) => (
-                  <div key={i} className="h-16 rounded-2xl animate-pulse" style={{ background: "rgba(212,175,55,0.07)", border: "1px solid rgba(212,175,55,0.08)" }} />
+                  <div key={i} className="h-16 rounded-2xl animate-pulse" style={{ background: "var(--gold-muted)", border: "1px solid var(--gold-border)" }} />
                 ))
               : translatedItems.map((item, index) => {
                   const isOpen = expanded === item.id;
                   const fav = isFavorite(item.id);
                   return (
-                    <motion.div
-                      key={item.id}
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: Math.min(index * 0.03, 0.3) }}
-                    >
-                      <div
-                        className="rounded-2xl overflow-hidden"
+                    <motion.div key={item.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: Math.min(index * 0.03, 0.3) }}>
+                      <div className="rounded-2xl overflow-hidden"
                         style={{
-                          background: isOpen ? "rgba(20,55,35,0.9)" : "rgba(13,35,24,0.78)",
-                          border: `1px solid ${isOpen ? "rgba(212,175,55,0.28)" : "rgba(212,175,55,0.1)"}`,
+                          background: isOpen ? "var(--bg-tertiary)" : "hsl(var(--card))",
+                          border: `1px solid ${isOpen ? "var(--gold-border-strong)" : "var(--gold-border)"}`,
                           transition: "all 0.2s ease",
-                        }}
-                      >
-                        {/* Header */}
-                        <div className="flex items-center gap-2 pr-2" style={{ textAlign: isArabic ? "right" : "left" }}>
+                        }}>
+                        {/* Header row */}
+                        <div className="flex items-center gap-2 pr-2">
                           <button onClick={() => toggle(item.id)} className="flex-1 flex items-center gap-3 p-4 pr-2 min-w-0">
-                            <div
-                              className="flex-shrink-0 w-8 h-8 rounded-xl flex items-center justify-center text-xs font-bold"
+                            <div className="flex-shrink-0 w-8 h-8 rounded-xl flex items-center justify-center text-xs font-bold"
                               style={{
-                                background: isOpen ? "linear-gradient(135deg, rgba(212,175,55,0.3), rgba(212,175,55,0.1))" : "linear-gradient(135deg, rgba(212,175,55,0.15), rgba(212,175,55,0.03))",
-                                border: "1px solid rgba(212,175,55,0.22)",
-                                color: "#d4af37",
-                              }}
-                            >
+                                background: isOpen ? "var(--gold-muted-strong)" : "var(--gold-muted)",
+                                border: "1px solid var(--gold-border)",
+                                color: "var(--text-gold)",
+                              }}>
                               {index + 1}
                             </div>
-                            <p className="flex-1 text-sm font-semibold text-amber-100/90 text-right leading-snug truncate" style={{ direction: "rtl" }}>
+                            <p className="flex-1 text-sm font-semibold text-right leading-snug truncate"
+                              style={{ direction: "rtl", color: "var(--text-primary)" }}>
                               {item.arabic.length > 65 ? item.arabic.slice(0, 65) + "…" : item.arabic}
                             </p>
                             <motion.div animate={{ rotate: isOpen ? 90 : 0 }} transition={{ duration: 0.2 }} className="flex-shrink-0">
-                              <svg className="w-4 h-4 rotate-180" style={{ color: "rgba(212,175,55,0.45)" }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <svg className="w-4 h-4 rotate-180" style={{ color: "var(--text-muted)" }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                               </svg>
                             </motion.div>
                           </button>
-                          {/* Bookmark button outside the toggle button */}
-                          <motion.button
-                            whileTap={{ scale: 0.85 }}
-                            onClick={() => toggleFavorite(item)}
-                            className="p-2 rounded-lg flex-shrink-0"
-                            style={{ background: fav ? "rgba(212,175,55,0.15)" : "transparent" }}
-                          >
-                            <Bookmark className="w-4 h-4" fill={fav ? "#d4af37" : "none"} style={{ color: fav ? "#d4af37" : "rgba(212,175,55,0.35)" }} />
+                          <motion.button whileTap={{ scale: 0.85 }} onClick={() => toggleFavorite(item)}
+                            className="p-2 rounded-lg flex-shrink-0" style={{ background: fav ? "var(--gold-muted)" : "transparent" }}>
+                            <Bookmark className="w-4 h-4" fill={fav ? "var(--gold)" : "none"} style={{ color: fav ? "var(--gold)" : "var(--text-muted)" }} />
                           </motion.button>
                         </div>
 
                         {/* Expanded content */}
                         <AnimatePresence>
                           {isOpen && (
-                            <motion.div
-                              initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }}
-                              exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.25, ease: "easeInOut" }}
-                              style={{ overflow: "hidden" }}
-                            >
-                              <div className="px-4 pb-5 space-y-3" style={{ borderTop: "1px solid rgba(212,175,55,0.1)" }}>
-                                <div className="pt-4 p-4 rounded-xl" style={{ background: "rgba(212,175,55,0.06)", border: "1px solid rgba(212,175,55,0.14)" }}>
-                                  <p className="amiri text-amber-50/95 leading-loose text-right" style={{ fontSize: "1.05rem", lineHeight: "2.1", direction: "rtl" }}>
+                            <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }}
+                              exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.25 }} style={{ overflow: "hidden" }}>
+                              <div className="px-4 pb-5 space-y-3" style={{ borderTop: "1px solid var(--gold-border)" }}>
+                                <div className="pt-4 p-4 rounded-xl" style={{ background: "var(--gold-muted)", border: "1px solid var(--gold-border)" }}>
+                                  <p className="amiri text-right leading-loose" style={{ fontSize: "1.05rem", lineHeight: "2.1", direction: "rtl", color: "var(--text-primary)" }}>
                                     {item.arabic}
                                   </p>
                                 </div>
                                 {item.transliteration && (
-                                  <p className="text-xs italic px-1" style={{ color: "rgba(212,175,55,0.45)", direction: "ltr" }}>
+                                  <p className="text-xs italic px-1" style={{ color: "var(--text-muted)", direction: "ltr" }}>
                                     {item.transliteration}
                                   </p>
                                 )}
                                 {!isArabic && item.translatedText && item.translatedText !== item.arabic && (
-                                  <div className="px-3 py-2.5 rounded-xl" style={{ background: "rgba(64,145,108,0.08)", border: "1px solid rgba(64,145,108,0.18)", direction: "ltr" }}>
-                                    <p className="text-sm leading-relaxed" style={{ color: "rgba(180,230,200,0.85)", lineHeight: "1.75" }}>
+                                  <div className="px-3 py-2.5 rounded-xl" style={{ background: "var(--teal-muted)", border: "1px solid var(--teal-border)", direction: "ltr" }}>
+                                    <p className="text-sm leading-relaxed" style={{ color: "var(--text-teal)", lineHeight: "1.75" }}>
                                       {item.translatedText}
                                     </p>
                                   </div>
                                 )}
                                 {item.source && (
-                                  <p className="text-xs flex items-center gap-1.5" style={{ color: "rgba(212,175,55,0.55)" }}>
+                                  <p className="text-xs flex items-center gap-1.5" style={{ color: "var(--text-muted)" }}>
                                     <span>📚</span><span>{item.source}</span>
                                   </p>
                                 )}

@@ -180,7 +180,7 @@ function BottomNav() {
 
   return (
     <nav
-      className="fixed bottom-0 left-0 right-0 z-40 glass"
+      className="fixed bottom-0 left-0 right-0 z-40 glass safe-bottom"
       style={{ borderTop: "1px solid var(--gold-border)" }}
     >
       <div className="flex justify-around items-center max-w-screen-lg mx-auto">
@@ -190,11 +190,24 @@ function BottomNav() {
             <a
               key={item.href}
               href={item.href}
-              className="flex-1 flex flex-col items-center gap-1 py-2.5 transition-colors"
-              style={{ color: isActive ? "var(--text-gold)" : "var(--text-muted)" }}
+              className="flex-1 flex flex-col items-center gap-1 py-3 transition-colors"
+              style={{
+                color: isActive ? "var(--text-gold)" : "var(--text-muted)",
+                minHeight: "56px",
+              }}
             >
-              {item.icon}
-              <span className="text-xs font-medium">{t(item.labelKey)}</span>
+              <span style={{ color: isActive ? "var(--text-gold)" : "var(--text-muted)" }}>
+                {item.icon}
+              </span>
+              <span
+                className="text-xs font-medium"
+                style={{
+                  fontSize: "10px",
+                  color: isActive ? "var(--text-gold)" : "var(--text-muted)",
+                }}
+              >
+                {t(item.labelKey)}
+              </span>
             </a>
           );
         })}
