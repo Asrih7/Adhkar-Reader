@@ -1,7 +1,13 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useParams } from "wouter";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
+import { Bookmark, Copy, Share2, Check } from "lucide-react";
 import PageLayout from "@/components/PageLayout";
+import { useTranslation } from "@/hooks/useTranslation";
+import { useContentTranslation } from "@/hooks/useContentTranslation";
+import { useFavorites } from "@/hooks/useFavorites";
+import type { ContentItem } from "@/lib/contentData";
+import type { Language } from "@/lib/translations";
 
 interface SonanContent {
   sonaId?: string;
@@ -21,129 +27,209 @@ interface SonanMeta {
   text: string;
 }
 
+function ProgressBar({ progress }: { progress: number }) {
+  return (
+    <div className="fixed top-0 left-0 right-0 z-50 h-1" style={{ background: "rgba(0,0,0,0.1)" }}>
+      <motion.div className="h-full" style={{ background: "linear-gradient(90deg, var(--gold), var(--teal))" }}
+        initial={{ width: "0%" }} animate={{ width: `${progress}%` }} transition={{ duration: 0.4 }} />
+    </div>
+  );
+}
+
+function getMainArabic(c: SonanContent): string {
+  return c.hadith || c.text || c.title || "";
+}
+
 export default function SonanDetail() {
   const { id } = useParams<{ id: string }>();
-  const [content, setContent] = useState<SonanContent | SonanContent[] | null>(null);
+  const { language } = useTranslation();
+  const { isFavorite, toggleFavorite } = useFavorites();
+  const [rawContent, setRawContent] = useState<SonanContent | SonanContent[] | null>(null);
   const [title, setTitle] = useState("");
   const [loading, setLoading] = useState(true);
+  const [copied, setCopied] = useState(false);
+  const isArabic = language === "ar";
 
   useEffect(() => {
     if (!id) return;
     setLoading(true);
-
     fetch(`${import.meta.env.BASE_URL}data/sonan-data.json`)
       .then((r) => r.json())
       .then((data: SonanMeta[]) => {
         const found = data.find((d) => d.sonaId === id);
         if (found) setTitle(found.text);
       });
-
     fetch(`${import.meta.env.BASE_URL}data/sonan-${id}.json`)
       .then((r) => r.json())
-      .then((d) => { setContent(d); setLoading(false); })
+      .then((d) => { setRawContent(d); setLoading(false); })
       .catch(() => setLoading(false));
   }, [id]);
 
-  const renderContent = (c: SonanContent) => {
-    const fields: { label: string; value: string | undefined; icon: string }[] = [
-      { label: "الراوي", value: c.narrator, icon: "👤" },
-      { label: "الحديث", value: c.hadith || c.text, icon: "📜" },
-      { label: "المصدر", value: c.source, icon: "📚" },
-      { label: "الشرح", value: c.explanation, icon: "💡" },
-      { label: "الدليل", value: Array.isArray(c.evidence) ? c.evidence.join(" — ") : c.evidence, icon: "🔖" },
-      { label: "ملاحظة", value: c.note, icon: "📝" },
-    ];
+  /* Build ContentItem[] from content for translation */
+  const contentItems = useMemo<ContentItem[]>(() => {
+    if (!rawContent) return [];
+    const arr = Array.isArray(rawContent) ? rawContent : [rawContent];
+    return arr.map((c, i) => ({
+      id: `sonan_${id}_${i}`,
+      arabic: getMainArabic(c),
+      source: c.source ?? undefined,
+      category: "dailySonan",
+    })).filter((item) => item.arabic);
+  }, [rawContent, id]);
 
-    const visibleFields = fields.filter((f) => f.value);
+  const { translatedItems, isTranslating, translationProgress } =
+    useContentTranslation(contentItems, language as Language);
 
-    // If no known fields, show raw text keys
-    if (visibleFields.length === 0) {
-      return (
-        <div className="p-5">
-          {Object.entries(c).map(([key, val]) =>
-            typeof val === "string" && val ? (
-              <p key={key} className="amiri text-amber-50/90 leading-loose mb-4" style={{ fontSize: "1.05rem", lineHeight: "2.1" }}>
-                {val}
-              </p>
-            ) : null
-          )}
-        </div>
-      );
-    }
+  const contentArr = useMemo(
+    () => (rawContent ? (Array.isArray(rawContent) ? rawContent : [rawContent]) : []),
+    [rawContent]
+  );
 
-    return (
-      <div className="divide-y" style={{ borderColor: "rgba(212,175,55,0.08)" }}>
-        {visibleFields.map((f) => (
-          <div key={f.label} className="p-5">
-            <div className="flex items-center gap-2 mb-3">
-              <span className="text-base">{f.icon}</span>
-              <span
-                className="text-xs font-bold uppercase tracking-wider"
-                style={{ color: "#d4af37" }}
-              >
-                {f.label}
-              </span>
-            </div>
-            <p
-              className={`text-amber-50/90 leading-loose ${f.label === "الحديث" || f.label === "الدليل" ? "amiri" : ""}`}
-              style={{ fontSize: f.label === "الحديث" ? "1.05rem" : "0.9rem", lineHeight: "2" }}
-            >
-              {f.value}
-            </p>
-          </div>
-        ))}
-      </div>
-    );
+  const LABELS: Record<string, [string, string]> = {
+    narrator:    ["الراوي",  "Narrator"],
+    explanation: ["الشرح",   "Explanation"],
+    evidence:    ["الدليل",  "Evidence"],
+    note:        ["ملاحظة",  "Note"],
+  };
+
+  const handleCopy = async (text: string) => {
+    try { await navigator.clipboard.writeText(text); setCopied(true); setTimeout(() => setCopied(false), 2000); } catch { /**/ }
+  };
+  const handleShare = async (text: string) => {
+    if (navigator.share) { try { await navigator.share({ title: "السنن النبوية", text }); } catch { /**/ } } else handleCopy(text);
   };
 
   return (
-    <PageLayout title={title || `السنة ${id}`} backHref="/sonan">
-      <div className="pt-6 pb-10">
+    <PageLayout title={title || `السنة ${id}`} subtitle={isArabic ? "سنة نبوية" : "Prophetic Sunnah"} backHref="/sonan">
+      {isTranslating && <ProgressBar progress={translationProgress} />}
+
+      <div className="pt-4 pb-12 space-y-3">
+        {/* Translating banner */}
+        <AnimatePresence>
+          {isTranslating && (
+            <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }}
+              className="px-4 py-2.5 rounded-xl flex items-center gap-3 text-sm"
+              style={{ background: "var(--teal-muted)", border: "1px solid var(--teal-border)", color: "var(--text-teal)" }}>
+              <div className="w-4 h-4 rounded-full border-2 border-current border-t-transparent animate-spin flex-shrink-0" />
+              <span>{isArabic ? "جاري الترجمة..." : "Translating…"} <span className="font-bold">{translationProgress}%</span></span>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
         {loading ? (
-          <div className="space-y-3">
-            {[...Array(3)].map((_, i) => (
-              <div key={i} className="h-32 rounded-2xl animate-pulse" style={{ background: "rgba(26,71,42,0.3)" }} />
-            ))}
-          </div>
-        ) : !content ? (
-          <div className="text-center py-16 text-amber-200/40">
-            <p>لا يوجد محتوى متاح</p>
+          [...Array(3)].map((_, i) => (
+            <div key={i} className="h-32 rounded-2xl animate-pulse"
+              style={{ background: "var(--gold-muted)", border: "1px solid var(--gold-border)" }} />
+          ))
+        ) : !rawContent ? (
+          <div className="text-center py-16" style={{ color: "var(--text-muted)" }}>
+            <p>{isArabic ? "لا يوجد محتوى" : "No content available"}</p>
           </div>
         ) : (
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4 }}
-            className="rounded-2xl overflow-hidden"
-            style={{
-              background: "rgba(13,35,24,0.85)",
-              border: "1px solid rgba(212,175,55,0.15)",
-              boxShadow: "0 8px 32px rgba(0,0,0,0.35)",
-            }}
-          >
-            {/* Badge */}
-            <div className="p-4 pb-0 flex items-center gap-2">
-              <span
-                className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold"
-                style={{
-                  background: "linear-gradient(135deg, rgba(212,175,55,0.2), rgba(212,175,55,0.05))",
-                  color: "#d4af37",
-                  border: "1px solid rgba(212,175,55,0.25)",
-                }}
-              >
-                ☀️ السنة رقم {id}
-              </span>
-            </div>
+          contentArr.map((c, idx) => {
+            const translated = translatedItems[idx];
+            const arabic = getMainArabic(c);
+            const evidenceStr = Array.isArray(c.evidence) ? c.evidence.join(" — ") : c.evidence;
+            const fakeId = `sonan_${id}_${idx}`;
+            const fakeItem: ContentItem = { id: fakeId, arabic, source: c.source, category: "dailySonan" };
+            const fav = isFavorite(fakeId);
+            const shareText = [arabic, translated?.translatedText !== arabic ? translated?.translatedText : "", c.source].filter(Boolean).join("\n\n📚 ");
 
-            {Array.isArray(content)
-              ? content.map((c, i) => (
-                <div key={i} className={i > 0 ? "border-t border-amber-400/10 mt-2 pt-2" : ""}>
-                  {renderContent(c)}
+            return (
+              <motion.div key={idx} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: idx * 0.08, duration: 0.4 }}
+                className="rounded-2xl overflow-hidden"
+                style={{ background: "hsl(var(--card))", border: "1px solid var(--gold-border)", boxShadow: "0 4px 20px rgba(0,0,0,0.08)" }}>
+
+                {idx > 0 && (
+                  <div className="px-4 pt-3 pb-0">
+                    <span className="text-xs font-bold" style={{ color: "var(--text-muted)" }}>
+                      {isArabic ? `رواية ${idx + 1}` : `Narration ${idx + 1}`}
+                    </span>
+                  </div>
+                )}
+
+                {/* Narrator */}
+                {c.narrator && (
+                  <div className="px-4 pt-3 pb-1">
+                    <p className="text-xs flex items-center gap-1.5" style={{ color: "var(--text-muted)", direction: "rtl" }}>
+                      <span>👤</span><span>{c.narrator}</span>
+                    </p>
+                  </div>
+                )}
+
+                {/* Main hadith text (Arabic) */}
+                {arabic && (
+                  <div className="px-4 pt-3 pb-2">
+                    <p className="amiri text-right leading-loose"
+                      style={{ fontSize: "1.08rem", lineHeight: "2.1", direction: "rtl", color: "var(--text-primary)" }}>
+                      {arabic}
+                    </p>
+                  </div>
+                )}
+
+                {/* Translation */}
+                {!isArabic && translated?.translatedText && translated.translatedText !== arabic && (
+                  <div className="mx-4 mb-2 px-3 py-2 rounded-xl"
+                    style={{ background: "var(--teal-muted)", border: "1px solid var(--teal-border)", direction: "ltr" }}>
+                    <p className="text-sm leading-relaxed" style={{ color: "var(--text-teal)", lineHeight: "1.75" }}>
+                      {translated.translatedText}
+                    </p>
+                  </div>
+                )}
+
+                {/* Source */}
+                {c.source && (
+                  <div className="mx-4 mb-2 px-3 py-2 rounded-xl"
+                    style={{ background: "var(--teal-muted)", border: "1px solid var(--teal-border)" }}>
+                    <p className="text-xs flex items-center gap-1.5" style={{ color: "var(--text-teal)", direction: "rtl" }}>
+                      <span>📚</span><span>{c.source}</span>
+                    </p>
+                  </div>
+                )}
+
+                {/* Extra fields (explanation, evidence, note) */}
+                {Object.entries(LABELS).map(([key, [labelAr, labelEn]]) => {
+                  const val = key === "evidence" ? evidenceStr : c[key] as string | undefined;
+                  if (!val) return null;
+                  return (
+                    <div key={key} className="mx-4 mb-2 px-3 py-2.5 rounded-xl"
+                      style={{ background: "hsl(var(--card))", border: "1px solid var(--gold-border)" }}>
+                      <p className="text-xs font-bold mb-1.5" style={{ color: "var(--text-gold)" }}>
+                        {isArabic ? labelAr : labelEn}
+                      </p>
+                      <p className="text-sm leading-relaxed text-right"
+                        style={{ direction: "rtl", color: "var(--text-muted)", lineHeight: "1.8" }}>
+                        {val}
+                      </p>
+                    </div>
+                  );
+                })}
+
+                {/* ── Action bar ── */}
+                <div className="flex items-center justify-between px-3 py-2.5"
+                  style={{ borderTop: "1px solid var(--gold-border)" }}>
+                  <span />
+                  <div className="flex items-center gap-0.5">
+                    <motion.button whileTap={{ scale: 0.8 }} onClick={() => toggleFavorite(fakeItem)}
+                      className="p-2 rounded-xl" style={{ background: fav ? "var(--gold-muted)" : "transparent" }}
+                      title={isArabic ? "حفظ" : "Save"}>
+                      <Bookmark className="w-4 h-4" fill={fav ? "var(--gold)" : "none"} style={{ color: fav ? "var(--gold)" : "var(--text-muted)" }} />
+                    </motion.button>
+                    <motion.button whileTap={{ scale: 0.8 }} onClick={() => handleCopy(shareText)}
+                      className="p-2 rounded-xl" style={{ background: copied ? "var(--teal-muted)" : "transparent" }}
+                      title={isArabic ? "نسخ" : "Copy"}>
+                      {copied ? <Check className="w-4 h-4" style={{ color: "var(--text-teal)" }} /> : <Copy className="w-4 h-4" style={{ color: "var(--text-muted)" }} />}
+                    </motion.button>
+                    <motion.button whileTap={{ scale: 0.8 }} onClick={() => handleShare(shareText)}
+                      className="p-2 rounded-xl" title={isArabic ? "مشاركة" : "Share"}>
+                      <Share2 className="w-4 h-4" style={{ color: "var(--text-muted)" }} />
+                    </motion.button>
+                  </div>
                 </div>
-              ))
-              : renderContent(content)
-            }
-          </motion.div>
+              </motion.div>
+            );
+          })
         )}
       </div>
     </PageLayout>
