@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useLocation } from "wouter";
+import { Link, useLocation } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Home, Zap, Sun, BookOpen, Heart, Wind, Clock, Compass,
@@ -30,58 +30,14 @@ const navItems: NavItem[] = [
   { href: "/settings",     labelKey: "settings",     icon: <Settings  className="w-5 h-5" /> },
 ];
 
-/* ── Shared nav item renderer ── */
-function NavLink({
-  item,
-  isActive,
-  onClick,
-  delay = 0,
-}: {
-  item: NavItem;
-  isActive: boolean;
-  onClick?: () => void;
-  delay?: number;
-}) {
-  return (
-    <motion.a
-      key={item.href}
-      href={item.href}
-      onClick={onClick}
-      initial={{ opacity: 0, x: -14 }}
-      animate={{ opacity: 1, x: 0 }}
-      transition={{ delay }}
-      className="flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all"
-      style={{
-        background: isActive ? "var(--gold-muted)" : "transparent",
-        border: isActive ? "1px solid var(--gold-border)" : "1px solid transparent",
-        color: isActive ? "var(--text-gold)" : "var(--text-secondary)",
-      }}
-      onMouseEnter={(e) => {
-        if (!isActive) {
-          (e.currentTarget as HTMLElement).style.background = "var(--teal-muted)";
-          (e.currentTarget as HTMLElement).style.color = "var(--text-teal)";
-        }
-      }}
-      onMouseLeave={(e) => {
-        if (!isActive) {
-          (e.currentTarget as HTMLElement).style.background = "transparent";
-          (e.currentTarget as HTMLElement).style.color = "var(--text-secondary)";
-        }
-      }}
-    >
-      <span style={{ color: isActive ? "var(--text-gold)" : "inherit" }}>
-        {item.icon}
-      </span>
-      <span className="flex-1 text-sm font-medium">{}</span>
-      {isActive && (
-        <span
-          className="w-1.5 h-1.5 rounded-full"
-          style={{ background: "var(--gold)" }}
-        />
-      )}
-    </motion.a>
-  );
-}
+/* Bottom nav shows: Home, Adhkar, Prayer Times, Favorites, Settings */
+const bottomNavItems: NavItem[] = [
+  { href: "/",             labelKey: "home",         icon: <Home      className="w-5 h-5" /> },
+  { href: "/adhkar",       labelKey: "adhkar",       icon: <Zap       className="w-5 h-5" /> },
+  { href: "/prayer-times", labelKey: "prayerTimes",  icon: <Clock     className="w-5 h-5" /> },
+  { href: "/favorites",    labelKey: "favorites",    icon: <Star      className="w-5 h-5" /> },
+  { href: "/settings",     labelKey: "settings",     icon: <Settings  className="w-5 h-5" /> },
+];
 
 /* ── Sidebar (mobile overlay) ── */
 function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
@@ -107,7 +63,6 @@ function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) 
             className="fixed inset-y-0 left-0 w-72 z-50 glass overflow-y-auto"
             style={{ borderRight: "1px solid var(--gold-border)" }}
           >
-            {/* Header */}
             <div
               className="sticky top-0 flex items-center justify-between p-4"
               style={{
@@ -123,45 +78,42 @@ function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) 
                 onClick={onClose}
                 className="p-2 rounded-xl transition-colors"
                 style={{ color: "var(--text-gold)" }}
-                onMouseEnter={(e) =>
-                  ((e.currentTarget as HTMLElement).style.background = "var(--gold-muted)")
-                }
-                onMouseLeave={(e) =>
-                  ((e.currentTarget as HTMLElement).style.background = "transparent")
-                }
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            {/* Items */}
             <div className="p-3 space-y-0.5">
               {navItems.map((item, i) => {
                 const isActive = location === item.href;
                 return (
-                  <motion.a
+                  <motion.div
                     key={item.href}
-                    href={item.href}
-                    onClick={onClose}
                     initial={{ opacity: 0, x: -14 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: i * 0.025 }}
-                    className="flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all"
-                    style={{
-                      background: isActive ? "var(--gold-muted)" : "transparent",
-                      border: `1px solid ${isActive ? "var(--gold-border)" : "transparent"}`,
-                      color: isActive ? "var(--text-gold)" : "var(--text-secondary)",
-                    }}
                   >
-                    <span>{item.icon}</span>
-                    <span className="flex-1 text-sm font-medium">{t(item.labelKey)}</span>
-                    {isActive && (
-                      <span
-                        className="w-1.5 h-1.5 rounded-full"
-                        style={{ background: "var(--gold)" }}
-                      />
-                    )}
-                  </motion.a>
+                    <Link
+                      href={item.href}
+                      onClick={onClose}
+                      className="flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all"
+                      style={{
+                        background: isActive ? "var(--gold-muted)" : "transparent",
+                        border: `1px solid ${isActive ? "var(--gold-border)" : "transparent"}`,
+                        color: isActive ? "var(--text-gold)" : "var(--text-secondary)",
+                        display: "flex",
+                      }}
+                    >
+                      <span>{item.icon}</span>
+                      <span className="flex-1 text-sm font-medium">{t(item.labelKey)}</span>
+                      {isActive && (
+                        <span
+                          className="w-1.5 h-1.5 rounded-full"
+                          style={{ background: "var(--gold)" }}
+                        />
+                      )}
+                    </Link>
+                  </motion.div>
                 );
               })}
             </div>
@@ -176,7 +128,6 @@ function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) 
 function BottomNav() {
   const [location] = useLocation();
   const { t } = useTranslation();
-  const mainItems = navItems.slice(0, 5);
 
   return (
     <nav
@@ -184,10 +135,10 @@ function BottomNav() {
       style={{ borderTop: "1px solid var(--gold-border)" }}
     >
       <div className="flex justify-around items-center max-w-screen-lg mx-auto">
-        {mainItems.map((item) => {
+        {bottomNavItems.map((item) => {
           const isActive = location === item.href;
           return (
-            <a
+            <Link
               key={item.href}
               href={item.href}
               className="flex-1 flex flex-col items-center gap-1 py-3 transition-colors"
@@ -208,7 +159,7 @@ function BottomNav() {
               >
                 {t(item.labelKey)}
               </span>
-            </a>
+            </Link>
           );
         })}
       </div>
@@ -242,7 +193,7 @@ function DesktopSidebar() {
         {navItems.map((item) => {
           const isActive = location === item.href;
           return (
-            <a
+            <Link
               key={item.href}
               href={item.href}
               className="flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all"
@@ -250,6 +201,7 @@ function DesktopSidebar() {
                 background: isActive ? "var(--gold-muted)" : "transparent",
                 border: `1px solid ${isActive ? "var(--gold-border)" : "transparent"}`,
                 color: isActive ? "var(--text-gold)" : "var(--text-secondary)",
+                display: "flex",
               }}
             >
               <span>{item.icon}</span>
@@ -260,7 +212,7 @@ function DesktopSidebar() {
                   style={{ background: "var(--gold)" }}
                 />
               )}
-            </a>
+            </Link>
           );
         })}
       </div>
@@ -285,7 +237,6 @@ export default function Navigation() {
     <>
       {isMobile ? (
         <>
-          {/* Hamburger */}
           <motion.button
             whileTap={{ scale: 0.92 }}
             onClick={() => setSidebarOpen(true)}

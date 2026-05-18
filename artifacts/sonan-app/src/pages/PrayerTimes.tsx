@@ -1,215 +1,347 @@
-import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
-import { MapPin, RefreshCw, Volume2, Settings } from "lucide-react";
+import { useState, useEffect, useCallback } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { MapPin, RefreshCw, ChevronDown } from "lucide-react";
 import PageLayout from "@/components/PageLayout";
 import { useTranslation } from "@/hooks/useTranslation";
-import { getTranslation } from "@/lib/translations";
 
 interface PrayerTime {
-  name: string;
+  nameKey: string;
   nameAr: string;
   time: string;
-  nextTime?: boolean;
+  isNext?: boolean;
 }
 
-interface PrayerData {
-  city: string;
-  country: string;
-  date: string;
-  prayers: PrayerTime[];
-  hijriDate: string;
+const POPULAR_CITIES = [
+  { name: "Mecca",     nameAr: "مكة المكرمة",  country: "SA" },
+  { name: "Medina",    nameAr: "المدينة المنورة",country: "SA" },
+  { name: "Cairo",     nameAr: "القاهرة",       country: "EG" },
+  { name: "Istanbul",  nameAr: "إسطنبول",       country: "TR" },
+  { name: "Dubai",     nameAr: "دبي",           country: "AE" },
+  { name: "Riyadh",    nameAr: "الرياض",        country: "SA" },
+  { name: "Casablanca",nameAr: "الدار البيضاء", country: "MA" },
+  { name: "Kuala Lumpur",nameAr: "كوالالمبور",  country: "MY" },
+  { name: "London",    nameAr: "لندن",          country: "GB" },
+  { name: "Paris",     nameAr: "باريس",         country: "FR" },
+  { name: "Jakarta",   nameAr: "جاكرتا",        country: "ID" },
+  { name: "Karachi",   nameAr: "كراتشي",        country: "PK" },
+];
+
+const PRAYER_KEYS: Array<{ key: string; nameAr: string; apiKey: string }> = [
+  { key: "fajr",    nameAr: "الفجر",   apiKey: "Fajr" },
+  { key: "sunrise", nameAr: "الشروق",  apiKey: "Sunrise" },
+  { key: "dhuhr",   nameAr: "الظهر",   apiKey: "Dhuhr" },
+  { key: "asr",     nameAr: "العصر",   apiKey: "Asr" },
+  { key: "maghrib", nameAr: "المغرب",  apiKey: "Maghrib" },
+  { key: "isha",    nameAr: "العشاء",  apiKey: "Isha" },
+];
+
+function formatTime(raw: string): string {
+  const [h, m] = raw.replace(/\s*(IST|GMT|UTC|BST|EDT|PDT).*/i, "").trim().split(":");
+  return `${h.padStart(2, "0")}:${m.padStart(2, "0")}`;
+}
+
+function computeCountdown(timeStr: string): string {
+  const [h, m] = timeStr.split(":").map(Number);
+  const now = new Date();
+  const target = new Date();
+  target.setHours(h, m, 0, 0);
+  if (target <= now) target.setDate(target.getDate() + 1);
+  const diff = target.getTime() - now.getTime();
+  const hh = Math.floor(diff / 3_600_000);
+  const mm = Math.floor((diff % 3_600_000) / 60_000);
+  return `${hh}:${String(mm).padStart(2, "0")}`;
+}
+
+function markNext(prayers: PrayerTime[]): PrayerTime[] {
+  const now = new Date();
+  const cur = `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
+  let marked = false;
+  return prayers.map((p) => {
+    if (!marked && p.time > cur) {
+      marked = true;
+      return { ...p, isNext: true };
+    }
+    return { ...p, isNext: false };
+  });
 }
 
 export default function PrayerTimes() {
-  const { language } = useTranslation();
-  const [prayers, setPrayers] = useState<PrayerTime[]>([]);
-  const [city, setCity] = useState("Current Location");
-  const [loading, setLoading] = useState(true);
-  const [showSettings, setShowSettings] = useState(false);
-  const [nextPrayer, setNextPrayer] = useState<PrayerTime | null>(null);
-  const [countdown, setCountdown] = useState("");
+  const { t, language } = useTranslation();
+  const isRtl = language === "ar";
 
-  useEffect(() => {
-    fetchPrayerTimes();
+  const [prayers, setPrayers] = useState<PrayerTime[]>([]);
+  const [cityLabel, setCityLabel] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+  const [countdown, setCountdown] = useState("");
+  const [showCityPicker, setShowCityPicker] = useState(false);
+
+  const buildPrayers = useCallback((timings: Record<string, string>): PrayerTime[] => {
+    return PRAYER_KEYS.map(({ key, nameAr, apiKey }) => ({
+      nameKey: key,
+      nameAr,
+      time: formatTime(timings[apiKey] || "00:00"),
+    }));
   }, []);
 
-  const fetchPrayerTimes = async () => {
-    setLoading(true);
-    try {
-      // Get user location
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-          async (position) => {
-            const { latitude, longitude } = position.coords;
-            // Using Aladhan API (free, no authentication needed)
-            const response = await fetch(
-              `https://api.aladhan.com/v1/timings?latitude=${latitude}&longitude=${longitude}&method=2`
-            );
-            const data = await response.json();
-            formatPrayerTimes(data.data.timings);
-          },
-          () => {
-            // Fallback to a default city
-            fetchPrayerTimesByCity("Cairo");
-          }
+  const loadByCity = useCallback(
+    async (cityName: string, countryCode: string, label: string) => {
+      setLoading(true);
+      setError(false);
+      try {
+        const res = await fetch(
+          `https://api.aladhan.com/v1/timingsByCity?city=${encodeURIComponent(cityName)}&country=${countryCode}&method=2`
         );
-      } else {
-        fetchPrayerTimesByCity("Cairo");
+        const data = await res.json();
+        if (data.code === 200 && data.data?.timings) {
+          setPrayers(markNext(buildPrayers(data.data.timings)));
+          setCityLabel(label);
+        } else {
+          setError(true);
+        }
+      } catch {
+        setError(true);
+      } finally {
+        setLoading(false);
       }
-    } catch (error) {
-      console.error("Error fetching prayer times:", error);
-    }
-  };
+    },
+    [buildPrayers]
+  );
 
-  const fetchPrayerTimesByCity = async (cityName: string) => {
-    try {
-      const response = await fetch(
-        `https://api.aladhan.com/v1/timingsByCity?city=${cityName}&country=EG&method=2`
-      );
-      const data = await response.json();
-      setCity(cityName);
-      formatPrayerTimes(data.data.timings);
-    } catch (error) {
-      console.error("Error:", error);
-    }
-  };
+  const loadByGPS = useCallback(() => {
+    setLoading(true);
+    setError(false);
 
-  const formatPrayerTimes = (timings: any) => {
-    const prayersList: PrayerTime[] = [
-      { name: "Fajr", nameAr: "الفجر", time: timings.Fajr },
-      { name: "Sunrise", nameAr: "الشروق", time: timings.Sunrise },
-      { name: "Dhuhr", nameAr: "الظهر", time: timings.Dhuhr },
-      { name: "Asr", nameAr: "العصر", time: timings.Asr },
-      { name: "Sunset", nameAr: "الغروب", time: timings.Sunset },
-      { name: "Maghrib", nameAr: "المغرب", time: timings.Maghrib },
-      { name: "Isha", nameAr: "العشاء", time: timings.Isha },
-    ];
-
-    // Identify next prayer
-    const now = new Date();
-    const currentTime = now.getHours() + ":" + String(now.getMinutes()).padStart(2, "0");
-
-    for (let i = 0; i < prayersList.length; i++) {
-      if (prayersList[i].time > currentTime) {
-        prayersList[i].nextTime = true;
-        break;
-      }
+    if (!navigator.geolocation) {
+      loadByCity("Cairo", "EG", "Cairo");
+      return;
     }
 
-    setPrayers(prayersList);
-    setNextPrayer(prayersList.find((p) => p.nextTime) || null);
-    setLoading(false);
-  };
+    navigator.geolocation.getCurrentPosition(
+      async (pos) => {
+        try {
+          const { latitude, longitude } = pos.coords;
+          const res = await fetch(
+            `https://api.aladhan.com/v1/timings?latitude=${latitude}&longitude=${longitude}&method=2`
+          );
+          const data = await res.json();
+          if (data.code === 200 && data.data?.timings) {
+            setPrayers(markNext(buildPrayers(data.data.timings)));
+            const meta = data.data?.meta;
+            setCityLabel(meta?.timezone || isRtl ? "موقعك" : "Your location");
+          } else {
+            loadByCity("Cairo", "EG", "Cairo");
+          }
+        } catch {
+          loadByCity("Cairo", "EG", "Cairo");
+        }
+      },
+      () => loadByCity("Cairo", "EG", "Cairo"),
+      { enableHighAccuracy: false, timeout: 10000, maximumAge: 300_000 }
+    );
+  }, [buildPrayers, loadByCity, isRtl]);
 
-  // Calculate countdown to next prayer
+  useEffect(() => {
+    loadByGPS();
+  }, []);
+
+  const nextPrayer = prayers.find((p) => p.isNext) || null;
+
   useEffect(() => {
     if (!nextPrayer) return;
-
-    const updateCountdown = () => {
-      const [hours, minutes] = nextPrayer.time.split(":").map(Number);
-      const now = new Date();
-      const prayerTime = new Date();
-      prayerTime.setHours(hours, minutes, 0);
-
-      if (prayerTime < now) {
-        prayerTime.setDate(prayerTime.getDate() + 1);
-      }
-
-      const diff = prayerTime.getTime() - now.getTime();
-      const h = Math.floor(diff / 3600000);
-      const m = Math.floor((diff % 3600000) / 60000);
-      setCountdown(`${h}:${String(m).padStart(2, "0")}`);
-    };
-
-    updateCountdown();
-    const interval = setInterval(updateCountdown, 60000);
-    return () => clearInterval(interval);
+    setCountdown(computeCountdown(nextPrayer.time));
+    const id = setInterval(() => setCountdown(computeCountdown(nextPrayer.time)), 30_000);
+    return () => clearInterval(id);
   }, [nextPrayer]);
 
+  const getPrayerName = (p: PrayerTime) =>
+    language === "ar" ? p.nameAr : t(p.nameKey) || p.nameAr;
+
   return (
-    <PageLayout title={getTranslation("prayerTimes", language)} subtitle={getTranslation("location", language) || "Locations"}>
-      <div className="pb-20 md:pb-8">
-        {/* Location */}
-        <div className="flex items-center justify-between mb-8 mt-6">
-          <div className="flex items-center gap-2">
-            <MapPin className="w-5 h-5 text-yellow-400 dark:text-yellow-300" />
-            <span className="text-yellow-200 dark:text-yellow-100">{city}</span>
-          </div>
-          <div className="flex gap-2">
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => fetchPrayerTimes()}
-              className="p-2 rounded-lg hover:bg-yellow-600/10 dark:hover:bg-yellow-500/10 transition-colors"
-            >
-              <RefreshCw className="w-5 h-5 text-yellow-400 dark:text-yellow-300" />
-            </motion.button>
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => setShowSettings(!showSettings)}
-              className="p-2 rounded-lg hover:bg-yellow-600/10 dark:hover:bg-yellow-500/10 transition-colors"
-            >
-              <Settings className="w-5 h-5 text-yellow-400 dark:text-yellow-300" />
-            </motion.button>
-          </div>
+    <PageLayout
+      title={t("prayerTimes")}
+      subtitle={t("location") || "Location"}
+    >
+      <div className="pb-24 mt-4 space-y-5">
+
+        {/* ── Location bar ── */}
+        <div className="flex items-center justify-between">
+          <button
+            onClick={() => setShowCityPicker((v) => !v)}
+            className="flex items-center gap-2 px-3 py-2 rounded-xl transition-all"
+            style={{
+              background: "var(--gold-muted)",
+              border: "1px solid var(--gold-border)",
+              color: "var(--text-gold)",
+            }}
+          >
+            <MapPin className="w-4 h-4 flex-shrink-0" />
+            <span className="text-sm font-medium truncate max-w-[140px]">
+              {cityLabel || (isRtl ? "اختر مدينة" : "Select city")}
+            </span>
+            <ChevronDown
+              className="w-4 h-4 flex-shrink-0 transition-transform"
+              style={{ transform: showCityPicker ? "rotate(180deg)" : "none" }}
+            />
+          </button>
+          <button
+            onClick={loadByGPS}
+            className="p-2 rounded-xl transition-all"
+            style={{
+              background: "var(--gold-muted)",
+              border: "1px solid var(--gold-border)",
+              color: "var(--text-gold)",
+            }}
+          >
+            <RefreshCw className="w-4 h-4" />
+          </button>
         </div>
 
-        {loading ? (
-          <div className="text-center py-12">
-            <div className="inline-block animate-spin">
-              <div className="w-8 h-8 border-2 border-emerald-400 border-t-transparent rounded-full" />
-            </div>
+        {/* ── City picker ── */}
+        <AnimatePresence>
+          {showCityPicker && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              className="overflow-hidden"
+            >
+              <div
+                className="rounded-2xl p-3 grid grid-cols-2 gap-2"
+                style={{ background: "hsl(var(--card))", border: "1px solid var(--gold-border)" }}
+              >
+                {POPULAR_CITIES.map((city) => (
+                  <button
+                    key={city.name}
+                    onClick={() => {
+                      loadByCity(city.name, city.country, language === "ar" ? city.nameAr : city.name);
+                      setShowCityPicker(false);
+                    }}
+                    className="px-3 py-2 rounded-xl text-sm font-medium text-left transition-all"
+                    style={{
+                      background: "var(--bg-tertiary)",
+                      border: "1px solid var(--gold-border)",
+                      color: "var(--text-primary)",
+                    }}
+                  >
+                    {language === "ar" ? city.nameAr : city.name}
+                  </button>
+                ))}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* ── Loading ── */}
+        {loading && (
+          <div className="flex justify-center py-16">
+            <motion.div
+              animate={{ rotate: 360 }}
+              transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
+              className="w-12 h-12 rounded-full"
+              style={{ border: "4px solid var(--gold-muted)", borderTopColor: "var(--gold)" }}
+            />
           </div>
-        ) : (
+        )}
+
+        {/* ── Error ── */}
+        {error && !loading && (
+          <div
+            className="p-5 rounded-2xl text-center space-y-3"
+            style={{ background: "hsl(var(--card))", border: "1px solid rgba(239,68,68,0.3)" }}
+          >
+            <p className="font-semibold" style={{ color: "var(--text-primary)" }}>
+              {isRtl ? "تعذّر تحميل المواقيت" : "Could not load prayer times"}
+            </p>
+            <button
+              onClick={loadByGPS}
+              className="px-4 py-2 rounded-xl text-sm font-semibold"
+              style={{
+                background: "var(--gold-muted)",
+                border: "1px solid var(--gold-border)",
+                color: "var(--text-gold)",
+              }}
+            >
+              {isRtl ? "إعادة المحاولة" : "Retry"}
+            </button>
+          </div>
+        )}
+
+        {/* ── Content ── */}
+        {!loading && !error && prayers.length > 0 && (
           <>
-            {/* Next Prayer */}
+            {/* Next Prayer Card */}
             {nextPrayer && (
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="mb-8 p-6 rounded-2xl bg-gradient-to-r from-yellow-900/30 to-teal-900/20 border border-yellow-600/30 dark:border-yellow-500/30"
+                className="p-6 rounded-2xl"
+                style={{
+                  background: "linear-gradient(135deg, var(--gold-muted), var(--teal-muted))",
+                  border: "1px solid var(--gold-border)",
+                }}
               >
-                <p className="text-yellow-200/60 dark:text-yellow-100/60 text-sm mb-2">{getTranslation("nextPrayer", language)}</p>
-                <h2 className="text-3xl font-bold gold-text mb-2">{nextPrayer.nameAr}</h2>
-                <p className="text-yellow-200/80 dark:text-yellow-100/80 text-lg mb-4">{nextPrayer.time}</p>
+                <p className="text-sm mb-1" style={{ color: "var(--text-muted)" }}>
+                  {t("nextPrayer")}
+                </p>
+                <h2 className="text-4xl font-bold amiri mb-1" style={{ color: "var(--text-gold)" }}>
+                  {getPrayerName(nextPrayer)}
+                </h2>
+                <p className="text-xl font-semibold mb-4" style={{ color: "var(--text-primary)" }}>
+                  {nextPrayer.time}
+                </p>
                 <div className="flex items-center justify-between">
-                  <p className="text-yellow-200/60 dark:text-yellow-100/60">{getTranslation("until", language)}</p>
-                  <p className="text-2xl font-bold text-teal-300 dark:text-teal-200">{countdown}</p>
+                  <span className="text-sm" style={{ color: "var(--text-muted)" }}>
+                    {t("until") || (isRtl ? "يتبقى" : "Remaining")}
+                  </span>
+                  <span className="text-3xl font-black" style={{ color: "var(--teal-light, #5eead4)" }}>
+                    {countdown}
+                  </span>
                 </div>
               </motion.div>
             )}
 
-            {/* Prayer Times Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+            {/* Prayer List */}
+            <div className="space-y-2">
               {prayers.map((prayer, idx) => (
                 <motion.div
-                  key={prayer.name}
-                  initial={{ opacity: 0, y: 20 }}
+                  key={prayer.nameKey}
+                  initial={{ opacity: 0, y: 12 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: idx * 0.05 }}
-                  className={`p-4 rounded-xl transition-all ${
-                    prayer.nextTime
-                      ? "bg-gradient-to-br from-yellow-600/25 to-teal-500/10 border border-yellow-500/40"
-                      : "bg-yellow-900/15 dark:bg-yellow-900/10 border border-yellow-600/20 dark:border-yellow-500/20"
-                  }`}
+                  className="flex items-center justify-between p-4 rounded-xl"
+                  style={{
+                    background: prayer.isNext
+                      ? "linear-gradient(135deg, var(--gold-muted), var(--teal-muted))"
+                      : "hsl(var(--card))",
+                    border: prayer.isNext
+                      ? "2px solid var(--gold)"
+                      : "1px solid var(--gold-border)",
+                  }}
                 >
-                  <div className="flex justify-between items-center">
-                    <p className={prayer.nextTime ? "font-bold text-yellow-200 dark:text-yellow-100" : "text-yellow-200/70 dark:text-yellow-100/60"}>
-                      {prayer.nameAr}
-                    </p>
-                    <p className={`text-lg font-medium ${prayer.nextTime ? "text-teal-300 dark:text-teal-200" : "text-yellow-200 dark:text-yellow-100"}`}>
-                      {prayer.time}
-                    </p>
-                  </div>
+                  <p
+                    className="font-semibold text-base"
+                    style={{
+                      color: prayer.isNext ? "var(--text-gold)" : "var(--text-primary)",
+                    }}
+                  >
+                    {getPrayerName(prayer)}
+                  </p>
+                  <p
+                    className="text-lg font-bold tabular-nums"
+                    style={{
+                      color: prayer.isNext ? "var(--text-teal)" : "var(--text-secondary)",
+                    }}
+                  >
+                    {prayer.time}
+                  </p>
                 </motion.div>
               ))}
             </div>
 
-            {/* Hijri Date */}
-            <div className="text-center text-emerald-200/50 text-sm">
-              <p>{language === "ar" ? "استخدام طريقة الحساب: الإمام الشافعي" : "Using calculation method: Imam Shafi'i"}</p>
-            </div>
+            <p className="text-center text-xs py-2" style={{ color: "var(--text-muted)" }}>
+              {isRtl ? "طريقة الحساب: إمام الشافعي" : "Calculation method: Imam Shafi'i"}
+            </p>
           </>
         )}
       </div>

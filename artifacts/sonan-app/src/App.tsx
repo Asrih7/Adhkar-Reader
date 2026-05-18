@@ -62,20 +62,12 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
-          <div className="flex">
-            {/* Desktop sidebar - hidden on mobile */}
-            <div className="hidden md:block md:w-72 md:fixed md:inset-y-0 md:left-0">
-              <Navigation />
-            </div>
-            
-            {/* Main content */}
-            <div className="flex-1 md:ml-72">
-              {/* Mobile menu button */}
-              <div className="md:hidden">
-                <Navigation />
-              </div>
-              <Router />
-            </div>
+          {/* Navigation handles mobile (hamburger + bottom nav) and desktop (fixed sidebar) */}
+          <Navigation />
+
+          {/* Page content — offset for desktop sidebar */}
+          <div className="md:ml-64">
+            <Router />
           </div>
         </WouterRouter>
         <Toaster />
