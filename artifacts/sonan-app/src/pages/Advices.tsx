@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Bookmark } from "lucide-react";
+import { Bookmark, Copy, Share2, Check } from "lucide-react";
 import PageLayout from "@/components/PageLayout";
 import { useTranslation } from "@/hooks/useTranslation";
 import { useContentTranslation } from "@/hooks/useContentTranslation";
@@ -11,7 +11,7 @@ import type { Language } from "@/lib/translations";
 type TabKey = "advices" | "marriageAdvice";
 
 const TABS: { key: TabKey; labelAr: string; labelEn: string; icon: string }[] = [
-  { key: "advices",        labelAr: "نصائح الحياة",  labelEn: "Life Advice",    icon: "💡" },
+  { key: "advices",        labelAr: "نصائح الحياة",  labelEn: "Life Advice",     icon: "💡" },
   { key: "marriageAdvice", labelAr: "نصائح الزواج",  labelEn: "Marriage Advice", icon: "💍" },
 ];
 
@@ -20,6 +20,40 @@ function ProgressBar({ progress }: { progress: number }) {
     <div className="fixed top-0 left-0 right-0 z-50 h-1" style={{ background: "rgba(0,0,0,0.1)" }}>
       <motion.div className="h-full" style={{ background: "linear-gradient(90deg, var(--gold), var(--teal))" }}
         initial={{ width: "0%" }} animate={{ width: `${progress}%` }} transition={{ duration: 0.4 }} />
+    </div>
+  );
+}
+
+/* ── Inline actions ── */
+function CardActions({
+  arabic, translatedText, source, isFav, onToggleFavorite, language,
+}: {
+  arabic: string; translatedText?: string; source?: string;
+  isFav: boolean; onToggleFavorite: () => void; language: string;
+}) {
+  const [copied, setCopied] = useState(false);
+  const isRtl = language === "ar";
+  const shareText = arabic + (translatedText && translatedText !== arabic ? "\n\n" + translatedText : "") + (source ? "\n📚 " + source : "");
+
+  const handleCopy = async () => {
+    try { await navigator.clipboard.writeText(shareText); setCopied(true); setTimeout(() => setCopied(false), 2000); } catch { /**/ }
+  };
+  const handleShare = async () => {
+    if (navigator.share) { try { await navigator.share({ title: "نصائح نبوية", text: shareText }); } catch { /**/ } }
+    else handleCopy();
+  };
+
+  return (
+    <div className="flex items-center gap-0.5">
+      <motion.button whileTap={{ scale: 0.8 }} onClick={onToggleFavorite} className="p-2 rounded-xl" style={{ background: isFav ? "var(--gold-muted)" : "transparent" }} title={isRtl ? "حفظ" : "Save"}>
+        <Bookmark className="w-4 h-4" fill={isFav ? "var(--gold)" : "none"} style={{ color: isFav ? "var(--gold)" : "var(--text-muted)" }} />
+      </motion.button>
+      <motion.button whileTap={{ scale: 0.8 }} onClick={handleCopy} className="p-2 rounded-xl" style={{ background: copied ? "var(--teal-muted)" : "transparent" }} title={isRtl ? "نسخ" : "Copy"}>
+        {copied ? <Check className="w-4 h-4" style={{ color: "var(--text-teal)" }} /> : <Copy className="w-4 h-4" style={{ color: "var(--text-muted)" }} />}
+      </motion.button>
+      <motion.button whileTap={{ scale: 0.8 }} onClick={handleShare} className="p-2 rounded-xl" title={isRtl ? "مشاركة" : "Share"}>
+        <Share2 className="w-4 h-4" style={{ color: "var(--text-muted)" }} />
+      </motion.button>
     </div>
   );
 }
@@ -65,7 +99,7 @@ export default function Advices() {
           })}
         </div>
 
-        {/* Translating indicator */}
+        {/* Translating */}
         <AnimatePresence>
           {isTranslating && (
             <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }}
@@ -95,20 +129,16 @@ export default function Advices() {
                           border: `1px solid ${isOpen ? "var(--gold-border-strong)" : "var(--gold-border)"}`,
                           transition: "all 0.2s ease",
                         }}>
-                        {/* Header row */}
-                        <div className="flex items-center gap-2 pr-2">
+                        {/* Header: expand + actions */}
+                        <div className="flex items-center gap-2 pr-1">
                           <button onClick={() => toggle(item.id)} className="flex-1 flex items-center gap-3 p-4 pr-2 min-w-0">
                             <div className="flex-shrink-0 w-8 h-8 rounded-xl flex items-center justify-center text-xs font-bold"
-                              style={{
-                                background: isOpen ? "var(--gold-muted-strong)" : "var(--gold-muted)",
-                                border: "1px solid var(--gold-border)",
-                                color: "var(--text-gold)",
-                              }}>
+                              style={{ background: isOpen ? "var(--gold-muted-strong)" : "var(--gold-muted)", border: "1px solid var(--gold-border)", color: "var(--text-gold)" }}>
                               {index + 1}
                             </div>
-                            <p className="flex-1 text-sm font-semibold text-right leading-snug truncate"
+                            <p className="flex-1 text-sm font-semibold text-right leading-snug line-clamp-2"
                               style={{ direction: "rtl", color: "var(--text-primary)" }}>
-                              {item.arabic.length > 65 ? item.arabic.slice(0, 65) + "…" : item.arabic}
+                              {item.arabic.length > 70 ? item.arabic.slice(0, 70) + "…" : item.arabic}
                             </p>
                             <motion.div animate={{ rotate: isOpen ? 90 : 0 }} transition={{ duration: 0.2 }} className="flex-shrink-0">
                               <svg className="w-4 h-4 rotate-180" style={{ color: "var(--text-muted)" }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -116,10 +146,11 @@ export default function Advices() {
                               </svg>
                             </motion.div>
                           </button>
-                          <motion.button whileTap={{ scale: 0.85 }} onClick={() => toggleFavorite(item)}
-                            className="p-2 rounded-lg flex-shrink-0" style={{ background: fav ? "var(--gold-muted)" : "transparent" }}>
-                            <Bookmark className="w-4 h-4" fill={fav ? "var(--gold)" : "none"} style={{ color: fav ? "var(--gold)" : "var(--text-muted)" }} />
-                          </motion.button>
+                          <CardActions
+                            arabic={item.arabic} translatedText={item.translatedText}
+                            source={item.source} isFav={fav}
+                            onToggleFavorite={() => toggleFavorite(item)} language={language}
+                          />
                         </div>
 
                         {/* Expanded content */}
@@ -128,6 +159,7 @@ export default function Advices() {
                             <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }}
                               exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.25 }} style={{ overflow: "hidden" }}>
                               <div className="px-4 pb-5 space-y-3" style={{ borderTop: "1px solid var(--gold-border)" }}>
+                                {/* Full Arabic */}
                                 <div className="pt-4 p-4 rounded-xl" style={{ background: "var(--gold-muted)", border: "1px solid var(--gold-border)" }}>
                                   <p className="amiri text-right leading-loose" style={{ fontSize: "1.05rem", lineHeight: "2.1", direction: "rtl", color: "var(--text-primary)" }}>
                                     {item.arabic}
