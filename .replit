@@ -1,4 +1,4 @@
-modules = ["nodejs-24"]
+modules = ["nodejs-20", "web", "java-graalvm22.3"]
 
 [deployment]
 router = "application"
@@ -24,21 +24,25 @@ args = "Sonan App"
 name = "Sonan App"
 author = "agent"
 
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "cd artifacts/sonan-app && PORT=8081 BASE_PATH=/sonan-app/ npx vite --host 0.0.0.0 --port 8081"
-waitForPort = 8081
-
 [workflows.workflow.metadata]
 outputType = "webview"
 
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "pnpm install && pnpm --filter @workspace/sonan-app run dev"
+waitForPort = 5000
+
 [agent]
-stack = "PNPM_WORKSPACE"
+stack = "BEST_EFFORT_FALLBACK"
 expertMode = true
 
 [postMerge]
 path = "scripts/post-merge.sh"
 timeoutMs = 20000
+
+[[ports]]
+localPort = 5000
+externalPort = 80
 
 [[ports]]
 localPort = 5174
@@ -55,3 +59,6 @@ externalPort = 80
 [[ports]]
 localPort = 25656
 externalPort = 3000
+
+[nix]
+channel = "stable-25_05"
