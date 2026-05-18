@@ -843,3 +843,49 @@ input, textarea, select { transition: all 0.2s ease; }
     transition-duration: 0.01ms !important;
   }
 }
+
+/* ========================================
+   LIGHT MODE — EXTRA CONTRAST FIXES
+   ======================================== */
+
+/* Card backgrounds need a white tint in light mode for readability */
+html:not(.dark) .app-card {
+  background: #ffffff;
+  border-color: rgba(184, 134, 11, 0.18);
+}
+
+/* Bottom nav / sidebar: ensure text is readable on cream */
+html:not(.dark) nav.fixed {
+  background: rgba(250, 249, 245, 0.92) !important;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+/* Sidebar links inactive colour */
+html:not(.dark) a[style*="var(--text-secondary)"] {
+  color: #31394d !important;
+}
+
+/* hsl(var(--card)) in light mode → pure white */
+html:not(.dark) {
+  --card: 0 0% 100%;
+  --card-foreground: 220 30% 12%;
+}
+
+/* Ensure muted text is readable in light mode */
+html:not(.dark) {
+  --text-muted: #6b7280;
+}
+
+/* Gold gradient text should remain readable in light mode */
+html:not(.dark) .gold-text {
+  background: linear-gradient(135deg, #8b6914, #b8860b, #0d9488);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Glass in light mode — semi-opaque cream */
+html:not(.dark) .glass {
+  background: rgba(250, 249, 245, 0.85) !important;
+}

@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { MapPin, RefreshCw, Navigation2 } from "lucide-react";
+import { MapPin, RefreshCw, Navigation2, ChevronDown } from "lucide-react";
 import PageLayout from "@/components/PageLayout";
 import { useTranslation } from "@/hooks/useTranslation";
 
@@ -19,63 +19,66 @@ function calcQibla(lat: number, lon: number): number {
   return ((Math.atan2(y, x) * 180) / Math.PI + 360) % 360;
 }
 
-type Stage =
-  | "locating"
-  | "needs_permission"
-  | "active"
-  | "permission_denied"
-  | "no_sensor"
-  | "location_error";
+type Stage = "locating" | "needs_permission" | "active" | "permission_denied" | "no_sensor" | "location_error";
 
 const CARDINALS = [
-  { label: "ش", deg: 0 },
+  { label: "N", deg: 0 },
   { label: "NE", deg: 45 },
-  { label: "ق", deg: 90 },
+  { label: "E", deg: 90 },
   { label: "SE", deg: 135 },
-  { label: "ج", deg: 180 },
+  { label: "S", deg: 180 },
   { label: "SW", deg: 225 },
-  { label: "غ", deg: 270 },
+  { label: "W", deg: 270 },
   { label: "NW", deg: 315 },
 ];
 
+const CITY_COORDS: Array<{ name: string; nameAr: string; lat: number; lon: number }> = [
+  { name: "Mecca",        nameAr: "مكة المكرمة",   lat: 21.4225,  lon: 39.8262 },
+  { name: "Medina",       nameAr: "المدينة المنورة",lat: 24.4672,  lon: 39.6150 },
+  { name: "Cairo",        nameAr: "القاهرة",        lat: 30.0444,  lon: 31.2357 },
+  { name: "Istanbul",     nameAr: "إسطنبول",        lat: 41.0082,  lon: 28.9784 },
+  { name: "Dubai",        nameAr: "دبي",            lat: 25.2048,  lon: 55.2708 },
+  { name: "Riyadh",       nameAr: "الرياض",         lat: 24.6877,  lon: 46.7219 },
+  { name: "Casablanca",   nameAr: "الدار البيضاء",  lat: 33.5731,  lon: -7.5898 },
+  { name: "Kuala Lumpur", nameAr: "كوالالمبور",     lat: 3.1390,   lon: 101.6869 },
+  { name: "London",       nameAr: "لندن",           lat: 51.5074,  lon: -0.1278 },
+  { name: "Paris",        nameAr: "باريس",          lat: 48.8566,  lon: 2.3522 },
+  { name: "Jakarta",      nameAr: "جاكرتا",         lat: -6.2088,  lon: 106.8456 },
+  { name: "Karachi",      nameAr: "كراتشي",         lat: 24.8607,  lon: 67.0011 },
+  { name: "New York",     nameAr: "نيويورك",        lat: 40.7128,  lon: -74.0060 },
+  { name: "Toronto",      nameAr: "تورنتو",         lat: 43.6510,  lon: -79.3470 },
+  { name: "Sydney",       nameAr: "سيدني",          lat: -33.8688, lon: 151.2093 },
+];
+
 export default function Qibla() {
-  const { language } = useTranslation();
-  const isArabic = language === "ar";
+  const { t, language } = useTranslation();
+  const isRtl = language === "ar";
 
   const [stage, setStage] = useState<Stage>("locating");
-  const [location, setLocation] = useState<{
-    lat: number;
-    lon: number;
-    accuracy: number;
-  } | null>(null);
+  const [locationInfo, setLocationInfo] = useState<{ lat: number; lon: number; accuracy: number } | null>(null);
   const [qibla, setQibla] = useState(0);
   const [heading, setHeading] = useState<number | null>(null);
+  const [showCityPicker, setShowCityPicker] = useState(false);
+  const [selectedCity, setSelectedCity] = useState<string>("");
 
   const listenerRef = useRef<((e: DeviceOrientationEvent) => void) | null>(null);
 
-  // iOS 13+ requires DeviceOrientationEvent.requestPermission() from a user gesture
   const isIOS =
     typeof window !== "undefined" &&
     typeof (DeviceOrientationEvent as unknown as { requestPermission?: () => Promise<string> })
       .requestPermission === "function";
 
   const handleOrientation = useCallback((e: DeviceOrientationEvent) => {
-    // iOS: webkitCompassHeading = clockwise from magnetic north
-    const webkitHeading = (e as unknown as { webkitCompassHeading?: number })
-      .webkitCompassHeading;
-
+    const webkitHeading = (e as unknown as { webkitCompassHeading?: number }).webkitCompassHeading;
     if (webkitHeading !== null && webkitHeading !== undefined) {
       setHeading(webkitHeading);
     } else if (e.alpha !== null) {
-      // Android: alpha is CCW from north → convert to CW compass bearing
-      setHeading((360 - e.alpha) % 360);
+      setHeading((360 - e.alpha!) % 360);
     }
   }, []);
 
   const startListener = useCallback(() => {
-    if (listenerRef.current) {
-      window.removeEventListener("deviceorientation", listenerRef.current, true);
-    }
+    if (listenerRef.current) window.removeEventListener("deviceorientation", listenerRef.current, true);
     listenerRef.current = handleOrientation;
     window.addEventListener("deviceorientation", listenerRef.current, true);
     setStage("active");
@@ -84,6 +87,7 @@ export default function Qibla() {
   const getLocation = useCallback(() => {
     setStage("locating");
     setHeading(null);
+    setShowCityPicker(false);
 
     if (!navigator.geolocation) {
       setStage("location_error");
@@ -92,19 +96,13 @@ export default function Qibla() {
 
     navigator.geolocation.getCurrentPosition(
       (pos) => {
-        const loc = {
-          lat: pos.coords.latitude,
-          lon: pos.coords.longitude,
-          accuracy: pos.coords.accuracy,
-        };
-        setLocation(loc);
+        const loc = { lat: pos.coords.latitude, lon: pos.coords.longitude, accuracy: pos.coords.accuracy };
+        setLocationInfo(loc);
         setQibla(calcQibla(loc.lat, loc.lon));
-
+        setSelectedCity("");
         if (!("DeviceOrientationEvent" in window)) {
           setStage("no_sensor");
-          return;
-        }
-        if (isIOS) {
+        } else if (isIOS) {
           setStage("needs_permission");
         } else {
           startListener();
@@ -115,61 +113,114 @@ export default function Qibla() {
     );
   }, [isIOS, startListener]);
 
+  const selectCity = (city: (typeof CITY_COORDS)[0]) => {
+    const loc = { lat: city.lat, lon: city.lon, accuracy: 0 };
+    setLocationInfo(loc);
+    setQibla(calcQibla(city.lat, city.lon));
+    setSelectedCity(language === "ar" ? city.nameAr : city.name);
+    setShowCityPicker(false);
+    if (!("DeviceOrientationEvent" in window)) {
+      setStage("no_sensor");
+    } else if (isIOS) {
+      setStage("needs_permission");
+    } else {
+      startListener();
+    }
+  };
+
   useEffect(() => {
     getLocation();
     return () => {
-      if (listenerRef.current) {
-        window.removeEventListener("deviceorientation", listenerRef.current, true);
-      }
+      if (listenerRef.current) window.removeEventListener("deviceorientation", listenerRef.current, true);
     };
   }, []);
 
   const requestIOSPermission = async () => {
     try {
-      const permFn = (
-        DeviceOrientationEvent as unknown as {
-          requestPermission: () => Promise<string>;
-        }
-      ).requestPermission;
+      const permFn = (DeviceOrientationEvent as unknown as { requestPermission: () => Promise<string> }).requestPermission;
       const result = await permFn();
-      if (result === "granted") {
-        startListener();
-      } else {
-        setStage("permission_denied");
-      }
+      if (result === "granted") startListener();
+      else setStage("permission_denied");
     } catch {
       setStage("permission_denied");
     }
   };
 
-  // Needle angle = direction user must rotate to face Mecca
-  const needleAngle = heading !== null ? ((qibla - heading + 360) % 360) : 0;
-  // Compass rose rotates opposite to heading
+  const needleAngle = heading !== null ? ((qibla - heading + 360) % 360) : qibla;
   const roseAngle = heading !== null ? -heading : 0;
-
-  const compassSize = "min(80vw, 300px)";
+  const compassSize = "min(72vw, 280px)";
 
   return (
     <PageLayout
-      title={isArabic ? "القبلة" : "Qibla"}
-      subtitle={isArabic ? "اتجاه الكعبة المشرفة" : "Direction of the Holy Kaaba"}
+      title={t("qibla") || "Qibla"}
+      subtitle={isRtl ? "اتجاه الكعبة المشرفة" : "Direction of the Holy Kaaba"}
       backHref="/"
     >
-      <div className="pb-28 mt-4 flex flex-col items-center gap-6">
+      <div className="pb-28 mt-4 flex flex-col items-center gap-5">
 
-        {/* ── Loading ── */}
-        {stage === "locating" && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="flex flex-col items-center gap-4 py-16"
+        {/* ── City picker button (always visible) ── */}
+        <div className="w-full">
+          <button
+            onClick={() => setShowCityPicker((v) => !v)}
+            className="w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm font-medium transition-all"
+            style={{
+              background: "var(--gold-muted)",
+              border: "1px solid var(--gold-border)",
+              color: "var(--text-gold)",
+            }}
           >
+            <span>
+              {selectedCity
+                ? (isRtl ? `المدينة: ${selectedCity}` : `City: ${selectedCity}`)
+                : (isRtl ? "اختر مدينة (اختياري)" : "Select a city (optional)")}
+            </span>
+            <ChevronDown
+              className="w-4 h-4 transition-transform"
+              style={{ transform: showCityPicker ? "rotate(180deg)" : "none" }}
+            />
+          </button>
+
+          <AnimatePresence>
+            {showCityPicker && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                exit={{ opacity: 0, height: 0 }}
+                className="overflow-hidden mt-2"
+              >
+                <div
+                  className="rounded-xl p-3 grid grid-cols-2 gap-2"
+                  style={{ background: "hsl(var(--card))", border: "1px solid var(--gold-border)" }}
+                >
+                  {CITY_COORDS.map((city) => (
+                    <button
+                      key={city.name}
+                      onClick={() => selectCity(city)}
+                      className="px-3 py-2 rounded-lg text-sm text-left transition-all"
+                      style={{
+                        background: "var(--bg-tertiary)",
+                        border: "1px solid var(--gold-border)",
+                        color: "var(--text-primary)",
+                      }}
+                    >
+                      {language === "ar" ? city.nameAr : city.name}
+                    </button>
+                  ))}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+
+        {/* ── Locating ── */}
+        {stage === "locating" && (
+          <motion.div className="flex flex-col items-center gap-4 py-12">
             <div
-              className="w-16 h-16 rounded-full border-4 border-t-transparent animate-spin"
+              className="w-14 h-14 rounded-full border-4 animate-spin"
               style={{ borderColor: "var(--gold)", borderTopColor: "transparent" }}
             />
             <p className="text-sm font-medium" style={{ color: "var(--text-muted)" }}>
-              {isArabic ? "جاري تحديد الموقع…" : "Locating you…"}
+              {isRtl ? "جاري تحديد الموقع…" : "Locating you…"}
             </p>
           </motion.div>
         )}
@@ -184,12 +235,12 @@ export default function Qibla() {
           >
             <div className="text-4xl">📍</div>
             <p className="font-semibold" style={{ color: "var(--text-primary)" }}>
-              {isArabic ? "تعذّر تحديد الموقع" : "Location unavailable"}
+              {isRtl ? "تعذّر تحديد الموقع" : "Location unavailable"}
             </p>
             <p className="text-sm" style={{ color: "var(--text-muted)" }}>
-              {isArabic
-                ? "تأكد من تفعيل خدمة الموقع وأن المتصفح لديه الإذن"
-                : "Enable location services and allow browser access"}
+              {isRtl
+                ? "فعّل خدمة الموقع أو اختر مدينتك من القائمة أعلاه"
+                : "Enable location or select your city from the list above"}
             </p>
             <button
               onClick={getLocation}
@@ -197,12 +248,12 @@ export default function Qibla() {
               style={{ background: "var(--gold-muted)", border: "1px solid var(--gold-border)", color: "var(--text-gold)" }}
             >
               <RefreshCw className="w-4 h-4" />
-              {isArabic ? "إعادة المحاولة" : "Try Again"}
+              {isRtl ? "إعادة المحاولة" : "Try Again"}
             </button>
           </motion.div>
         )}
 
-        {/* ── iOS Permission Request ── */}
+        {/* ── iOS Permission ── */}
         {stage === "needs_permission" && (
           <motion.div
             initial={{ opacity: 0, y: 14 }}
@@ -212,24 +263,21 @@ export default function Qibla() {
           >
             <div className="text-5xl">🧭</div>
             <p className="font-bold text-lg" style={{ color: "var(--text-primary)" }}>
-              {isArabic ? "إذن البوصلة" : "Compass Access"}
+              {isRtl ? "إذن البوصلة" : "Compass Access"}
             </p>
             <p className="text-sm" style={{ color: "var(--text-muted)" }}>
-              {isArabic
-                ? "يحتاج التطبيق للوصول إلى مستشعر الاتجاه لتحديد القبلة بدقة"
-                : "The app needs access to your device orientation sensor to find Qibla"}
+              {isRtl
+                ? "يحتاج التطبيق إذن البوصلة لتحديد القبلة بدقة"
+                : "The app needs compass access to accurately find Qibla"}
             </p>
             <motion.button
               whileTap={{ scale: 0.95 }}
               onClick={requestIOSPermission}
               className="w-full py-4 rounded-2xl font-bold text-white flex items-center justify-center gap-3 text-base"
-              style={{
-                background: "linear-gradient(135deg, var(--gold), var(--teal))",
-                boxShadow: "0 4px 20px rgba(212,175,55,0.3)",
-              }}
+              style={{ background: "linear-gradient(135deg, var(--gold), var(--teal))", boxShadow: "0 4px 20px rgba(212,175,55,0.3)" }}
             >
               <Navigation2 className="w-5 h-5" />
-              {isArabic ? "تشغيل البوصلة" : "Enable Compass"}
+              {isRtl ? "تشغيل البوصلة" : "Enable Compass"}
             </motion.button>
           </motion.div>
         )}
@@ -244,52 +292,25 @@ export default function Qibla() {
           >
             <div className="text-4xl">🔒</div>
             <p className="font-semibold" style={{ color: "var(--text-primary)" }}>
-              {isArabic ? "تم رفض الإذن" : "Permission Denied"}
+              {isRtl ? "تم رفض الإذن" : "Permission Denied"}
             </p>
             <p className="text-sm" style={{ color: "var(--text-muted)" }}>
-              {isArabic
-                ? "اذهب إلى إعدادات الهاتف > الخصوصية > حركة وتوجيه، وفعّل الوصول"
-                : "Go to Settings > Privacy > Motion & Orientation Access and enable it"}
-            </p>
-          </motion.div>
-        )}
-
-        {/* ── No Sensor ── */}
-        {stage === "no_sensor" && location && (
-          <motion.div
-            initial={{ opacity: 0, y: 14 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="w-full text-center p-6 rounded-2xl space-y-3"
-            style={{ background: "hsl(var(--card))", border: "1px solid var(--gold-border)" }}
-          >
-            <div className="text-4xl">🕌</div>
-            <p className="font-bold text-lg" style={{ color: "var(--text-primary)" }}>
-              {isArabic ? "اتجاه القبلة" : "Qibla Direction"}
-            </p>
-            <p className="text-4xl font-black" style={{ color: "var(--text-gold)" }}>
-              {Math.round(qibla)}°
-            </p>
-            <p className="text-sm" style={{ color: "var(--text-muted)" }}>
-              {isArabic
-                ? "جهاز البوصلة غير متوفر. استخدم بوصلة خارجية بالدرجة أعلاه"
-                : "Compass sensor not available. Use an external compass with the degree above"}
+              {isRtl
+                ? "اذهب إلى إعدادات الهاتف وفعّل الوصول للحركة والاتجاه"
+                : "Go to Settings > Privacy > Motion & Orientation and enable access"}
             </p>
           </motion.div>
         )}
 
         {/* ── Active Compass ── */}
-        {(stage === "active") && location && (
+        {(stage === "active" || stage === "no_sensor") && locationInfo && (
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="flex flex-col items-center gap-6 w-full"
+            className="flex flex-col items-center gap-5 w-full"
           >
-            {/* Compass circle */}
-            <div
-              className="relative flex items-center justify-center"
-              style={{ width: compassSize, height: compassSize }}
-            >
-              {/* Outer glow ring */}
+            {/* Compass */}
+            <div className="relative flex items-center justify-center" style={{ width: compassSize, height: compassSize }}>
               <div
                 className="absolute inset-0 rounded-full"
                 style={{
@@ -300,16 +321,15 @@ export default function Qibla() {
                 }}
               />
 
-              {/* Rotating compass rose */}
+              {/* Compass rose */}
               <motion.div
                 className="absolute inset-0"
                 animate={{ rotate: roseAngle }}
                 transition={{ type: "spring", stiffness: 60, damping: 22 }}
               >
-                {/* Cardinal labels */}
                 {CARDINALS.map(({ label, deg }) => {
                   const rad = ((deg - 90) * Math.PI) / 180;
-                  const r = 42; // percent from center
+                  const r = 42;
                   const x = 50 + r * Math.cos(rad);
                   const y = 50 + r * Math.sin(rad);
                   const isMain = deg % 90 === 0;
@@ -321,7 +341,7 @@ export default function Qibla() {
                         left: `${x}%`,
                         top: `${y}%`,
                         transform: "translate(-50%, -50%)",
-                        fontSize: isMain ? "clamp(10px, 3vw, 14px)" : "clamp(8px, 2vw, 10px)",
+                        fontSize: isMain ? "clamp(10px, 3vw, 13px)" : "clamp(8px, 2vw, 10px)",
                         color: deg === 0 ? "var(--text-gold)" : "var(--text-muted)",
                       }}
                     >
@@ -329,8 +349,6 @@ export default function Qibla() {
                     </span>
                   );
                 })}
-
-                {/* Tick marks */}
                 {[...Array(72)].map((_, i) => {
                   const isMajor = i % 9 === 0;
                   const rad = ((i * 5 - 90) * Math.PI) / 180;
@@ -354,7 +372,7 @@ export default function Qibla() {
                 })}
               </motion.div>
 
-              {/* Mecca needle — rotates by relativeQibla angle */}
+              {/* Needle */}
               <motion.div
                 className="absolute inset-0 flex justify-center pointer-events-none"
                 style={{ paddingBottom: "10%" }}
@@ -362,74 +380,77 @@ export default function Qibla() {
                 transition={{ type: "spring", stiffness: 60, damping: 20 }}
               >
                 <div className="flex flex-col items-center" style={{ height: "50%" }}>
-                  {/* Arrow head */}
-                  <div
-                    style={{
-                      width: 0,
-                      height: 0,
-                      borderLeft: "7px solid transparent",
-                      borderRight: "7px solid transparent",
-                      borderBottom: "14px solid var(--gold)",
-                    }}
-                  />
-                  {/* Arrow shaft */}
-                  <div
-                    className="flex-1 w-2 rounded-b-full"
-                    style={{ background: "linear-gradient(to bottom, var(--gold), rgba(212,175,55,0.4))" }}
-                  />
+                  <div style={{ width: 0, height: 0, borderLeft: "7px solid transparent", borderRight: "7px solid transparent", borderBottom: "14px solid var(--gold)" }} />
+                  <div className="flex-1 w-2 rounded-b-full" style={{ background: "linear-gradient(to bottom, var(--gold), rgba(212,175,55,0.4))" }} />
                 </div>
               </motion.div>
 
-              {/* Center circle with Kaaba */}
+              {/* Center */}
               <div
                 className="absolute rounded-full flex items-center justify-center z-10"
                 style={{
-                  width: "30%",
-                  height: "30%",
+                  width: "28%",
+                  height: "28%",
                   background: "hsl(var(--card))",
                   border: "2px solid var(--gold-border)",
                   boxShadow: "0 4px 20px rgba(0,0,0,0.3)",
-                  fontSize: "clamp(16px, 6vw, 28px)",
+                  fontSize: "clamp(14px, 5vw, 24px)",
                 }}
               >
                 🕋
               </div>
             </div>
 
-            {/* Degree display */}
+            {/* Degree */}
             <div className="text-center">
               <p className="text-5xl font-black" style={{ color: "var(--text-gold)" }}>
                 {Math.round(qibla)}°
               </p>
               <p className="text-sm mt-1" style={{ color: "var(--text-muted)" }}>
-                {isArabic ? "من الشمال" : "from North"}
+                {isRtl ? "من الشمال" : "from North"}
               </p>
             </div>
 
-            {/* Instruction */}
-            <div
-              className="w-full p-4 rounded-2xl flex items-center gap-3"
-              style={{ background: "var(--teal-muted)", border: "1px solid var(--teal-border)" }}
-            >
-              <span className="text-2xl flex-shrink-0">👆</span>
-              <p className="text-sm" style={{ color: "var(--text-teal)" }}>
-                {isArabic
-                  ? "وجّه هاتفك حتى يشير السهم الذهبي إلى الأعلى — عندها تكون مواجهاً للقبلة"
-                  : "Rotate your phone until the gold arrow points up — then you're facing Qibla"}
-              </p>
-            </div>
+            {stage === "active" && (
+              <div
+                className="w-full p-4 rounded-2xl flex items-center gap-3"
+                style={{ background: "var(--teal-muted)", border: "1px solid var(--teal-border)" }}
+              >
+                <span className="text-2xl flex-shrink-0">👆</span>
+                <p className="text-sm" style={{ color: "var(--text-teal)" }}>
+                  {isRtl
+                    ? "وجّه هاتفك حتى يشير السهم الذهبي إلى الأعلى"
+                    : "Rotate your phone until the gold arrow points up — then you're facing Qibla"}
+                </p>
+              </div>
+            )}
 
-            {/* Heading indicator */}
+            {stage === "no_sensor" && (
+              <div
+                className="w-full p-4 rounded-2xl text-center space-y-2"
+                style={{ background: "var(--gold-muted)", border: "1px solid var(--gold-border)" }}
+              >
+                <p className="text-sm font-semibold" style={{ color: "var(--text-gold)" }}>
+                  {isRtl ? "بوصلة الجهاز غير متوفرة" : "Device compass unavailable"}
+                </p>
+                <p className="text-xs" style={{ color: "var(--text-muted)" }}>
+                  {isRtl
+                    ? "استخدم بوصلة خارجية مع الدرجة المعروضة أعلاه"
+                    : "Use an external compass with the degree shown above"}
+                </p>
+              </div>
+            )}
+
             {heading !== null && (
               <p className="text-xs" style={{ color: "var(--text-muted)" }}>
-                {isArabic ? "اتجاهك الحالي:" : "Your heading:"} {Math.round(heading)}°
+                {isRtl ? `اتجاهك: ${Math.round(heading)}°` : `Your heading: ${Math.round(heading)}°`}
               </p>
             )}
           </motion.div>
         )}
 
-        {/* ── Location Info (when active or no_sensor) ── */}
-        {location && (stage === "active" || stage === "no_sensor") && (
+        {/* Location info */}
+        {locationInfo && (stage === "active" || stage === "no_sensor") && (
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
@@ -439,14 +460,16 @@ export default function Qibla() {
             <MapPin className="w-5 h-5 flex-shrink-0 mt-0.5" style={{ color: "var(--text-teal)" }} />
             <div className="flex-1 min-w-0">
               <p className="text-xs font-semibold mb-0.5" style={{ color: "var(--text-muted)" }}>
-                {isArabic ? "موقعك" : "Your location"}
+                {selectedCity || (isRtl ? "موقعك" : "Your location")}
               </p>
               <p className="text-sm font-medium" style={{ color: "var(--text-primary)" }}>
-                {location.lat.toFixed(4)}°, {location.lon.toFixed(4)}°
+                {locationInfo.lat.toFixed(4)}°, {locationInfo.lon.toFixed(4)}°
               </p>
-              <p className="text-xs mt-0.5" style={{ color: "var(--text-muted)" }}>
-                ±{Math.round(location.accuracy)} {isArabic ? "متر" : "m"}
-              </p>
+              {locationInfo.accuracy > 0 && (
+                <p className="text-xs mt-0.5" style={{ color: "var(--text-muted)" }}>
+                  ±{Math.round(locationInfo.accuracy)} {isRtl ? "متر" : "m"}
+                </p>
+              )}
             </div>
             <button
               onClick={getLocation}
