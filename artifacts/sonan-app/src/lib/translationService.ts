@@ -1,218 +1,159 @@
 /**
  * Translation Service
- * Uses LibreTranslate API with MyMemory fallback
- * Caches results in localStorage to minimize API calls
+ * Primary: MyMemory API (free, no key, Arabic source)
+ * Fallback: Lingva Translate (open-source Google Translate proxy)
+ * Cache: localStorage  key = trans_{lang}_{hash32(text)}
  */
 
-type Language = 'ar' | 'en' | 'fr' | 'es' | 'tr' | 'id';
+import type { Language } from '@/lib/translations';
 
-const CACHE_PREFIX = 'tr_cache_';
-const LIBRETRANSLATE_URL = 'https://libretranslate.com/translate';
-const MYMEMORY_URL = 'https://api.mymemory.translated.net/get';
-
-// Language code mapping
+/* ── Language code map ─────────────────────────────────── */
 const LANG_MAP: Record<Language, string> = {
-  ar: 'ar',
-  en: 'en',
-  fr: 'fr',
-  es: 'es',
-  tr: 'tr',
-  id: 'id',
+  ar: 'ar', en: 'en', fr: 'fr', es: 'es', tr: 'tr', id: 'id',
 };
 
-/**
- * Generate cache key for a text-language pair
- */
-function getCacheKey(text: string, targetLang: Language): string {
-  const hash = btoa(text).slice(0, 16);
-  return `${CACHE_PREFIX}${targetLang}_${hash}`;
-}
-
-/**
- * Get from cache
- */
-function getFromCache(text: string, targetLang: Language): string | null {
-  if (typeof localStorage === 'undefined') return null;
-  const key = getCacheKey(text, targetLang);
-  try {
-    return localStorage.getItem(key);
-  } catch {
-    return null;
+/* ── Simple 32-bit hash (djb2) ─────────────────────────── */
+function hash32(str: string): string {
+  let h = 5381;
+  for (let i = 0; i < str.length; i++) {
+    h = Math.imul(h, 31) + str.charCodeAt(i) | 0;
   }
+  return (h >>> 0).toString(36);
 }
 
-/**
- * Save to cache
- */
-function saveToCache(text: string, targetLang: Language, translation: string): void {
-  if (typeof localStorage === 'undefined') return;
-  const key = getCacheKey(text, targetLang);
-  try {
-    localStorage.setItem(key, translation);
-  } catch {
-    // Quota exceeded or other storage error
-  }
+/* ── Cache helpers ─────────────────────────────────────── */
+function cacheKey(text: string, lang: Language): string {
+  return `trans_${lang}_${hash32(text)}`;
 }
 
-/**
- * Translate via LibreTranslate API
- */
-async function translateViaLibreTranslate(
-  text: string,
-  targetLang: Language
-): Promise<string | null> {
-  try {
-    const response = await fetch(LIBRETRANSLATE_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        q: text,
-        source: 'ar',
-        target: LANG_MAP[targetLang],
-      }),
-    });
-
-    if (!response.ok) return null;
-
-    const data = (await response.json()) as { translatedText?: string };
-    return data.translatedText || null;
-  } catch {
-    return null;
-  }
+function fromCache(text: string, lang: Language): string | null {
+  try { return localStorage.getItem(cacheKey(text, lang)); } catch { return null; }
 }
 
-/**
- * Translate via MyMemory API (fallback)
- */
-async function translateViaMyMemory(
-  text: string,
-  targetLang: Language
-): Promise<string | null> {
+function toCache(text: string, lang: Language, translated: string): void {
+  try { localStorage.setItem(cacheKey(text, lang), translated); } catch { /* quota */ }
+}
+
+/* ── In-flight deduplication ───────────────────────────── */
+const inFlight = new Map<string, Promise<string | null>>();
+
+/* ── MyMemory API ──────────────────────────────────────── */
+async function tryMyMemory(text: string, lang: Language): Promise<string | null> {
+  // MyMemory limit: 500 chars per request
+  const q = text.length > 490 ? text.slice(0, 490) : text;
   try {
-    const params = new URLSearchParams({
-      q: text,
-      langpair: `ar|${LANG_MAP[targetLang]}`,
-    });
-
-    const response = await fetch(`${MYMEMORY_URL}?${params}`);
-    if (!response.ok) return null;
-
-    const data = (await response.json()) as {
+    const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(q)}&langpair=ar|${LANG_MAP[lang]}`;
+    const r = await fetch(url, { signal: AbortSignal.timeout(10_000) });
+    if (!r.ok) return null;
+    const data = await r.json() as {
+      responseStatus: number;
       responseData?: { translatedText?: string };
     };
-    return data.responseData?.translatedText || null;
-  } catch {
-    return null;
+    if (data.responseStatus !== 200) return null;
+    const t = data.responseData?.translatedText?.trim();
+    // MyMemory sometimes echoes the input when it can't translate
+    if (!t || t === q) return null;
+    // If original was truncated, append the rest untranslated (rare edge case)
+    return text.length > 490 ? t + ' ' + text.slice(490) : t;
+  } catch { return null; }
+}
+
+/* ── Lingva Translate (open Google Translate proxy) ──── */
+const LINGVA_HOSTS = [
+  'https://lingva.ml',
+  'https://translate.plausibility.cloud',
+  'https://lingva.tiekoetter.com',
+];
+
+async function tryLingva(text: string, lang: Language): Promise<string | null> {
+  const q = text.length > 1000 ? text.slice(0, 1000) : text;
+  for (const host of LINGVA_HOSTS) {
+    try {
+      const url = `${host}/api/v1/ar/${LANG_MAP[lang]}/${encodeURIComponent(q)}`;
+      const r = await fetch(url, { signal: AbortSignal.timeout(8_000) });
+      if (!r.ok) continue;
+      const data = await r.json() as { translation?: string };
+      const t = data.translation?.trim();
+      if (t && t !== q) return t;
+    } catch { continue; }
+  }
+  return null;
+}
+
+/* ── Core single-text translate ────────────────────────── */
+async function doTranslate(text: string, lang: Language): Promise<string | null> {
+  // Try MyMemory first, then Lingva
+  const result = await tryMyMemory(text, lang) ?? await tryLingva(text, lang);
+  return result;
+}
+
+/* ── Public: translate one text ────────────────────────── */
+export async function translateText(text: string, lang: Language): Promise<string> {
+  if (!text || lang === 'ar') return text;
+
+  const cached = fromCache(text, lang);
+  if (cached) return cached;
+
+  const key = `${lang}|${hash32(text)}`;
+  const existing = inFlight.get(key);
+  if (existing) return (await existing) ?? text;
+
+  const promise = doTranslate(text, lang);
+  inFlight.set(key, promise);
+  try {
+    const result = await promise;
+    if (result) toCache(text, lang, result);
+    return result ?? text;
+  } finally {
+    inFlight.delete(key);
   }
 }
 
-/**
- * Translate a single text string
- * Tries LibreTranslate first, falls back to MyMemory
- */
-export async function translateText(
-  text: string,
-  targetLang: Language
-): Promise<string> {
-  // Arabic needs no translation
-  if (!text || targetLang === 'ar') {
-    return text;
-  }
-
-  // Check cache first
-  const cached = getFromCache(text, targetLang);
-  if (cached) {
-    return cached;
-  }
-
-  // Try LibreTranslate
-  let result = await translateViaLibreTranslate(text, targetLang);
-  if (result) {
-    saveToCache(text, targetLang, result);
-    return result;
-  }
-
-  // Fallback to MyMemory
-  result = await translateViaMyMemory(text, targetLang);
-  if (result) {
-    saveToCache(text, targetLang, result);
-    return result;
-  }
-
-  // Both failed, return original
-  return text;
-}
-
-/**
- * Translate multiple texts with concurrency limit
- */
+/* ── Public: translate array of texts ─────────────────── */
 export async function translateBatch(
   texts: string[],
-  targetLang: Language,
-  concurrency: number = 3
+  lang: Language,
+  concurrency = 5,
 ): Promise<string[]> {
-  // Arabic needs no translation
-  if (targetLang === 'ar') {
-    return texts;
-  }
+  if (lang === 'ar') return texts;
 
-  const results: (string | null)[] = new Array(texts.length).fill(null);
+  const results: string[] = new Array(texts.length).fill('');
+  const todo: Array<{ i: number; text: string }> = [];
 
-  // Check cache for all
-  const toTranslate: Array<{ index: number; text: string }> = [];
   for (let i = 0; i < texts.length; i++) {
-    const cached = getFromCache(texts[i], targetLang);
-    if (cached) {
-      results[i] = cached;
-    } else {
-      toTranslate.push({ index: i, text: texts[i] });
-    }
+    const cached = fromCache(texts[i], lang);
+    if (cached) results[i] = cached;
+    else if (texts[i]) todo.push({ i, text: texts[i] });
+    else results[i] = texts[i];
   }
 
-  // Translate with concurrency limit
-  for (let i = 0; i < toTranslate.length; i += concurrency) {
-    const batch = toTranslate.slice(i, i + concurrency);
-    const promises = batch.map(async ({ index, text }) => {
-      const result = await translateText(text, targetLang);
-      results[index] = result;
-    });
-    await Promise.all(promises);
+  // Process in parallel batches
+  for (let i = 0; i < todo.length; i += concurrency) {
+    const chunk = todo.slice(i, i + concurrency);
+    await Promise.all(
+      chunk.map(async ({ i: idx, text }) => {
+        results[idx] = await translateText(text, lang);
+      })
+    );
   }
 
-  return results.map((r) => r || '');
+  return results;
 }
 
-/**
- * Clear all translation cache
- */
+/* ── Cache management ──────────────────────────────────── */
 export function clearCache(): void {
-  if (typeof localStorage === 'undefined') return;
   try {
-    const keys = Object.keys(localStorage);
-    for (const key of keys) {
-      if (key.startsWith(CACHE_PREFIX)) {
-        localStorage.removeItem(key);
-      }
+    for (const k of Object.keys(localStorage)) {
+      if (k.startsWith('trans_')) localStorage.removeItem(k);
     }
-  } catch {
-    // Storage error
-  }
+  } catch { /* ignore */ }
 }
 
-/**
- * Clear cache for specific language
- */
-export function clearCacheForLanguage(targetLang: Language): void {
-  if (typeof localStorage === 'undefined') return;
+export function clearCacheForLanguage(lang: Language): void {
   try {
-    const prefix = `${CACHE_PREFIX}${targetLang}_`;
-    const keys = Object.keys(localStorage);
-    for (const key of keys) {
-      if (key.startsWith(prefix)) {
-        localStorage.removeItem(key);
-      }
+    const prefix = `trans_${lang}_`;
+    for (const k of Object.keys(localStorage)) {
+      if (k.startsWith(prefix)) localStorage.removeItem(k);
     }
-  } catch {
-    // Storage error
-  }
+  } catch { /* ignore */ }
 }

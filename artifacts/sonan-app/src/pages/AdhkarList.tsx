@@ -1,8 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useLocation } from "wouter";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import PageLayout from "@/components/PageLayout";
 import { useTranslation } from "@/hooks/useTranslation";
+import { useContentTranslation } from "@/hooks/useContentTranslation";
+import type { ContentItem } from "@/lib/contentData";
+import type { Language } from "@/lib/translations";
 
 interface AdhkarCategory {
   adkharId: string;
@@ -18,6 +21,18 @@ export default function AdhkarList() {
   const [loading, setLoading] = useState(true);
   const { t, language } = useTranslation();
   const isRtl = language === "ar";
+  
+  // Create ContentItem[] for translation with useMemo
+  const contentItems = useMemo<ContentItem[]>(() =>
+    categories.map((cat) => ({
+      id: `adhkar_cat_${cat.adkharId}`,
+      arabic: cat.text,
+      category: "morningAdhkar",
+    })),
+    [categories, language]
+  );
+  
+  const { translatedItems, isTranslating, translationProgress } = useContentTranslation(contentItems, language as Language);
 
   useEffect(() => {
     fetch(`${import.meta.env.BASE_URL}data/adhkar-data.json`)
@@ -33,6 +48,17 @@ export default function AdhkarList() {
       backHref="/"
     >
       <div className="pt-4 pb-10">
+        {/* Translation progress banner */}
+        <AnimatePresence>
+          {isTranslating && (
+            <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }}
+              className="mb-3 px-4 py-2.5 rounded-xl flex items-center gap-3 text-sm"
+              style={{ background: "var(--teal-muted)", border: "1px solid var(--teal-border)", color: "var(--text-teal)" }}>
+              <div className="w-4 h-4 rounded-full border-2 border-current border-t-transparent animate-spin flex-shrink-0" />
+              <span>{isRtl ? "جاري الترجمة…" : "Translating…"} <span className="font-bold">{translationProgress}%</span></span>
+            </motion.div>
+          )}
+        </AnimatePresence>
         {/* Loading skeletons */}
         {loading && (
           <div className="space-y-2">
@@ -46,7 +72,10 @@ export default function AdhkarList() {
         {/* Category list */}
         {!loading && (
           <motion.div variants={container} initial="hidden" animate="show" className="space-y-2">
-            {categories.map((cat, idx) => (
+            {categories.map((cat, idx) => {
+              const translated = translatedItems[idx];
+              const displayText = translated ? translated.translatedText : cat.text;
+              return (
               <motion.div key={cat.adkharId} variants={rowAnim}>
                 <motion.button
                   whileTap={{ scale: 0.97 }}
@@ -58,7 +87,7 @@ export default function AdhkarList() {
                     style={{
                       background: "hsl(var(--card))",
                       border: "1px solid var(--gold-border)",
-                      direction: "rtl",
+                      direction: isRtl ? "rtl" : "ltr",
                     }}
                   >
                     {/* Number badge */}
@@ -75,14 +104,14 @@ export default function AdhkarList() {
 
                     {/* Title */}
                     <p
-                      className="flex-1 text-right font-semibold text-sm leading-snug"
+                      className={`flex-1 font-semibold text-sm leading-snug ${isRtl ? "text-right" : "text-left"}`}
                       style={{ color: "var(--text-primary)" }}
                     >
-                      {cat.text}
+                      {displayText}
                     </p>
 
                     {/* Arrow */}
-                    <span style={{ color: "var(--text-gold)" }}>
+                    <span style={{ color: "var(--text-gold)", transform: isRtl ? "none" : "scaleX(-1)" }}>
                       <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
                       </svg>
@@ -90,7 +119,8 @@ export default function AdhkarList() {
                   </div>
                 </motion.button>
               </motion.div>
-            ))}
+            );
+            })}
           </motion.div>
         )}
       </div>

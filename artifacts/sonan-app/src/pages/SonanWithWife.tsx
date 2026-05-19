@@ -185,7 +185,7 @@ export default function SonanWithWife() {
                       </div>
                     )}
 
-                    {!isArabic && item.translatedText && item.translatedText !== item.arabic && (
+                    {!isArabic && item.translatedText && ( 
                       <div className="mx-4 mb-2 mt-1 px-3 py-2 rounded-xl" style={{ background: "var(--teal-muted)", border: "1px solid var(--teal-border)", direction: "ltr" }}>
                         <p className="text-sm leading-relaxed" style={{ color: "var(--text-teal)", lineHeight: "1.75" }}>
                           {item.translatedText}

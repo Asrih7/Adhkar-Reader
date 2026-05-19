@@ -46,6 +46,7 @@ export default function SonanDetail() {
   const { isFavorite, toggleFavorite } = useFavorites();
   const [rawContent, setRawContent] = useState<SonanContent | SonanContent[] | null>(null);
   const [title, setTitle] = useState("");
+  const [translatedTitle, setTranslatedTitle] = useState("");
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
   const isArabic = language === "ar";
@@ -65,6 +66,20 @@ export default function SonanDetail() {
       .catch(() => setLoading(false));
   }, [id]);
 
+  // Translate page title
+  const titleItems = useMemo<ContentItem[]>(() => {
+    if (!title) return [];
+    return [{ id: `title_${id}`, arabic: title, category: "dailySonan" }];
+  }, [title, id, language]);
+
+  const { translatedItems: titleTranslated } = useContentTranslation(titleItems, language as Language);
+
+  useEffect(() => {
+    if (titleTranslated.length > 0) {
+      setTranslatedTitle(titleTranslated[0]?.translatedText || title);
+    }
+  }, [titleTranslated, title]);
+
   /* Build ContentItem[] from content for translation */
   const contentItems = useMemo<ContentItem[]>(() => {
     if (!rawContent) return [];
@@ -75,7 +90,7 @@ export default function SonanDetail() {
       source: c.source ?? undefined,
       category: "dailySonan",
     })).filter((item) => item.arabic);
-  }, [rawContent, id]);
+  }, [rawContent, id, language]);
 
   const { translatedItems, isTranslating, translationProgress } =
     useContentTranslation(contentItems, language as Language);
@@ -99,8 +114,10 @@ export default function SonanDetail() {
     if (navigator.share) { try { await navigator.share({ title: "السنن النبوية", text }); } catch { /**/ } } else handleCopy(text);
   };
 
+  const displayTitle = isArabic ? title : (translatedTitle || title);
+
   return (
-    <PageLayout title={title || `السنة ${id}`} subtitle={isArabic ? "سنة نبوية" : "Prophetic Sunnah"} backHref="/sonan">
+    <PageLayout title={displayTitle || `السنة ${id}`} subtitle={isArabic ? "سنة نبوية" : "Prophetic Sunnah"} backHref="/sonan">
       {isTranslating && <ProgressBar progress={translationProgress} />}
 
       <div className="pt-4 pb-12 space-y-3">
@@ -169,11 +186,11 @@ export default function SonanDetail() {
                 )}
 
                 {/* Translation */}
-                {!isArabic && translated?.translatedText && translated.translatedText !== arabic && (
+                {!isArabic && translated?.translatedText && (
                   <div className="mx-4 mb-2 px-3 py-2 rounded-xl"
                     style={{ background: "var(--teal-muted)", border: "1px solid var(--teal-border)", direction: "ltr" }}>
-                    <p className="text-sm leading-relaxed" style={{ color: "var(--text-teal)", lineHeight: "1.75" }}>
-                      {translated.translatedText}
+                    <p className="text-sm leading-relaxed" style={{ color: "var(--text-teal)", lineHeight: "1.75", minHeight: "20px" }}>
+                      {translated.translatedText ? translated.translatedText : <span style={{ opacity: 0.5, fontSize: "0.85rem" }}>⏳ Translation loading...</span>}
                     </p>
                   </div>
                 )}

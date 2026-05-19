@@ -207,8 +207,16 @@ export default function AdvicesDetail() {
                     {/* Translation */}
                     {showTranslation && (
                       <div className="mt-2 pt-2 border-t" style={{ borderColor: "var(--gold-border)", direction: "ltr" }}>
-                        <p className="text-sm leading-relaxed" style={{ color: "var(--text-teal)", lineHeight: "1.75" }}>
-                          {translatedVal}
+                        <p className="text-sm leading-relaxed" style={{ color: "var(--text-teal)", lineHeight: "1.75", minHeight: "20px" }}>
+                          {translatedVal && translatedVal !== val ? translatedVal : <span style={{ opacity: 0.5, fontSize: "0.85rem" }}>⏳ Translation loading...</span>}
+                        </p>
+                      </div>
+                    )}
+                    {/* Always show translation box if not Arabic and translation attempted */}
+                    {!isArabic && !showTranslation && translatedVal && (
+                      <div className="mt-2 pt-2 border-t" style={{ borderColor: "var(--gold-border)", direction: "ltr" }}>
+                        <p className="text-sm leading-relaxed" style={{ color: "var(--text-teal)", lineHeight: "1.75", minHeight: "20px", opacity: 0.6 }}>
+                          جاري تحميل الترجمة...
                         </p>
                       </div>
                     )}

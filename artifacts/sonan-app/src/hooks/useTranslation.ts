@@ -1,7 +1,13 @@
 import { useState, useEffect, useCallback } from "react";
 import { Language, getTranslation } from "@/lib/translations";
 
-export function useTranslation() {
+interface UseTranslationReturn {
+  language: Language;
+  t: (key: string) => string;
+  switchLanguage: (lang: Language) => void;
+}
+
+export function useTranslation(): UseTranslationReturn {
   const [language, setLang] = useState<Language>(() =>
     (localStorage.getItem("language") || "ar") as Language
   );
@@ -13,6 +19,7 @@ export function useTranslation() {
     document.documentElement.lang = language;
   }, [language]);
 
+  // Listen for external language changes
   useEffect(() => {
     const handleStorageChange = () => {
       const newLang = (localStorage.getItem("language") || "ar") as Language;
@@ -35,13 +42,15 @@ export function useTranslation() {
     [language]
   );
 
-  const switchLanguage = (lang: Language) => {
+  const switchLanguage = async (lang: Language) => {
     localStorage.setItem("language", lang);
     setLang(lang);
     const dir = lang === "ar" ? "rtl" : "ltr";
     document.documentElement.setAttribute("dir", dir);
     document.documentElement.lang = lang;
-    window.dispatchEvent(new CustomEvent("languagechange", { detail: { language: lang } }));
+    window.dispatchEvent(
+      new CustomEvent("languagechange", { detail: { language: lang } })
+    );
   };
 
   return { language, t, switchLanguage };
