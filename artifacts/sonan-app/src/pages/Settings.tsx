@@ -67,6 +67,66 @@ function OptionCard({
 }
 
 /* ─────────────────────────────────────────
+   Toggle row — always LTR layout so the
+   toggle pill stays on the right regardless
+   of page direction (Arabic RTL etc.)
+───────────────────────────────────────── */
+function ToggleRow({
+  icon,
+  label,
+  sublabel,
+  checked,
+  isRtl,
+  onChange,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  sublabel: string;
+  checked: boolean;
+  isRtl: boolean;
+  onChange: () => void;
+}) {
+  return (
+    <motion.button
+      whileTap={{ scale: 0.985 }}
+      onClick={onChange}
+      className="w-full p-4 rounded-xl flex items-center gap-3"
+      style={{
+        /* Force LTR so flex children always order: icon → text → toggle */
+        direction: "ltr",
+        background: checked ? "var(--gold-muted)" : "hsl(var(--card))",
+        border: `${checked ? 2 : 1}px solid ${checked ? "var(--gold)" : "var(--gold-border)"}`,
+      }}
+    >
+      <span className="flex-shrink-0" style={{ color: "var(--text-teal)" }}>{icon}</span>
+
+      {/* Text block: restore the document direction so Arabic reads RTL */}
+      <div
+        className="flex-1 min-w-0"
+        style={{ direction: isRtl ? "rtl" : "ltr", textAlign: isRtl ? "right" : "left" }}
+      >
+        <p className="font-semibold text-sm" style={{ color: "var(--text-primary)" }}>{label}</p>
+        <p className="text-xs" style={{ color: "var(--text-muted)" }}>{sublabel}</p>
+      </div>
+
+      {/* Toggle pill */}
+      <div
+        className="flex-shrink-0 relative w-12 h-6 rounded-full transition-colors duration-200"
+        style={{ background: checked ? "var(--teal)" : "rgba(255,255,255,0.12)" }}
+      >
+        <motion.div
+          animate={{ x: checked ? 24 : 2 }}
+          initial={false}
+          transition={{ type: "spring", stiffness: 400, damping: 30 }}
+          className="absolute top-1 w-4 h-4 rounded-full bg-white shadow"
+          style={{ left: 0 }}
+        />
+      </div>
+    </motion.button>
+  );
+}
+
+/* ─────────────────────────────────────────
    Star rating component
 ───────────────────────────────────────── */
 function StarRating({
@@ -339,32 +399,14 @@ export default function Settings() {
           <SectionTitle icon={<Volume2 className="w-4 h-4" />}>
             {language === "ar" ? "الصوت" : "Audio"}
           </SectionTitle>
-          <OptionCard active={soundEnabled} onClick={() => setSoundEnabled(!soundEnabled)}>
-            <Volume2 className="w-5 h-5" style={{ color: "var(--text-teal)" }} />
-            <div className="flex-1 text-left">
-              <p className="font-semibold text-sm" style={{ color: "var(--text-primary)" }}>
-                {language === "ar" ? "أصوات التطبيق" : "App Sounds"}
-              </p>
-              <p className="text-xs" style={{ color: "var(--text-muted)" }}>
-                {soundEnabled
-                  ? language === "ar" ? "مفعّل" : "Enabled"
-                  : language === "ar" ? "معطّل" : "Disabled"}
-              </p>
-            </div>
-            {/* Toggle pill */}
-            <div
-              className="w-11 h-6 rounded-full flex items-center px-1 transition-all"
-              style={{
-                background: soundEnabled ? "var(--teal)" : "hsl(var(--muted))",
-              }}
-            >
-              <motion.div
-                animate={{ x: soundEnabled ? 20 : 0 }}
-                transition={{ type: "spring", stiffness: 300, damping: 25 }}
-                className="w-4 h-4 rounded-full bg-white shadow" 
-              />
-            </div>
-          </OptionCard>
+          <ToggleRow
+            icon={<Volume2 className="w-5 h-5" />}
+            label={language === "ar" ? "أصوات التطبيق" : "App Sounds"}
+            sublabel={soundEnabled ? (language === "ar" ? "مفعّل" : "Enabled") : (language === "ar" ? "معطّل" : "Disabled")}
+            checked={soundEnabled}
+            isRtl={language === "ar"}
+            onChange={() => setSoundEnabled((v) => !v)}
+          />
         </motion.section>
 
         {/* ── 5. Offline Mode ── */}
@@ -377,29 +419,14 @@ export default function Settings() {
             {language === "ar" ? "وضع بدون إنترنت" : "Offline Mode"}
           </SectionTitle>
           <div className="space-y-2.5">
-            <OptionCard active={offlineMode} onClick={() => setOfflineMode(!offlineMode)}>
-              <Smartphone className="w-5 h-5" style={{ color: "var(--text-teal)" }} />
-              <div className="flex-1 text-left">
-                <p className="font-semibold text-sm" style={{ color: "var(--text-primary)" }}>
-                  {language === "ar" ? "وضع بدون إنترنت" : "Offline Mode"}
-                </p>
-                <p className="text-xs" style={{ color: "var(--text-muted)" }}>
-                  {offlineMode
-                    ? language === "ar" ? "مفعّل" : "Enabled"
-                    : language === "ar" ? "معطّل" : "Disabled"}
-                </p>
-              </div>
-              <div
-                className="w-11 h-6 rounded-full flex items-center px-1 transition-all"
-                style={{ background: offlineMode ? "var(--teal)" : "hsl(var(--muted))" }}
-              >
-                <motion.div
-                  animate={{ x: offlineMode ? 20 : 0 }}
-                  transition={{ type: "spring", stiffness: 300, damping: 25 }}
-                  className="w-4 h-4 rounded-full bg-white shadow"
-                />
-              </div>
-            </OptionCard>
+            <ToggleRow
+              icon={<Smartphone className="w-5 h-5" />}
+              label={language === "ar" ? "وضع بدون إنترنت" : "Offline Mode"}
+              sublabel={offlineMode ? (language === "ar" ? "مفعّل" : "Enabled") : (language === "ar" ? "معطّل" : "Disabled")}
+              checked={offlineMode}
+              isRtl={language === "ar"}
+              onChange={() => setOfflineMode((v) => !v)}
+            />
 
             {offlineMode && (
               <motion.button

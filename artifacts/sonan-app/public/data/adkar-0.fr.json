@@ -1,0 +1,278 @@
+[
+  {
+    "id": 1,
+    "text": "Souvenirs du matin et du soir"
+  },
+  {
+    "id": 2,
+    "text": "Ce qu'il dit quand il se réveille de son rêve"
+  },
+  {
+    "id": 3,
+    "text": "Que dit-il quand il enfile ses vêtements ?"
+  },
+  {
+    "id": 4,
+    "text": "Comment porter une robe"
+  },
+  {
+    "id": 5,
+    "text": "Que dit-il en entrant dans les toilettes ?"
+  },
+  {
+    "id": 6,
+    "text": "Que dit-il en sortant des toilettes ?"
+  },
+  {
+    "id": 7,
+    "text": "Dhikr avant les ablutions"
+  },
+  {
+    "id": 8,
+    "text": "Ce qu'il dit quand il termine ses ablutions"
+  },
+  {
+    "id": 9,
+    "text": "Que dire en quittant la maison"
+  },
+  {
+    "id": 10,
+    "text": "Ce qui est dit en entrant dans la maison"
+  },
+  {
+    "id": 11,
+    "text": "Ce qu'il dit quand il sort pour prier"
+  },
+  {
+    "id": 12,
+    "text": "Que dire en entrant dans la mosquée"
+  },
+  {
+    "id": 13,
+    "text": "Que dire en sortant de la mosquée"
+  },
+  {
+    "id": 14,
+    "text": "Souvenir de l'appel à la prière"
+  },
+  {
+    "id": 15,
+    "text": "Ce que dit l'imam"
+  },
+  {
+    "id": 16,
+    "text": "Que dit-on après le takbir d’ouverture ?"
+  },
+  {
+    "id": 17,
+    "text": "Cherchant refuge après la supplication d'ouverture"
+  },
+  {
+    "id": 18,
+    "text": "Que dit-on en s'inclinant ?"
+  },
+  {
+    "id": 19,
+    "text": "Que dire en se tenant droit après s'être incliné"
+  },
+  {
+    "id": 20,
+    "text": "Ce qu'il dit en se prosternant"
+  },
+  {
+    "id": 21,
+    "text": "Que dire entre les deux prosternations"
+  },
+  {
+    "id": 22,
+    "text": "Ce qu'il dit dans Qunoot"
+  },
+  {
+    "id": 23,
+    "text": "Tashahhud en prière"
+  },
+  {
+    "id": 24,
+    "text": "Prier pour le Prophète après le Tashahhud"
+  },
+  {
+    "id": 25,
+    "text": "Supplication lorsque le tashahhud est terminé"
+  },
+  {
+    "id": 26,
+    "text": "La dernière chose à dire entre le tashahhud et le salam"
+  },
+  {
+    "id": 27,
+    "text": "Que dire après avoir fini la prière"
+  },
+  {
+    "id": 28,
+    "text": "Ce qui est dit après la prière du Witr"
+  },
+  {
+    "id": 29,
+    "text": "Supplication de prière d'Istikharah"
+  },
+  {
+    "id": 30,
+    "text": "Supplication à l'observation du croissant du Ramadan"
+  },
+  {
+    "id": 31,
+    "text": "Que dit un jeûneur si quelqu’un l’insulte ?"
+  },
+  {
+    "id": 32,
+    "text": "Supplication lors de la rupture du jeûne"
+  },
+  {
+    "id": 33,
+    "text": "Supplication lors de la rupture du jeûne avec un ménage"
+  },
+  {
+    "id": 34,
+    "text": "Dhikr avant le repas"
+  },
+  {
+    "id": 35,
+    "text": "Supplication lorsque le repas est fini"
+  },
+  {
+    "id": 36,
+    "text": "La prière de l'invité pour l'hôte du repas"
+  },
+  {
+    "id": 37,
+    "text": "Prier pour ceux qui l'ont nourri ou lui ont donné à boire"
+  },
+  {
+    "id": 38,
+    "text": "Priez pour ceux qui vous ont rendu service"
+  },
+  {
+    "id": 39,
+    "text": "Prières pour ceux qui ont dit : Je t'aime pour l'amour de Dieu"
+  },
+  {
+    "id": 40,
+    "text": "Ce qui est dit au conseil"
+  },
+  {
+    "id": 41,
+    "text": "Expiation du concile"
+  },
+  {
+    "id": 42,
+    "text": "Comment une personne en ihram accomplit-elle la Talbiyah pendant le Hajj ou la Omra ?"
+  },
+  {
+    "id": 43,
+    "text": "Zoomez si le coin noir apparaît"
+  },
+  {
+    "id": 44,
+    "text": "Supplication entre le coin yéménite et la pierre noire"
+  },
+  {
+    "id": 45,
+    "text": "La supplication de se tenir sur Safa et Marwa"
+  },
+  {
+    "id": 46,
+    "text": "Supplication le jour d'Arafat"
+  },
+  {
+    "id": 47,
+    "text": "Dhikr à la Sainte Mosquée"
+  },
+  {
+    "id": 48,
+    "text": "Takbir en lapidant le Jamarat avec chaque caillou"
+  },
+  {
+    "id": 49,
+    "text": "La supplication de monter un animal et autres"
+  },
+  {
+    "id": 50,
+    "text": "Prière de voyage"
+  },
+  {
+    "id": 51,
+    "text": "Supplication quand tu entends le chant du coq et le braiment de l'âne"
+  },
+  {
+    "id": 52,
+    "text": "Supplication en entendant des chiens aboyer"
+  },
+  {
+    "id": 53,
+    "text": "Prière pour rencontrer l'ennemi"
+  },
+  {
+    "id": 54,
+    "text": "Que dit celui qui craint un peuple ?"
+  },
+  {
+    "id": 55,
+    "text": "La prière du vent"
+  },
+  {
+    "id": 56,
+    "text": "Priez quand il pleut"
+  },
+  {
+    "id": 57,
+    "text": "Après la fin de la pluie, il dit"
+  },
+  {
+    "id": 58,
+    "text": "Prier pour expulser Satan et ses obsessions"
+  },
+  {
+    "id": 59,
+    "text": "Dans quoi les enfants cherchent refuge"
+  },
+  {
+    "id": 60,
+    "text": "Ce que dit quelqu'un qui ressent de la douleur dans son corps"
+  },
+  {
+    "id": 61,
+    "text": "Supplication lors de la visite aux malades"
+  },
+  {
+    "id": 62,
+    "text": "La supplication des éternuements"
+  },
+  {
+    "id": 63,
+    "text": "Endoctrinement des mourants"
+  },
+  {
+    "id": 64,
+    "text": "Une supplication pour quelqu'un qui a été affligé par une calamité"
+  },
+  {
+    "id": 65,
+    "text": "Prière de condoléances"
+  },
+  {
+    "id": 66,
+    "text": "Une prière pour rembourser la dette"
+  },
+  {
+    "id": 67,
+    "text": "Supplication en cas de colère"
+  },
+  {
+    "id": 68,
+    "text": "Une prière pour l'inquiétude et la tristesse"
+  },
+  {
+    "id": 69,
+    "text": "Une prière de détresse"
+  }
+]

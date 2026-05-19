@@ -1,0 +1,278 @@
+[
+  {
+    "id": 1,
+    "text": "Sabah ve akşam hatıraları"
+  },
+  {
+    "id": 2,
+    "text": "Rüyasından uyandığında ne diyor?"
+  },
+  {
+    "id": 3,
+    "text": "Kıyafetlerini giydiğinde ne diyor?"
+  },
+  {
+    "id": 4,
+    "text": "Bir elbise nasıl giyilir"
+  },
+  {
+    "id": 5,
+    "text": "Tuvalete girdiğinde ne diyor?"
+  },
+  {
+    "id": 6,
+    "text": "Tuvaletten çıktığında ne diyor?"
+  },
+  {
+    "id": 7,
+    "text": "Abdestten önce zikir"
+  },
+  {
+    "id": 8,
+    "text": "Abdesti bitince ne diyor?"
+  },
+  {
+    "id": 9,
+    "text": "evden çıkarken ne söylenir"
+  },
+  {
+    "id": 10,
+    "text": "Eve girerken söylenenler"
+  },
+  {
+    "id": 11,
+    "text": "Namaza çıktığında ne diyor?"
+  },
+  {
+    "id": 12,
+    "text": "Camiye girerken ne söylenmeli?"
+  },
+  {
+    "id": 13,
+    "text": "Camiden çıkarken ne söylenir?"
+  },
+  {
+    "id": 14,
+    "text": "Ezan çağrısının anılması"
+  },
+  {
+    "id": 15,
+    "text": "İmamın söyledikleri"
+  },
+  {
+    "id": 16,
+    "text": "Açılış tekbirinden sonra ne söylenir?"
+  },
+  {
+    "id": 17,
+    "text": "Açılış duasından sonra sığınmak"
+  },
+  {
+    "id": 18,
+    "text": "Selam verirken ne söylenir?"
+  },
+  {
+    "id": 19,
+    "text": "Rükûdan sonra dik dururken ne söylenir?"
+  },
+  {
+    "id": 20,
+    "text": "Secdede ne diyor"
+  },
+  {
+    "id": 21,
+    "text": "İki secde arasında ne söylenir?"
+  },
+  {
+    "id": 22,
+    "text": "Qunoot'ta ne diyor?"
+  },
+  {
+    "id": 23,
+    "text": "Namazda teşehhüt"
+  },
+  {
+    "id": 24,
+    "text": "Teşehhütten sonra Peygamber Efendimiz için dua etmek"
+  },
+  {
+    "id": 25,
+    "text": "Teşehhüd bitince yapılan dua"
+  },
+  {
+    "id": 26,
+    "text": "Teşehhüd ile selam arasında söylenecek son şey"
+  },
+  {
+    "id": 27,
+    "text": "Namazı bitirdikten sonra ne söylenir?"
+  },
+  {
+    "id": 28,
+    "text": "Vitir namazından sonra söylenenler"
+  },
+  {
+    "id": 29,
+    "text": "İstikharah namazı duası"
+  },
+  {
+    "id": 30,
+    "text": "Ramazan hilalini görünce okunacak dua"
+  },
+  {
+    "id": 31,
+    "text": "Oruçlu birisi kendisine hakaret ederse ne der?"
+  },
+  {
+    "id": 32,
+    "text": "Orucu açarken yapılan dua"
+  },
+  {
+    "id": 33,
+    "text": "Hanede oruç açarken okunacak dua"
+  },
+  {
+    "id": 34,
+    "text": "Yemekten önce zikir"
+  },
+  {
+    "id": 35,
+    "text": "Yemek bitince yapılan dua"
+  },
+  {
+    "id": 36,
+    "text": "Misafirin yemek sahibi için duası"
+  },
+  {
+    "id": 37,
+    "text": "Onu besleyen veya içirenlere dua etmek"
+  },
+  {
+    "id": 38,
+    "text": "Size iyilik yapanlar için dua edin"
+  },
+  {
+    "id": 39,
+    "text": "Seni Allah için seviyorum diyenler için dualar"
+  },
+  {
+    "id": 40,
+    "text": "Mecliste neler konuşuluyor"
+  },
+  {
+    "id": 41,
+    "text": "Konsey kefareti"
+  },
+  {
+    "id": 42,
+    "text": "İhramlı kimse Hac veya Umre sırasında telbiyeyi nasıl yerine getirir?"
+  },
+  {
+    "id": 43,
+    "text": "Siyah köşe belirirse yakınlaştırın"
+  },
+  {
+    "id": 44,
+    "text": "Yemen Köşesi ile Hacer Taşı Arasındaki Dua"
+  },
+  {
+    "id": 45,
+    "text": "Safa ile Merve'nin üzerinde durma duası"
+  },
+  {
+    "id": 46,
+    "text": "Arafat günü dua"
+  },
+  {
+    "id": 47,
+    "text": "Mescid-i Haram'da Zikir"
+  },
+  {
+    "id": 48,
+    "text": "Cemreyi her çakıl taşıyla taşlarken tekbir"
+  },
+  {
+    "id": 49,
+    "text": "Hayvana binmenin duası ve benzeri"
+  },
+  {
+    "id": 50,
+    "text": "Seyahat duası"
+  },
+  {
+    "id": 51,
+    "text": "Horozun ötüşünü ve eşeğin anırmasını duyduğunuzda yapılan dua"
+  },
+  {
+    "id": 52,
+    "text": "Köpeklerin havlamasını duyunca yapılan dua"
+  },
+  {
+    "id": 53,
+    "text": "Düşmanla karşılaşmak için dua"
+  },
+  {
+    "id": 54,
+    "text": "Halktan korkan ne der?"
+  },
+  {
+    "id": 55,
+    "text": "Rüzgarın duası"
+  },
+  {
+    "id": 56,
+    "text": "Yağmur yağdığında dua edin"
+  },
+  {
+    "id": 57,
+    "text": "Yağmur bittikten sonra diyor ki"
+  },
+  {
+    "id": 58,
+    "text": "Şeytan'ı ve saplantılarını kovmak için dua etmek"
+  },
+  {
+    "id": 59,
+    "text": "Çocukların sığındığı yerler"
+  },
+  {
+    "id": 60,
+    "text": "Vücudunda acı hisseden birinin söyledikleri"
+  },
+  {
+    "id": 61,
+    "text": "Hasta ziyaretinde okunacak dua"
+  },
+  {
+    "id": 62,
+    "text": "Hapşırma duası"
+  },
+  {
+    "id": 63,
+    "text": "Ölen kişinin beyin yıkaması"
+  },
+  {
+    "id": 64,
+    "text": "Musibete uğrayan kimse için yapılacak dua"
+  },
+  {
+    "id": 65,
+    "text": "Taziye duası"
+  },
+  {
+    "id": 66,
+    "text": "Borcunu ödemek için okunacak dua"
+  },
+  {
+    "id": 67,
+    "text": "Kızgınken yapılan dua"
+  },
+  {
+    "id": 68,
+    "text": "Endişe ve üzüntü için dua"
+  },
+  {
+    "id": 69,
+    "text": "Bir sıkıntı duası"
+  }
+]
