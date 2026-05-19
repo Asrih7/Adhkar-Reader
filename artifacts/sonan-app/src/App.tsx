@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { initDailyNotifications, getPermissionStatus, isNotificationEnabled } from "@/lib/notificationService";
 import Navigation from "@/components/Navigation";
+import TranslationLoadingOverlay from "@/components/TranslationLoadingOverlay";
 import NotFound from "@/pages/not-found";
 import Home from "@/pages/Home";
 import AdhkarList from "@/pages/AdhkarList";
@@ -72,6 +73,7 @@ function App() {
           </div>
         </WouterRouter>
         <Toaster />
+        <TranslationLoadingOverlay />
       </TooltipProvider>
     </QueryClientProvider>
   );
