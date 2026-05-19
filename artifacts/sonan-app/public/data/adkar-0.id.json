@@ -1,0 +1,278 @@
+[
+  {
+    "id": 1,
+    "text": "Kenangan pagi dan sore"
+  },
+  {
+    "id": 2,
+    "text": "Apa yang dia katakan saat dia bangun dari mimpinya"
+  },
+  {
+    "id": 3,
+    "text": "Apa yang dia katakan saat dia mengenakan pakaiannya?"
+  },
+  {
+    "id": 4,
+    "text": "Cara memakai gaun"
+  },
+  {
+    "id": 5,
+    "text": "Apa yang dia katakan saat memasuki toilet?"
+  },
+  {
+    "id": 6,
+    "text": "Apa yang dia katakan saat keluar dari toilet?"
+  },
+  {
+    "id": 7,
+    "text": "Dzikir sebelum wudhu"
+  },
+  {
+    "id": 8,
+    "text": "Apa yang diucapkannya setelah selesai berwudhu"
+  },
+  {
+    "id": 9,
+    "text": "Apa yang harus dikatakan ketika meninggalkan rumah"
+  },
+  {
+    "id": 10,
+    "text": "Apa yang diucapkan saat memasuki rumah"
+  },
+  {
+    "id": 11,
+    "text": "Apa yang dia katakan ketika dia keluar untuk berdoa"
+  },
+  {
+    "id": 12,
+    "text": "Apa yang harus diucapkan ketika memasuki masjid"
+  },
+  {
+    "id": 13,
+    "text": "Apa yang harus diucapkan ketika meninggalkan masjid"
+  },
+  {
+    "id": 14,
+    "text": "Mengingat adzan"
+  },
+  {
+    "id": 15,
+    "text": "Apa yang dikatakan imam"
+  },
+  {
+    "id": 16,
+    "text": "Apa yang diucapkan setelah takbir pembukaan?"
+  },
+  {
+    "id": 17,
+    "text": "Mencari perlindungan setelah doa pembuka"
+  },
+  {
+    "id": 18,
+    "text": "Apa yang dikatakan dalam rukuk?"
+  },
+  {
+    "id": 19,
+    "text": "Apa yang harus diucapkan ketika berdiri tegak dari rukuk"
+  },
+  {
+    "id": 20,
+    "text": "Apa yang diucapkannya saat sujud"
+  },
+  {
+    "id": 21,
+    "text": "Apa yang diucapkan di antara dua sujud"
+  },
+  {
+    "id": 22,
+    "text": "Apa yang dia katakan di Qunoot"
+  },
+  {
+    "id": 23,
+    "text": "Tashahhud dalam shalat"
+  },
+  {
+    "id": 24,
+    "text": "Doa Nabi setelah Tashahhud"
+  },
+  {
+    "id": 25,
+    "text": "Doa ketika tashahhud selesai"
+  },
+  {
+    "id": 26,
+    "text": "Hal terakhir yang diucapkan antara tashahhud dan salam"
+  },
+  {
+    "id": 27,
+    "text": "Apa yang harus diucapkan setelah selesai shalat"
+  },
+  {
+    "id": 28,
+    "text": "Apa yang diucapkan setelah shalat witir"
+  },
+  {
+    "id": 29,
+    "text": "Doa Sholat Istikharah"
+  },
+  {
+    "id": 30,
+    "text": "Doa saat melihat bulan sabit Ramadhan"
+  },
+  {
+    "id": 31,
+    "text": "Apa yang diucapkan orang yang berpuasa jika ada yang menghinanya?"
+  },
+  {
+    "id": 32,
+    "text": "Doa saat berbuka puasa"
+  },
+  {
+    "id": 33,
+    "text": "Doa saat berbuka puasa bersama serumah tangga"
+  },
+  {
+    "id": 34,
+    "text": "Dzikir sebelum makan"
+  },
+  {
+    "id": 35,
+    "text": "Doa saat makan selesai"
+  },
+  {
+    "id": 36,
+    "text": "Doa tamu untuk tuan rumah makanan"
+  },
+  {
+    "id": 37,
+    "text": "Mendoakan orang yang memberinya makan atau minum"
+  },
+  {
+    "id": 38,
+    "text": "Berdoalah bagi mereka yang telah berbuat baik padamu"
+  },
+  {
+    "id": 39,
+    "text": "Doa bagi orang yang mengucapkan: Aku mencintaimu karena Allah"
+  },
+  {
+    "id": 40,
+    "text": "Apa yang dikatakan di dewan"
+  },
+  {
+    "id": 41,
+    "text": "Penebusan dewan"
+  },
+  {
+    "id": 42,
+    "text": "Bagaimana cara orang yang ihram menunaikan talbiyah pada saat haji atau umrah?"
+  },
+  {
+    "id": 43,
+    "text": "Perbesar jika sudut hitam muncul"
+  },
+  {
+    "id": 44,
+    "text": "Doa antara Sudut Yaman dan Hajar Aswad"
+  },
+  {
+    "id": 45,
+    "text": "Doa berdiri di atas Safa dan Marwa"
+  },
+  {
+    "id": 46,
+    "text": "Doa di hari Arafat"
+  },
+  {
+    "id": 47,
+    "text": "Dzikir di Masjidil Haram"
+  },
+  {
+    "id": 48,
+    "text": "Takbir saat melempar jamarat dengan kerikil masing-masing"
+  },
+  {
+    "id": 49,
+    "text": "Doa menunggangi binatang dan sejenisnya"
+  },
+  {
+    "id": 50,
+    "text": "Doa perjalanan"
+  },
+  {
+    "id": 51,
+    "text": "Doa ketika mendengar ayam berkokok dan ringkikan keledai"
+  },
+  {
+    "id": 52,
+    "text": "Doa ketika mendengar anjing menggonggong"
+  },
+  {
+    "id": 53,
+    "text": "Doa bertemu musuh"
+  },
+  {
+    "id": 54,
+    "text": "Apa yang dikatakan orang yang takut terhadap suatu kaum?"
+  },
+  {
+    "id": 55,
+    "text": "Doa angin"
+  },
+  {
+    "id": 56,
+    "text": "Berdoalah ketika hujan"
+  },
+  {
+    "id": 57,
+    "text": "Setelah hujan berakhir, katanya"
+  },
+  {
+    "id": 58,
+    "text": "Berdoa untuk mengusir setan dan obsesinya"
+  },
+  {
+    "id": 59,
+    "text": "Di mana anak-anak mencari perlindungan"
+  },
+  {
+    "id": 60,
+    "text": "Apa yang dikatakan oleh seseorang yang merasakan sakit pada tubuhnya"
+  },
+  {
+    "id": 61,
+    "text": "Doa ketika menjenguk orang sakit"
+  },
+  {
+    "id": 62,
+    "text": "Doa saat bersin"
+  },
+  {
+    "id": 63,
+    "text": "Indoktrinasi orang yang sekarat"
+  },
+  {
+    "id": 64,
+    "text": "Doa untuk seseorang yang tertimpa musibah"
+  },
+  {
+    "id": 65,
+    "text": "Doa belasungkawa"
+  },
+  {
+    "id": 66,
+    "text": "Doa untuk melunasi hutang"
+  },
+  {
+    "id": 67,
+    "text": "Doa ketika marah"
+  },
+  {
+    "id": 68,
+    "text": "Doa untuk kekhawatiran dan kesedihan"
+  },
+  {
+    "id": 69,
+    "text": "Doa kesusahan"
+  }
+]
