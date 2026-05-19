@@ -45,7 +45,6 @@ function Router() {
       <Route path="/favorites" component={Favorites} />
       <Route path="/notifications" component={Notifications} />
       <Route path="/settings" component={Settings} />
-      <Route path="/share" component={Share} />
       <Route path="/quran" component={Quran} />
       <Route path="/quran-audio" component={QuranAudio} />
       <Route component={NotFound} />

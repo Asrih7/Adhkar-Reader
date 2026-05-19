@@ -182,7 +182,7 @@ export default function Settings() {
   const sectionDelay = [0, 0.07, 0.14, 0.21, 0.28, 0.35];
 
   return (
-    <PageLayout title={t("settings")} subtitle={t("settings")}>
+    <PageLayout title={t("settings")} subtitle={t("settings")} backHref="/">
       <div className="pb-24 md:pb-10 mt-6 space-y-8">
 
         {/* ── 1. Appearance ── */}
@@ -361,7 +361,7 @@ export default function Settings() {
               <motion.div
                 animate={{ x: soundEnabled ? 20 : 0 }}
                 transition={{ type: "spring", stiffness: 300, damping: 25 }}
-                className="w-4 h-4 rounded-full bg-white shadow"
+                className="w-4 h-4 rounded-full bg-white shadow" 
               />
             </div>
           </OptionCard>

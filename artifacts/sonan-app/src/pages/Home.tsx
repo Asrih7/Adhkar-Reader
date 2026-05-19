@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link } from "wouter";
+
 import { motion } from "framer-motion";
 import { Clock, Compass, BookOpen, Wind, RefreshCw } from "lucide-react";
 import { useTranslation } from "@/hooks/useTranslation";
@@ -31,6 +31,7 @@ function DailyDhikr({ language }: { language: string }) {
   const [item, setItem] = useState<ContentItem | null>(null);
   const [idx, setIdx] = useState(0);
   const [items, setItems] = useState<ContentItem[]>([]);
+  const { t } = useTranslation();
   const isRtl = language === "ar";
 
   useEffect(() => {
@@ -62,13 +63,13 @@ function DailyDhikr({ language }: { language: string }) {
       <div className="px-4 pt-4 pb-1 flex items-center justify-between">
         <span className="text-xs font-bold flex items-center gap-1.5" style={{ color: "var(--text-gold)" }}>
           <span>🌟</span>
-          <span>{isRtl ? "ذكر اليوم" : "Today's Dhikr"}</span>
+          <span>{t("todaysDhikr")}</span>
         </span>
         <button
           onClick={next}
           className="p-1.5 rounded-lg transition-colors"
           style={{ color: "var(--text-muted)" }}
-          title={isRtl ? "ذكر آخر" : "Next"}
+          title={t("next")}
         >
           <RefreshCw className="w-3.5 h-3.5" />
         </button>
@@ -176,7 +177,7 @@ export default function Home() {
         className="grid grid-cols-4 gap-2.5 mx-4 mb-5"
       >
         {quickTools.map((tool) => (
-          <Link key={tool.href} href={tool.href}>
+          <a key={tool.href} href={tool.href}>
             <motion.div
               whileHover={{ scale: 1.04 }}
               whileTap={{ scale: 0.94 }}
@@ -191,7 +192,7 @@ export default function Home() {
                 {t(tool.labelKey)}
               </span>
             </motion.div>
-          </Link>
+          </a>
         ))}
       </motion.div>
 
@@ -206,7 +207,7 @@ export default function Home() {
         <motion.div variants={container} initial="hidden" animate="show" className="space-y-2.5">
           {mainCards.map((card) => (
             <motion.div key={card.href} variants={cardAnim}>
-              <Link href={card.href}>
+              <a href={card.href}>
                 <motion.div
                   whileHover={{ scale: 1.01, boxShadow: "0 8px 28px var(--gold-shadow)" }}
                   whileTap={{ scale: 0.98 }}
@@ -255,7 +256,8 @@ export default function Home() {
                     </svg>
                   </div>
                 </motion.div>
-              </Link>
+              </a>
+            
             </motion.div>
           ))}
         </motion.div>

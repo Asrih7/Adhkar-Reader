@@ -1,8 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useLocation } from "wouter";
 import { motion } from "framer-motion";
 import PageLayout from "@/components/PageLayout";
 import { useTranslation } from "@/hooks/useTranslation";
+import { useContentTranslation } from "@/hooks/useContentTranslation";
+import type { ContentItem } from "@/lib/contentData";
+import type { Language } from "@/lib/translations";
 
 interface AdviceItem {
   id: number;
@@ -25,6 +28,18 @@ export default function Advices() {
   const [loading, setLoading] = useState(true);
   const { t, language } = useTranslation();
   const isRtl = language === "ar";
+  
+  // Create ContentItem[] for translation with useMemo
+  const contentItems = useMemo<ContentItem[]>(() =>
+    advices.map((advice) => ({
+      id: `advice_list_${advice.id}`,
+      arabic: advice.title,
+      category: "advices",
+    })),
+    [advices]
+  );
+  
+  const { translatedItems } = useContentTranslation(contentItems, language as Language);
 
   useEffect(() => {
     fetch(`${import.meta.env.BASE_URL}data/advices-data.json`)
@@ -65,7 +80,10 @@ export default function Advices() {
         {/* Advice list */}
         {!loading && (
           <motion.div variants={container} initial="hidden" animate="show" className="space-y-2">
-            {advices.map((advice) => (
+            {advices.map((advice, idx) => {
+              const translated = translatedItems[idx];
+              const displayText = translated ? translated.translatedText : advice.title;
+              return (
               <motion.div key={advice.id} variants={rowAnim}>
                 <motion.button
                   whileTap={{ scale: 0.97 }}
@@ -97,7 +115,7 @@ export default function Advices() {
                       className="flex-1 text-right font-semibold text-sm leading-snug"
                       style={{ color: "var(--text-primary)" }}
                     >
-                      {advice.title}
+                      {displayText}
                     </p>
 
                     {/* Arrow */}
@@ -109,7 +127,8 @@ export default function Advices() {
                   </div>
                 </motion.button>
               </motion.div>
-            ))}
+            );
+            })}
           </motion.div>
         )}
       </div>

@@ -77,6 +77,7 @@ export default function AdhkarDetail() {
   const { language, t } = useTranslation();
   const [rawItems, setRawItems] = useState<DhikrItem[]>([]);
   const [title, setTitle] = useState("");
+  const [translatedTitle, setTranslatedTitle] = useState("");
   const [loading, setLoading] = useState(true);
   const [counts, setCounts] = useState<Record<number, number>>({});
   const isArabic = language === "ar";
@@ -98,6 +99,20 @@ export default function AdhkarDetail() {
       .catch(() => setLoading(false));
   }, [id]);
 
+  // Translate page title
+  const titleItems = useMemo<ContentItem[]>(() => {
+    if (!title) return [];
+    return [{ id: `adhkar_title_${id}`, arabic: title, category: "morningAdhkar" }];
+  }, [title, id, language]);
+
+  const { translatedItems: titleTranslated } = useContentTranslation(titleItems, language as Language);
+
+  useEffect(() => {
+    if (titleTranslated.length > 0) {
+      setTranslatedTitle(titleTranslated[0]?.translatedText || title);
+    }
+  }, [titleTranslated, title]);
+
   /* Convert raw items → ContentItem[] for translation */
   const contentItems = useMemo<ContentItem[]>(
     () => rawItems.map((d) => ({
@@ -106,7 +121,7 @@ export default function AdhkarDetail() {
       source: d.source ?? undefined,
       category: "morningAdhkar",
     })),
-    [rawItems, id]
+    [rawItems, id, language]
   );
 
   const { translatedItems, isTranslating, translationProgress } =
@@ -115,8 +130,10 @@ export default function AdhkarDetail() {
   const increment = (itemId: number) => setCounts((prev) => ({ ...prev, [itemId]: (prev[itemId] || 0) + 1 }));
   const reset     = (itemId: number) => setCounts((prev) => ({ ...prev, [itemId]: 0 }));
 
+  const displayTitle = isArabic ? title : (translatedTitle || title);
+
   return (
-    <PageLayout title={title || "..."} subtitle={isArabic ? "اضغط على الذكر للعد" : "Tap to count"} backHref="/adhkar">
+    <PageLayout title={displayTitle || "..."} subtitle={isArabic ? "اضغط على الذكر للعد" : "Tap to count"} backHref="/adhkar">
       {isTranslating && <ProgressBar progress={translationProgress} />}
 
       <div className="pt-4 pb-10 space-y-3">
@@ -184,10 +201,10 @@ export default function AdhkarDetail() {
                 </button>
 
                 {/* Translation box */}
-                {!isArabic && item.translatedText && item.translatedText !== item.arabic && (
+                {!isArabic && item.translatedText && (
                   <div className="mx-4 mb-2 px-3 py-2 rounded-xl"
                     style={{ background: "var(--teal-muted)", border: "1px solid var(--teal-border)", direction: "ltr" }}>
-                    <p className="text-sm leading-relaxed" style={{ color: "var(--text-teal)", lineHeight: "1.75" }}>
+                    <p className="text-sm leading-relaxed" style={{ color: "var(--text-teal)", lineHeight: "1.75", minHeight: "20px" }}>
                       {item.translatedText}
                     </p>
                   </div>

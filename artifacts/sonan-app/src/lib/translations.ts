@@ -4,6 +4,7 @@ export const translations = {
   ar: {
     // Navigation & Main Pages
     adhkar: 'الأذكار',
+    todaysDhikr: 'ذكر اليوم',
     sonan: 'السنن',
     advice: 'النصائح',
     wife: 'سنن مع الزوجة',
@@ -156,6 +157,7 @@ export const translations = {
     offline: 'غير متصل',
   },
   en: {
+    todaysDhikr: "Today's Dhikr",
     adhkar: 'Adhkar',
     sonan: 'Sunnah',
     advice: 'Advice',
@@ -195,6 +197,7 @@ export const translations = {
     close: 'Close',
     next: 'Next',
     previous: 'Previous',
+    //todaysDhikr: "Today's Dhikr",
     quranAudioTitle: 'Listen to Quran',
     selectReciter: 'Select a Reciter',
     selectSurah: 'Select a Surah',
@@ -348,6 +351,7 @@ export const translations = {
     close: 'Fermer',
     next: 'Suivant',
     previous: 'Précédent',
+    todaysDhikr: 'Dhikr du jour',
     quranAudioTitle: 'Écoutez le Coran',
     selectReciter: 'Sélectionnez un Récitant',
     selectSurah: 'Sélectionnez une Sourate',
@@ -462,6 +466,7 @@ export const translations = {
     islamicAdvice: 'Conseils Islamiques',
   },
   es: {
+    todaysDhikr: 'Dhikr de hoy',
     adhkar: 'Adhkar',
     sonan: 'Sunnah',
     advice: 'Consejos',
@@ -615,6 +620,7 @@ export const translations = {
     islamicAdvice: 'Consejos Islámicos',
   },
   tr: {
+    todaysDhikr: "Bugünün Zikri",
     adhkar: 'Adhkar',
     sonan: 'Sünnet',
     advice: 'Tavsiyeler',
@@ -767,6 +773,7 @@ export const translations = {
     islamicAdvice: 'İslami Tavsiyeler',
   },
   id: {
+    todaysDhikr: 'Zikir hari ini',
     adhkar: 'Adhkar',
     sonan: 'Sunnah',
     advice: 'Nasihat',

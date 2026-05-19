@@ -26,7 +26,6 @@ const navItems: NavItem[] = [
   { href: "/quran-audio",  labelKey: "quranAudio",   icon: <Headphones className="w-5 h-5" /> },
   { href: "/notifications",labelKey: "notifications",icon: <Bell      className="w-5 h-5" /> },
   { href: "/favorites",    labelKey: "favorites",    icon: <Star      className="w-5 h-5" /> },
-  { href: "/share",        labelKey: "share",        icon: <Share2    className="w-5 h-5" /> },
   { href: "/settings",     labelKey: "settings",     icon: <Settings  className="w-5 h-5" /> },
 ];
 

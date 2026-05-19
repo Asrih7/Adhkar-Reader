@@ -1,8 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useLocation } from "wouter";
 import { motion } from "framer-motion";
 import PageLayout from "@/components/PageLayout";
 import { useTranslation } from "@/hooks/useTranslation";
+import { useContentTranslation } from "@/hooks/useContentTranslation";
+import type { ContentItem } from "@/lib/contentData";
+import type { Language } from "@/lib/translations";
 
 interface AdhkarCategory {
   adkharId: string;
@@ -18,6 +21,18 @@ export default function AdhkarList() {
   const [loading, setLoading] = useState(true);
   const { t, language } = useTranslation();
   const isRtl = language === "ar";
+  
+  // Create ContentItem[] for translation with useMemo
+  const contentItems = useMemo<ContentItem[]>(() =>
+    categories.map((cat) => ({
+      id: `adhkar_cat_${cat.adkharId}`,
+      arabic: cat.text,
+      category: "morningAdhkar",
+    })),
+    [categories, language]
+  );
+  
+  const { translatedItems } = useContentTranslation(contentItems, language as Language);
 
   useEffect(() => {
     fetch(`${import.meta.env.BASE_URL}data/adhkar-data.json`)
@@ -46,7 +61,10 @@ export default function AdhkarList() {
         {/* Category list */}
         {!loading && (
           <motion.div variants={container} initial="hidden" animate="show" className="space-y-2">
-            {categories.map((cat, idx) => (
+            {categories.map((cat, idx) => {
+              const translated = translatedItems[idx];
+              const displayText = translated ? translated.translatedText : cat.text;
+              return (
               <motion.div key={cat.adkharId} variants={rowAnim}>
                 <motion.button
                   whileTap={{ scale: 0.97 }}
@@ -78,7 +96,7 @@ export default function AdhkarList() {
                       className="flex-1 text-right font-semibold text-sm leading-snug"
                       style={{ color: "var(--text-primary)" }}
                     >
-                      {cat.text}
+                      {displayText}
                     </p>
 
                     {/* Arrow */}
@@ -90,7 +108,8 @@ export default function AdhkarList() {
                   </div>
                 </motion.button>
               </motion.div>
-            ))}
+            );
+            })}
           </motion.div>
         )}
       </div>
