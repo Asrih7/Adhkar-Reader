@@ -1,0 +1,583 @@
+{
+  "title": "Günlük yaşam için peygamberlik tavsiyeleri",
+  "subtitle": "Bir Müslümanın her gün ve gece ihtiyaç duyduğu, Resûlullah SallAllahu Aleyhi ve Sellem'den altmış öğüt",
+  "advices": [
+    {
+      "id": 1,
+      "title": "Günahlardan tövbe",
+      "content": {
+        "narrator": "Ebu Hureyre'den Allah ondan razı olsun, Allah'ın Elçisi, Allah onu kutsasın ve ona huzur versin, dedi ki:",
+        "hadith": "Kim güneş batıdan doğmadan önce tevbe ederse, Allah da onun tevbesini kabul eder.",
+        "source": "[Müslim'in rivayet ettiği sahih hadis]",
+        "explanation": "Tövbe, Müslümanın her gün yaptığı bir davranıştır. Allah'ın rahmet kapıları tevbe ile açılır. Yüce Allah şöyle buyurdu: Ve Allah size tövbe etmek istiyor. [Nisa Suresi, 27. Ayet] Her günah için tövbe edin; Allah'a giden yol, tövbe yolundan başka değildir."
+      }
+    },
+    {
+      "id": 2,
+      "title": "Bilgi arayışı",
+      "content": {
+        "intro": "Bir alim şeytana karşı bin ibadet edenden daha güçlüdür",
+        "narrator": "Ebu Hureyre'den Allah ondan râzı olsun, şöyle dedi: Resûlullah sallallahu aleyhi ve sellem şöyle buyurdu:",
+        "hadith": "Kim ilim öğrenmek için yola çıkarsa, Allah ona cennete giden yolu kolaylaştırır.",
+        "source": "[Tirmizî'nin rivayet ettiği sahih hadis]",
+        "explanation": "Evinizden çıkıp bir ilim toplantısına gittiğinizde ilminizi artırırsınız. Gittiğiniz bu yol Cennet yoludur. Dünyayı istiyorsanız ilim sahibi olmalısınız, ahireti istiyorsanız ilim sahibi olmalısınız, ikisini birden istiyorsanız ilim sahibi olmalısınız."
+      }
+    },
+    {
+      "id": 3,
+      "title": "Yüce Allah'ı anmak",
+      "content": {
+        "narrator": "Ebu Derda'dan Allah ondan razı olsun, şöyle dedi: Peygamber sallallahu aleyhi ve sellem şöyle buyurdu:",
+        "hadith": "Amellerinizin en hayırlısını, derecelerinizin en üstününü, padişahınızın nazarında en temizini, sizin için kağıttan ve altından daha hayırlısını, düşmanınızla karşılaşıp onların boyunlarını vurmanızdan ve onların da sizin boynunuzu vurmalarından daha hayırlı olduğunu size haber vereyim mi? Dediler ki: Evet dedi: Allah'ı anmak",
+        "source": "[Tirmizî'nin rivayet ettiği sahih hadis]",
+        "explanation": "Kur'an okursan zikir olursun, bağışlanma dilersen zikir olursun, Allah ile iletişim kurarsan zikir olursun, Allah'ın yaratıklarını düşünürsen zikir olursun ve seni Cenab-ı Hakk'a yaklaştıran her faaliyet zikirdir."
+      }
+    },
+    {
+      "id": 4,
+      "title": "Bilineni taklit etmek",
+      "content": {
+        "narrator": "Ebu Zerr'den (Allah ondan razı olsun) rivayete göre, Allah'ın Elçisi (Allah onu kutsasın ve ona huzur versin) şöyle dedi:",
+        "hadith": "Kardeşinizi neşeli bir yüzle karşılamak bile olsa, hiçbir iyiliği küçümsemeyin.",
+        "source": "[Müslim'in rivayet ettiği sahih hadis]"
+      }
+    },
+    {
+      "id": 5,
+      "title": "iyi iş",
+      "content": {
+        "intro": "Kişi kendisine ölüm meleği geldiğinde, yapmadığı bir iyilik dışında pişmanlık duymaz ve \"Sallallahu aleyhi ve Sellem\" der.",
+        "hadith": "Her iyilik sadakadır ve kardeşini güler yüzle karşılamak, kovanı kardeşinin kabına boşaltmak güzeldir.",
+        "source": "[Tirmizî'nin rivayet ettiği sahih hadis]"
+      }
+    },
+    {
+      "id": 6,
+      "title": "Tanrıya çağrı",
+      "content": {
+        "intro": "Allah'a çağrı bireysel bir yükümlülüktür. Fen derslerinde bir ayetin açıklamasını dinlemedin mi? Bir hadisi açıklamak için mi? Arkadaş pozisyonuna mı? Bir içtihat kararına mı? Selam ve bereket onun üzerine olsun diyor",
+        "hadith": "Ayet de olsa benden tebliğ et",
+        "source": "[Buhari ve Tirmizi'nin rivayet ettiği sahih bir hadisten.]",
+        "explanation": "Allah'a dua etmek, bildiği ve tanıdığı kişiler çerçevesinde her Müslüman için bireysel bir farzdır.",
+        "additionalNarrator": "عن أبي هريرة رضي الله عنه، أن رسولَ الله صلى الله عليه وسلم قال",
+        "additionalHadith": "مَنْ دعا إلى هُدىً، كان له من الأجرِ مِثْلُ أجور مَنْ تَبِعَهُ، لا ينقصُ ذلك من أجورهم شيئاً، ومن دعا إلى ضَلالَة، كان عليه من الإثمِ مِثْلُ آثام من تَبِعَهُ، لا يَنْقُص ذلك من أوزارهم شيئاً",
+        "additionalSource": "[ حديث صحيح، أخرجه مسلم والترمذي وأبو داود ]"
+      }
+    },
+    {
+      "id": 7,
+      "title": "İyiliği emretmek ve kötülükten sakındırmak",
+      "content": {
+        "narrator": "Ebû Saîd el-Hudrî (Allah ondan razı olsun)'dan rivayetle o şöyle demiştir: Resûlullah (sallallahu aleyhi vesellem)'i şöyle derken işittim:",
+        "hadith": "Sizden kim bir kötülük görürse onu eliyle, buna gücü yetmiyorsa diliyle, buna da gücü yetmiyorsa kalbiyle değiştirsin; bu da imanın en zayıfıdır.",
+        "source": "[Müslim'in rivayet ettiği sahih bir hadistir.]"
+      }
+    },
+    {
+      "id": 8,
+      "title": "Kur'an-ı Kerim okumak",
+      "content": {
+        "narrator": "Ebu Umame el-Bahili (Allah ondan razı olsun)'den rivayet edildiğine göre o şöyle demiştir: Rasulullah (sallallahu aleyhi vesellem)'i şöyle derken işittim: Allah ona bereket versin ve ona huzur versin.",
+        "hadith": "Kur'an'ı okuyun, çünkü o, kıyamet günü ashabına şefaatçi olarak gelecektir. Bakara ve Al-i İmran ayetlerini oku; zira onlar kıyamet günü sanki iki bulut veya iki bulut veya arkadaşları adına tartışan uçan iki kuş sürüsü gibi geleceklerdir. Bakara Suresi'ni okuyun, çünkü onu alırsa, bu bir nimettir. Onu kederden uzak bıraktı ve kahraman bunu yapamaz",
+        "source": "[Müslim'in rivayet ettiği sahih hadis]"
+      }
+    },
+    {
+      "id": 9,
+      "title": "Kuran'ı öğrenin",
+      "content": {
+        "narrator": "Osman bin Affan'ın (Allah ondan razı olsun) yetkisi üzerine, Allah'ın Elçisi (Allah onu kutsasın ve ona huzur versin) şöyle dedi:",
+        "hadith": "Sizin en hayırlınız Kur'an'ı öğrenen ve öğreteninizdir",
+        "source": "[Buhari, Tirmizi ve Ebu Davud'un rivayet ettiği sahih hadis]"
+      }
+    },
+    {
+      "id": 10,
+      "title": "İnsanlara Kur’an öğretmek",
+      "content": {
+        "narrator": "Osman bin Affan'ın (Allah ondan razı olsun) yetkisi üzerine, Allah'ın Elçisi (Allah onu kutsasın ve ona huzur versin) şöyle dedi:",
+        "hadith": "Sizin en hayırlınız Kur'an'ı öğrenen ve öğreteninizdir",
+        "source": "[Buhari, Tirmizi ve Ebu Davud'un rivayet ettiği sahih hadis]",
+        "explanation": "Onu okumak başka, hükümlerini öğretmek, ayetlerini açıklamak başka şeydir."
+      }
+    },
+    {
+      "id": 11,
+      "title": "Barışı ifşa etmek",
+      "content": {
+        "narrator": "Ebu Hureyre'den Allah ondan razı olsun, Allah'ın Elçisi, Allah onu kutsasın ve ona huzur versin, dedi ki:",
+        "hadith": "Nefsim elinde olan Allah'a yemin ederim ki, iman etmedikçe cennete giremezsiniz, birbirinizi sevmedikçe de iman etmemiş olursunuz. Eğer yaparsanız birbirinizi seveceğiniz bir şeyi size ileteyim mi? Aranızda barışı yayın",
+        "source": "[Müslim, Ebu Davud ve Tirmizî'nin rivayet ettiği sahih hadis]"
+      }
+    },
+    {
+      "id": 12,
+      "title": "Tanrı'da aşk",
+      "content": {
+        "narrator": "Ebu Hureyre'den Allah ondan râzı olsun, şöyle dedi: Resûlullah sallallahu aleyhi ve sellem şöyle buyurdu:",
+        "hadith": "Cenab-ı Hak kıyamet günü şöyle buyuracaktır: Benim rızam için birbirlerini sevenler nerede? Benim gölgemden başka gölgenin bulunmadığı bir günde, bugün onları gölgemde gölgelendireceğim.",
+        "source": "[Müslim'in rivayet ettiği sahih hadis]"
+      }
+    },
+    {
+      "id": 13,
+      "title": "Hasta kliniği",
+      "content": {
+        "narrator": "Ali bin Ebu Talib'den (Allah ondan razı olsun) rivayetle o şöyle dedi: Resûlullah (s.a.v.)'i şöyle derken işittim: Allah ona bereket versin ve ona huzur versin.",
+        "hadith": "Hiçbir Müslüman yoktur ki, sabah hasta bir Müslümanı ziyaret ederse, akşama kadar yetmiş bin melek ona dua eder, akşam onu ​​ziyaret ederse sabaha kadar yetmiş bin melek ona dua eder ve cennete düşer.",
+        "source": "[Ebu Davud ve Tirmizî'nin rivayet ettiği sahih bir hadisten.]",
+        "explanation": "Hastayı ziyaret etmek, onu teselli etmek, kalbini hoş kılmak, zamanında teselli etmek, ona bir ayet veya hadisi hatırlatmak, sabretmesine yardımcı olmak, buna büyük bir sevap vardır."
+      }
+    },
+    {
+      "id": 14,
+      "title": "İflas edenin muayenesi",
+      "content": {
+        "narrator": "Ebu Hureyre'den Allah ondan râzı olsun, şöyle dedi: Resûlullah sallallahu aleyhi ve sellem şöyle buyurdu:",
+        "hadith": "Kim zor durumda olan bir kimsenin işini kolaylaştırırsa, Allah da ona dünyada ve ahirette kolaylık sağlar.",
+        "source": "[Müslim ve İbn Hibban'ın rivayet ettiği sahih hadis]"
+      }
+    },
+    {
+      "id": 15,
+      "title": "Alırken, satarken ve ortadan kaldırırken hoşgörü",
+      "content": {
+        "narrator": "Cabir bin Abdullah'tan Allah her ikisinden de razı olsun, Resûlullah sallallahu aleyhi ve sellem şöyle buyurmuştur:",
+        "hadith": "Allah hoşgörülü olan kimseye satarken de, alırken de, ihtiyaç duyduğunda da rahmet eylesin.",
+        "source": "[Buhari'nin rivayet ettiği sahih hadis]",
+        "explanation": "Sıkıntıda olan insanların işlerini kolaylaştırmak, Allah'ın senden razı olacağı büyük bir iştir."
+      }
+    },
+    {
+      "id": 16,
+      "title": "İnsanların üzerini örtün",
+      "content": {
+        "narrator": "Ebu Hureyre'den Allah ondan razı olsun, Peygamber sallallahu aleyhi ve sellem Allah onu kutsasın ve ona huzur versin, dedi ki:",
+        "hadith": "Bu dünyada hiçbir köle, diğer bir köleyi örtmez; ancak Allah, kıyamet gününde onu örtecektir.",
+        "source": "[Müslim'in rivayet ettiği sahih hadis]",
+        "explanation": "Hataları yakalayan, insanlara yayan ve bundan zevk alan skandal bir insan modeli var. Müslüman gizler, Müslüman gizler."
+      }
+    },
+    {
+      "id": 17,
+      "title": "Akraba bağları",
+      "content": {
+        "narrator": "Aişe (Allah ondan razı olsun)'dan rivayetle şöyle dedi: Allah'ın Resulü (sallallahu aleyhi vesellem) şöyle dedi:",
+        "hadith": "Rahim arşa bağlı olup şöyle der: Kim beni bağlarsa, Allah da onu bağlar, kim beni keserse, Allah da onu keser.",
+        "source": "[Buhari ve Müslim'in rivayet ettiği sahih hadis]"
+      }
+    },
+    {
+      "id": 18,
+      "title": "görgü kuralları",
+      "content": {
+        "narrator": "Ebu Hureyre'den Allah ondan râzı olsun diye şöyle dedi:",
+        "hadith": "Allah Resulü (s.a.v.)'e, insanları cehenneme en çok ne sevk eder diye soruldu? Şöyle buyurdu: Ağız ve avret yerleri ve kendisine, insanı cennete en çok götüren şeyin ne olduğu soruldu. Şöyle buyurdu: Allah korkusu ve güzel ahlak.",
+        "source": "[Tirmizî'nin rivayet ettiği sahih hadis]"
+      }
+    },
+    {
+      "id": 19,
+      "title": "Dürüstlük",
+      "content": {
+        "narrator": "Abdullah bin Mesud (Allah ondan razı olsun)'dan rivayetle o şöyle dedi: Allah Resulü (sallallahu aleyhi vesellem) şöyle buyurdu:",
+        "hadith": "Dürüst olmalısınız, çünkü dürüstlük iyiliğe, doğruluk da cennete götürür.",
+        "source": "[Ebu Davud ve Tirmizî'nin rivayet ettiği sahih bir hadisten.]",
+        "explanation": "Dürüst olursan Tanrı'nın ve insanların huzuruna çıkarsın ve mümin yalan söylemez",
+        "additionalNarrator": "عن أبي أمامة الباهلي رضي الله عنه، قال رسول الله صلى الله عليه وسلم",
+        "additionalHadith": "يطبع المؤمن على الخلال كلها، إلا الخيانة والكذب",
+        "additionalSource": "[ حديث أخرجه أحمد وهو منقطع ]"
+      }
+    },
+    {
+      "id": 20,
+      "title": "Öfkenizi bastırın",
+      "content": {
+        "narrator": "Muaz bin Enes'ten (Allah ondan razı olsun) rivayete göre, Peygamber (sallallahu aleyhi ve sellem) Allah onu kutsasın ve ona huzur versin, şöyle dedi:",
+        "hadith": "Kim öfkesini bastırır ve onu salıvermeye gücü yetirse, Allah onu kıyamet günü güzel perilerden seçecektir.",
+        "source": "[Taberani'nin es-Sagir'de rivayet ettiği bir hadistir ki, bunda aldanmış bir adam vardır.]",
+        "quran": "وَالْكَاظِمِينَ الْغَيْظَ وَالْعَافِينَ عَنِ النَّاسِ وَاللَّهُ يُحِبُّ الْمُحْسِنِينَ",
+        "quranSource": "[ سورة آل عمران: الآية 134 ]",
+        "explanation": "Bilakis evde kim yüksek sesle bağırırsa adaleti zedelenir, halim adeta peygamberdir, hoşgörü ise ahlâkın efendisidir."
+      }
+    },
+    {
+      "id": 21,
+      "title": "Konsey kefareti",
+      "content": {
+        "narrator": "Ebu Hureyre'den Allah ondan razı olsun, Allah'ın Elçisi, Allah onu kutsasın ve ona huzur versin, dedi ki:",
+        "hadith": "Kim, çekişmenin çok olduğu bir mecliste oturur ve o oturuştan kalkmadan önce, \"Seni tesbih ederim, Allah'ım, Senden başka ilah olmadığına şehadet ederim ki, Senden mağfiret dilerim ve o oturuşta yaptığından dolayı bağışlanmadıkça Sana tövbe ederim\" derse,",
+        "source": "[Tirmizî'nin sağlam bir senedle rivayet ettiği hadis]"
+      }
+    },
+    {
+      "id": 22,
+      "title": "sabır",
+      "content": {
+        "narrator": "Ebu Said ve Ebu Hureyre'den (Allah onlardan razı olsun) rivayete göre, onlar Reslullah'ın (Allah onu kutsasın ve ona huzur versin) şöyle dediğini işittiler:",
+        "hadith": "Müminin başına hiçbir hastalık, yorgunluk, hastalık, üzüntü, hatta ona dokunan bir endişe gelmez ki, Allah onun kötülüklerini kefaret etsin.",
+        "source": "[Buhari, Müslim ve Tirmizi'nin rivayet ettiği sahih hadis]",
+        "quran": "إِنَّمَا يُوَفَّى الصَّابِرُونَ أَجْرَهُمْ بِغَيْرِ حِسَابٍ",
+        "quranSource": "[سورة الزمر: الآية 10]",
+        "explanation": "Sabır, mü'min kula ilahi bir muameledir. Allah'ın tedavisine sabreden kimsenin, dişçi koltuğunda oturan bir yetişkin gibi Cenab-ı Hakk'ı tanıdığının delilidir. Küçük çocuk bu tedavinin kendi yararına olduğunu bilmediği için bağırıp çağırırken, doktora yakışmayan sözler söyleyebiliyor, acı çekiyor ve şükrediyor. Bugün ve bu gece bu ipuçlarına ihtiyacımız var."
+      }
+    },
+    {
+      "id": 23,
+      "title": "Ebeveynleri onurlandırmak",
+      "content": {
+        "narrator": "Ebu Hureyre'den Allah ondan râzı olsun diye şöyle dedi:",
+        "hadith": "Resûlullah'ın (s.a.v.) şöyle dediğini işittim: \"Burnuna rağmen, burnuna rağmen, burnuna rağmen.\" Denildi ki: Kim, ey Allah'ın Resulü? Şöyle buyurdu: Kim yaşlılığında anne ve babasına kavuşursa, onlardan biri veya her ikisi de sonra cennete giremez.",
+        "source": "[Müslim'in rivayet ettiği sahih hadis]",
+        "explanation": "Demek ki anne babaya hürmet etmek Cennete girmek için yeterli sebeptir"
+      }
+    },
+    {
+      "id": 24,
+      "title": "Dul ve yoksullar için çabalamak",
+      "content": {
+        "narrator": "Ebu Hureyre'den Allah ondan râzı olsun, şöyle dedi: Resûlullah sallallahu aleyhi ve sellem şöyle buyurdu:",
+        "hadith": "Dul kadının ve fakirin bakımını üstlenen, Allah yolunda cihad eden gibidir ve sanırım şöyle demiştir: Ayağa kalkan kimse gibi pes etmez, oruçlu olup da orucunu bozmayan gibidir.",
+        "source": "[Buhari ve Müslim'in rivayet ettiği sahih hadis]",
+        "explanation": "Dul kadın için çabalamak, fakir aramak, Allah yolunda mücahit gibisin"
+      }
+    },
+    {
+      "id": 25,
+      "title": "Yetim sponsorluğu",
+      "content": {
+        "narrator": "Sehl bin Saad es-Saadi'den Allah ondan razı olsun, şöyle dedi: Allah'ın Elçisi, Allah onu kutsasın ve ona huzur versin, şöyle dedi:",
+        "hadith": "Ben ve bir yetime bakan kimse cennette böyle olacağız. İşaret ve orta parmaklarıyla işaret etti ve aralarında biraz mesafe bıraktı.",
+        "source": "[Buhari, Tirmizi ve Ebu Davud'un rivayet ettiği sahih hadis]"
+      }
+    },
+    {
+      "id": 26,
+      "title": "Abdest",
+      "content": {
+        "narrator": "Osman bin Affan'ın (Allah ondan razı olsun) yetkisi üzerine, Allah'ın Elçisi (Allah onu kutsasın ve ona huzur versin) şöyle dedi:",
+        "hadith": "Kim abdest alır ve güzelce yaparsa, günahları bedeninden çıkar ve tırnaklarının altından çıkar.",
+        "source": "[Buhari ve Müslim'in rivayet ettiği sahih hadis]"
+      }
+    },
+    {
+      "id": 27,
+      "title": "Abdestten sonra teşehhüd",
+      "content": {
+        "narrator": "Ömer bin Hattab'dan (Allah ondan râzı olsun) rivâyet olunduğuna göre o şöyle dedi: Resûlullah (sallallahu aleyhi ve sellem) şöyle buyurdu:",
+        "hadith": "Kim abdest alır ve abdestini güzelce alırsa şöyle der: Şahadet ederim ki tek ve ortağı olmayan Allah'tan başka ilah yoktur ve Muhammed O'nun kulu ve elçisidir. Allah'ım beni tövbe edenlerden ve temizlenenlerden eyle, ona cennetin sekiz kapısı açılır, hangisinden isterse oradan girer.",
+        "source": "[Tirmizî'nin rivayet ettiği sahih bir hadisten]"
+      }
+    },
+    {
+      "id": 28,
+      "title": "Müezzinin cevabı",
+      "content": {
+        "narrator": "Cabir'in yetkisi üzerine Allah ondan razı olsun, Allah'ın Elçisi, Allah onu kutsasın ve ona huzur versin, dedi ki",
+        "hadith": "Kim bu çağrıyı işittiğinde: Ey bu mükemmel davetin ve kılınmış namazın Rabbi olan Allah'ım, Muhammed'e vesile ve fazilet ver ve onu kendisine vaad ettiğin övgüye layık makama yükselt derse, kıyamet gününde şefaatim ona verilecektir.",
+        "source": "[Buhari'nin rivayet ettiği sahih hadis]"
+      }
+    },
+    {
+      "id": 29,
+      "title": "Cami inşa etmek",
+      "content": {
+        "narrator": "Ömer bin Hattab'dan (Allah ondan râzı olsun) rivâyet olunduğuna göre o şöyle demiştir: Resûlullah (s.a.v.)'i şöyle derken işittim: Allah onu bereketlesin ve ona huzur versin.",
+        "hadith": "Kim Allah için içinde zikredileceği bir mescid inşa ederse Allah da ona cennette bir ev bina eder.",
+        "source": "[İbni Mâce ve Ahmed'in rivayet ettiği sahih hadis]"
+      }
+    },
+    {
+      "id": 30,
+      "title": "misvak",
+      "content": {
+        "narrator": "Ebu Hureyre'den Allah ondan razı olsun, Allah'ın Elçisi, Allah onu kutsasın ve ona huzur versin, dedi ki:",
+        "hadith": "Eğer ümmetime ve insanlara bir zorluk olmasaydı, onlara her namazda misvak kullanmalarını emrederdim.",
+        "source": "[Buhari'nin rivayet ettiği sahih hadis]"
+      }
+    },
+    {
+      "id": 31,
+      "title": "Camide dua etmek",
+      "content": {
+        "narrator": "Ebu Hureyre'den Allah ondan razı olsun, Allah'ın Elçisi, Allah onu kutsasın ve ona huzur versin, dedi ki:",
+        "hadith": "Kim yarın mescide gider veya giderse, Allah her yarın gittiğinde veya her gittiğinde ona cennette bir yer hazırlar.",
+        "source": "[Buhari ve İbn Huzeyme'nin rivayet ettiği sahih hadis]"
+      }
+    },
+    {
+      "id": 32,
+      "title": "Beş günlük dua",
+      "content": {
+        "narrator": "Amr bin Saeed bin Al-As'tan rivayete göre o, Osman'ın kendisini arındırmasını istedi ve şöyle dedi: Rasulullah'ı (s.a.v.) işittim.",
+        "hadith": "Farz olan bir namaza katılan, abdestini, tevazuunu ve rükûsunu güzelce yapan hiçbir Müslüman yoktur; ancak bu, kendisinden önceki günahlara büyük olmadıkça kefaret olur ve bu da bütünüyle sonsuzluk içindir.",
+        "source": "[Buhari ve Müslim'in rivayet ettiği sahih hadis]"
+      }
+    },
+    {
+      "id": 33,
+      "title": "Sabah namazı ve ikindi namazı",
+      "content": {
+        "narrator": "Ebu Musa el-Eş'arî'den (Allah ondan razı olsun) rivâyet olunduğuna göre o şöyle dedi: Resûlullah (sallallahu aleyhi vesellem) şöyle buyurdu:",
+        "hadith": "Kim Beradain namazını kılarsa Cennete girer",
+        "source": "[Buhari ve Müslim'in rivayet ettiği sahih hadis]",
+        "explanation": "El-Bardan: Sabah namazı ve ikindi namazı, yani onları belirlenen vakitlerde kılan kimse."
+      }
+    },
+    {
+      "id": 34,
+      "title": "Cuma namazı",
+      "content": {
+        "narrator": "Ebu Hureyre'den Allah ondan razı olsun, Allah'ın Elçisi, Allah onu kutsasın ve ona huzur versin, dedi ki:",
+        "hadith": "Kim abdest alır, güzelce kılar, sonra cuma namazına gelir, dinler ve dinlerse, o vakit ile cuma namazı arasındaki ve ilave üç gün arasındaki günahları bağışlanır ve kim çakıl taşına dokunursa gafillik etmiş olur.",
+        "source": "[Müslim'in rivayet ettiği sahih hadis]"
+      }
+    },
+    {
+      "id": 35,
+      "title": "Cuma günü dualar kabul olur",
+      "content": {
+        "narrator": "Ebu Hureyre'den (Allah ondan razı olsun) rivayete göre, Allah'ın Elçisi (Allah onu kutsasın ve ona huzur versin) Cuma'dan bahsetti ve şöyle dedi:",
+        "hadith": "Müslüman kulun razı olmadığı bir saat vardır. Ayakta durup dua ediyor, Allah'tan bir şey istiyor ama Allah onu veriyor ve eliyle işaret ederek azaltıyor.",
+        "source": "[Buhari ve Müslim'in rivayet ettiği sahih hadis]"
+      }
+    },
+    {
+      "id": 36,
+      "title": "Maaş standartları",
+      "content": {
+        "narrator": "Mü'minlerin annesi Ümmü Habibe'den (Allah ondan razı olsun) rivayetle o şöyle dedi: Allah'ın Elçisi (Allah ona salat ve selam versin) şöyle dedi:",
+        "hadith": "Kim on iki rekât namaz kılarsa, Allah ona cennette bir ev bina eder: Öğleden önce dört rekât, öğleden sonra iki rekât, ikindiden önce iki rekât, güneş battıktan sonra iki rekât ve şafaktan önce iki rekât.",
+        "source": "[Nesai ve İbn Huzeyme'nin sahih senedle rivayet ettiği bir hadis]"
+      }
+    },
+    {
+      "id": 37,
+      "title": "Gece namazı",
+      "content": {
+        "narrator": "Ebu Hureyre'den Allah ondan razı olsun, Allah'ın Elçisi, Allah onu kutsasın ve ona huzur versin, dedi ki:",
+        "hadith": "Allah'ın Muharrem ayı olan Ramazan ayından sonra tutulan oruçların en hayırlısı ve farz namazlardan sonra en faziletli namaz, yatsı namazıdır.",
+        "source": "[Müslim'in rivayet ettiği sahih hadis]"
+      }
+    },
+    {
+      "id": 38,
+      "title": "Dhuha duası",
+      "content": {
+        "narrator": "Ebu Zer el-Ghafari'den (Allah ondan razı olsun) rivayete göre, Allah'ın Elçisi (Allah onu kutsasın ve ona huzur versin) şöyle dedi:",
+        "hadith": "Sizden birinizin her selamı bir sadaka olur. Her tesbih bir sadakadır, her tahmide bir sadakadır, her tehlil bir sadakadır, her tekbir bir sadakadır, iyiliği emretmek bir sadakadır, kötülükten sakındırmak bir sadakadır ve bunun için sabah kıldığı iki rekât yeterlidir.",
+        "source": "[Müslim'in rivayet ettiği sahih hadis]"
+      }
+    },
+    {
+      "id": 39,
+      "title": "Peygamber Efendimize salat ve selam olsun",
+      "content": {
+        "narrator": "Abdullah bin Amr bin El-As'tan (Allah her ikisinden de razı olsun) rivayete göre, o, Resûlullah (s.a.v.)'in Allah onu kutsasın ve ona huzur versin, şöyle dediğini işitmiştir:",
+        "hadith": "Kim bana salat ederse Allah ona on kat bereket versin",
+        "source": "[Müslim'in rivayet ettiği sahih bir hadistir.]"
+      }
+    },
+    {
+      "id": 40,
+      "title": "Oruç",
+      "content": {
+        "narrator": "Ebu Said'den (Allah ondan razı olsun) rivayetle o şöyle dedi: Allah'ın Elçisi (Allah onu kutsasın ve ona huzur versin) şöyle dedi:",
+        "hadith": "Allah rızası için bir gün oruç tutan hiçbir kul yoktur ki, Allah onun yüzünü Cehennemden yetmiş mesafe uzak tutsun.",
+        "source": "[Buhari ve Müslim'in rivayet ettiği sahih hadis]"
+      }
+    },
+    {
+      "id": 41,
+      "title": "Her ayın üç günü oruç tutmak",
+      "content": {
+        "narrator": "Cerir bin Abdullah'tan, Allah her ikisinden de razı olsun, Peygamber'den, Allah ondan razı olsun ve ona selam olsun, dedi.",
+        "hadith": "Her ayın üç günü oruç tutmak, sonsuza kadar oruç tutmak",
+        "source": "[Nesa'i'nin rivayet ettiği güzel bir hadis]"
+      }
+    },
+    {
+      "id": 42,
+      "title": "Ramazan orucu",
+      "content": {
+        "narrator": "Ebu Hureyre'den Allah ondan râzı olsun, şöyle dedi: Resûlullah sallallahu aleyhi ve sellem şöyle buyurdu:",
+        "hadith": "Kim inanarak ve sevabını umarak Ramazan orucunu tutarsa ​​geçmiş günahları bağışlanır.",
+        "source": "[Buhari'nin rivayet ettiği sahih hadis]"
+      }
+    },
+    {
+      "id": 43,
+      "title": "Şevval ayının altı günü oruç tutmak",
+      "content": {
+        "narrator": "Ebu Eyyub el-Ensari'den (Allah ondan razı olsun) rivayete göre, Allah'ın Elçisi (Allah onu kutsasın ve ona huzur versin) şöyle dedi:",
+        "hadith": "Kim Ramazan orucunu tutar ve ona Şevval'den altı gün eklerse, bir sene oruç tutmuş gibi olur.",
+        "source": "[Müslim ve Tirmizi'nin rivayet ettiği sahih hadis]"
+      }
+    },
+    {
+      "id": 44,
+      "title": "Orucu bozmak",
+      "content": {
+        "narrator": "Zeyd bin Halid el-Cuhani'den (Allah ondan razı olsun) rivayete göre, Allah'ın Elçisi (Allah onu kutsasın ve ona huzur versin) şöyle dedi:",
+        "hadith": "Kim bir oruçlunun orucunu bozarsa, onun sevabının benzeri bir sevap alır; ancak bu, oruçlunun sevabından zerre kadar bir eksilme yaratmaz.",
+        "source": "[Tirmizî'nin rivayet ettiği sahih hadis]"
+      }
+    },
+    {
+      "id": 45,
+      "title": "Kader Gecesi",
+      "content": {
+        "narrator": "Ebu Hureyre'den Allah ondan râzı olsun, şöyle dedi: Resûlullah sallallahu aleyhi ve sellem şöyle buyurdu:",
+        "hadith": "Kim Kadir Gecesini inanarak ve sevabını umarak kılarsa geçmiş günahları bağışlanır.",
+        "source": "[Buhari'nin rivayet ettiği sahih hadis]"
+      }
+    },
+    {
+      "id": 46,
+      "title": "Hayır kurumu",
+      "content": {
+        "narrator": "Muaz bin Cebel'in (Allah ondan razı olsun) rivayetine göre, Peygamber (sallallahu aleyhi vesellem)'in rivayetine göre Allah onu kutsasın ve ona huzur versin, şöyle dedi:",
+        "hadith": "Suyun ateşi söndürdüğü gibi sadaka da günahları söndürür",
+        "source": "[Tirmizî'nin rivayet ettiği sahih bir hadisten]",
+        "additionalNarrator": "عن أنس رضي الله عنه، أنَّ النبي صلى الله عليه وسلم قال",
+        "additionalHadith": "إن الصدقَةَ تُطْفِئُ غَضَبَ الرَّبِّ، وتَدْفَعُ مِيتَة السُّوءِ",
+        "additionalSource": "[ حديث صحيح، أخرجه الترمذي ]"
+      }
+    },
+    {
+      "id": 47,
+      "title": "Hac ve Umre",
+      "content": {
+        "narrator": "Ebu Hureyre'den Allah ondan razı olsun, Allah'ın Elçisi, Allah onu kutsasın ve ona huzur versin, dedi ki:",
+        "hadith": "Umre umresi, aralarındaki kefarettir ve kabul edilen haccın, cennetten başka karşılığı yoktur.",
+        "source": "[Buhari ve Müslim'in rivayet ettiği sahih hadis]"
+      }
+    },
+    {
+      "id": 48,
+      "title": "Zilhicce ayının ilk on gününün avantajlarından yararlanın",
+      "content": {
+        "narrator": "Abdullah bin Abbas'tan (Allah her ikisinden de razı olsun) rivayetle şöyle dedi: Resûlullah (sallallahu aleyhi ve sellem) şöyle buyurdu:",
+        "hadith": "Salih amellerin Allah katında bu on günden daha sevimli olduğu başka bir gün yoktur. Dediler ki: Ey Allah'ın Resulü, cihat bile yok mu? Dedi ki: Canını ve parasını riske atmak için dışarı çıkan ve hiçbir şeyle geri dönmeyen bir adam dışında cihad bile yok.",
+        "source": "[Tirmizi ve Ebu Davud'un rivayet ettiği sahih hadis]"
+      }
+    },
+    {
+      "id": 49,
+      "title": "Allah rızası için cihat",
+      "content": {
+        "narrator": "Sehl bin Saad'ın (Allah ondan razı olsun) yetkisi üzerine, Allah'ın Elçisi (Allah onu kutsasın ve ona huzur versin) şöyle dedi:",
+        "hadith": "Allah yolunda bir günlük bağ, dünya ve içindekilerden daha hayırlıdır; sizden birinizin kırbacının cennetteki yeri, dünyadan ve içindekilerden daha hayırlıdır; bir kulun Allah yolunda aldığı ruh veya sabah, dünya ve içindekilerden daha hayırlıdır.",
+        "source": "[Buhari ve Müslim'in rivayet ettiği sahih hadis]",
+        "additionalNarrator": "عن زيد بن خالد الجهني رضي الله عنه، أن رسولَ الله صلى الله عليه وسلم قال",
+        "additionalHadith": "من جهَّز غازياً في سبيل الله فقد غزَا، ومن خَلَّف غازياً في أهله بخير فقد غزا",
+        "additionalSource": "[ حديث صحيح، أخرجه البخاري ومسلم ]"
+      }
+    },
+    {
+      "id": 50,
+      "title": "Ölüler için dua etmek",
+      "content": {
+        "narrator": "Ebu Hureyre'den Allah ondan râzı olsun, şöyle dedi: Resûlullah sallallahu aleyhi ve sellem şöyle buyurdu:",
+        "hadith": "Kim cenaze namazı kılınıncaya kadar cenazeye katılırsa bir kırat alır, kim defnedilene kadar cenazeye şahit olursa iki kırat alır. Denildi ki: İki kırat nedir? Dedi ki: İki büyük dağ gibi",
+        "source": "[Buhari ve Müslim'in rivayet ettiği sahih hadis]"
+      }
+    },
+    {
+      "id": 51,
+      "title": "Dilin ve avret yerlerinin korunması",
+      "content": {
+        "narrator": "Sehl bin Saad es-Saadi'den Allah ondan razı olsun, şöyle dedi: Allah'ın Elçisi, Allah onu kutsasın ve ona huzur versin, şöyle dedi:",
+        "hadith": "Kim bana bacaklarının arası ile iki sakalının arasının garantisini verirse, ben de ona cenneti garanti ederim.",
+        "source": "[Buhari ve Tirmizi'nin rivayet ettiği sahih hadis]",
+        "explanation": "Dilini yalandan, gıybetten, dedikodudan korumak ve iffetini korumak cennete girmenin iki yoludur."
+      }
+    },
+    {
+      "id": 52,
+      "title": "Biraz zikir yapmanın fazileti",
+      "content": {
+        "narrator": "Ebu Hureyre'den Allah ondan razı olsun, Allah'ın Elçisi, Allah onu kutsasın ve ona huzur versin, dedi ki:",
+        "hadith": "Kim: \"Allah'tan başka ilah yoktur, tektir, ortağı yoktur, mülk O'nundur, hamd O'nadır, O her şeye kadirdir\" derse, günde yüz defa onun için on kölenin eşdeğeri bulunur ve onun için yüz sevap yazılır ve silinir. Ondan yüz kötülük, o gün akşama kadar onu şeytandan koruyan bir şeydi ve ondan daha fazlasını yapandan başka hiç kimse onun getirdiğinden daha iyisini getirmemişti. Şöyle buyurdu: Kim günde yüz defa: Allah'ı tesbih ederim ve hamd O'na mahsustur derse, bu düşülür. Günahları denizin köpüğü kadar da olsa.",
+        "source": "[Buhari, Müslim, Muvatta ve Tirmizi'nin rivayet ettiği sahih hadis]"
+      }
+    },
+    {
+      "id": 53,
+      "title": "Yoldaki zararın giderilmesi",
+      "content": {
+        "narrator": "Ebu Hureyre (Allah ondan razı olsun)'den rivayet edildiğine göre o şöyle demiştir: Rasulullah (sallallahu aleyhi vesellem)'i şöyle derken işittim: Allah ona bereket versin ve ona huzur versin.",
+        "hadith": "Cennette bir adamın, Müslümanların yolundan kestiği ve insanlara zarar veren bir ağacın üzerinden dönüp gittiğini gördüm.",
+        "source": "[Müslim'in rivayet ettiği sahih hadis]",
+        "explanation": "Zararı yoldan kaldırmak Allah katında büyük bir iştir"
+      }
+    },
+    {
+      "id": 54,
+      "title": "Kız yetiştirmek",
+      "content": {
+        "narrator": "Ebu Said el-Hudri'den Allah ondan razı olsun, şöyle dedi: Allah'ın Elçisi, Allah onu kutsasın ve ona huzur versin, şöyle dedi:",
+        "hadith": "Kimin üç kızı veya üç kız kardeşi veya iki kızı veya iki kız kardeşi varsa, onlara iyi arkadaş olursa ve onlar hakkında Allah'tan korkarsa, o kimse cennete girer.",
+        "source": "[Ebu Davud ve Tirmizî'nin rivayet ettiği güzel bir hadis]"
+      }
+    },
+    {
+      "id": 55,
+      "title": "Hayvanlara karşı nezaket",
+      "content": {
+        "narrator": "Ebu Hureyre'den, Allah ondan razı olsun, Peygamber'den rivayetle, Allah onu kutsasın ve ona huzur versin",
+        "hadith": "Adamın biri, bir köpeğin susuzluktan toprak yediğini gördü, adam terliklerini alıp susuzluğunu giderene kadar onları aldı. Bunun üzerine Allah ona teşekkür etti ve onu cennete koydu.",
+        "source": "[Buhari'nin rivayet ettiği sahih hadis]",
+        "explanation": "Bir hayvana iyilik yaparsan bedeli cennettir"
+      }
+    },
+    {
+      "id": 56,
+      "title": "Tanrı'daki kardeşleri ziyaret etmek",
+      "content": {
+        "narrator": "Enes bin Malik'ten, Allah ondan razı olsun, Peygamber'den, Allah ondan razı olsun ve ona huzur versin, dedi.",
+        "hadith": "Size cennetteki adamlarınızın durumunu anlatayım mı? Biz de: Evet ey Allah'ın Resulü dedik. Şöyle buyurdu: Peygamber cennettedir, dost cennettedir, şehit cennettedir, yenidoğan cennettedir ve Mısır bölgesindeki kardeşini ziyaret eden kimse, Allah rızası dışında onu cennette ziyaret etmez.",
+        "source": "[Taberani'nin rivayet ettiği bir hadistir ki, onun adamları biri hariç Sahih'in adamlarıdır.]"
+      }
+    },
+    {
+      "id": 57,
+      "title": "İkiyüzlülüğü bırak",
+      "content": {
+        "narrator": "Ebu Umame El-Bahili'den (Allah ondan razı olsun) rivayete göre, Allah'ın Elçisi (Allah onu kutsasın ve ona huzur versin) şöyle dedi:",
+        "hadith": "Haklı bile olsa çekişmeyi bırakana cennetin kenarında bir köşk, şaka da olsa yalanı terk edene cennetin ortasında bir köşk, güzel ahlâk sahibi olana da cennetin tepesinde bir köşk verileceğine kefilim.",
+        "source": "[Ebu Davud'un sahih senedle rivayet ettiği bir hadis]",
+        "explanation": "Argüman: tartışmak, tartışmak"
+      }
+    },
+    {
+      "id": 58,
+      "title": "Kadının kocasına itaati",
+      "content": {
+        "narrator": "Ebu Hureyre'den Allah ondan râzı olsun, şöyle dedi: Resûlullah sallallahu aleyhi ve sellem şöyle buyurdu:",
+        "hadith": "Bir kadın beşinci namazını kılar, ay orucunu tutar, ırzını korur ve kocasına itaat ederse, cennetin hangi kapısından isterse girer.",
+        "source": "[Taberani ve İbn Hibban'ın rivayet ettiği sahih hadis]"
+      }
+    },
+    {
+      "id": 59,
+      "title": "İnsanlara hiçbir şey sormayın",
+      "content": {
+        "intro": "Kendine hizmet edebildiğin sürece kimseden bir şey isteme",
+        "narrator": "Sevban'dan Allah ondan razı olsun, Resûlullah sallallahu aleyhi ve sellem şöyle buyurmuştur:",
+        "hadith": "İnsanların hiçbir şey istemeyeceğini, ben de ona cenneti garanti edeceğimi bana kim garanti edebilir? Sevban, \"Ben\" dedi. Kimseye bir şey sormadı",
+        "source": "[Ebu Davud'un sahih senedle rivayet ettiği bir hadis]"
+      }
+    },
+    {
+      "id": 60,
+      "title": "Günahlardan iki rekat tövbe",
+      "content": {
+        "narrator": "Ebu Bekir (Allah ondan razı olsun)'den rivayet edildiğine göre o şöyle demiştir: Rasulullah (sallallahu aleyhi vesellem)'i şöyle derken işittim: Allah ona bereket versin ve ona huzur versin.",
+        "hadith": "Günah işledikten sonra kalkıp temizlenip dua eden, sonra Allah'tan bağışlanma dileyen, ancak kendisi bağışlanacak olan hiç kimse yoktur.",
+        "source": "[Tirmizî'nin rivayet ettiği güzel bir hadisten]",
+        "explanation": "Abdest alın, iki rekat namaz kılın ve bu iki rekatta Allah'tan bağışlanma dileyin, çünkü Cenâb-ı Hak sizin o günahınızı bağışlar."
+      }
+    }
+  ]
+}

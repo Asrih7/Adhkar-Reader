@@ -1,0 +1,402 @@
+[
+  {
+    "sonaId": "1",
+    "text": "Dormir con abluciones"
+  },
+  {
+    "sonaId": "2",
+    "text": "Lea Surat Al-Ikhlas y Al-Mu'awwidhatayn antes de dormir."
+  },
+  {
+    "sonaId": "3",
+    "text": "Takbir y glorificación en un sueño."
+  },
+  {
+    "sonaId": "4",
+    "text": "Súplica al despertar mientras duermes."
+  },
+  {
+    "sonaId": "5",
+    "text": "Súplica al despertar del sueño con la súplica mencionada."
+  },
+  {
+    "sonaId": "6",
+    "text": "Enjuagar e inhalar desde una habitación."
+  },
+  {
+    "sonaId": "7",
+    "text": "Ablución antes del lavado."
+  },
+  {
+    "sonaId": "8",
+    "text": "Tashahhud después de la ablución"
+  },
+  {
+    "sonaId": "9",
+    "text": "Economía del agua"
+  },
+  {
+    "sonaId": "10",
+    "text": "Rezar dos rak'ah después de la ablución"
+  },
+  {
+    "sonaId": "11",
+    "text": "Cantar con el muecín y luego rezar por el Profeta (que Dios lo bendiga y le conceda paz)"
+  },
+  {
+    "sonaId": "12",
+    "text": "Usa mucho siwak"
+  },
+  {
+    "sonaId": "13",
+    "text": "Llegando temprano a la mezquita."
+  },
+  {
+    "sonaId": "14",
+    "text": "Ir a la mezquita caminando"
+  },
+  {
+    "sonaId": "15",
+    "text": "Realizar la oración con serenidad y dignidad."
+  },
+  {
+    "sonaId": "16",
+    "text": "Súplica al entrar y salir de la mezquita."
+  },
+  {
+    "sonaId": "17",
+    "text": "Oración a Sitra"
+  },
+  {
+    "sonaId": "18",
+    "text": "Siéntate entre las dos postraciones"
+  },
+  {
+    "sonaId": "19",
+    "text": "Turco en el segundo tashahhud"
+  },
+  {
+    "sonaId": "20",
+    "text": "Hacer muchas súplicas antes del parto."
+  },
+  {
+    "sonaId": "21",
+    "text": "Cumplimiento de las normas salariales."
+  },
+  {
+    "sonaId": "22",
+    "text": "oración dhuha"
+  },
+  {
+    "sonaId": "23",
+    "text": "Oración nocturna"
+  },
+  {
+    "sonaId": "24",
+    "text": "oración witr"
+  },
+  {
+    "sonaId": "25",
+    "text": "Orando con sandalias si se logra su pureza."
+  },
+  {
+    "sonaId": "26",
+    "text": "Orando en la Mezquita de Quba"
+  },
+  {
+    "sonaId": "27",
+    "text": "Realizar oraciones voluntarias en casa."
+  },
+  {
+    "sonaId": "28",
+    "text": "oración istikhara"
+  },
+  {
+    "sonaId": "29",
+    "text": "Sentarse en el área de oración después de la oración del amanecer hasta que salga el sol."
+  },
+  {
+    "sonaId": "30",
+    "text": "bañarse el viernes"
+  },
+  {
+    "sonaId": "31",
+    "text": "Llegar temprano para la oración del viernes."
+  },
+  {
+    "sonaId": "32",
+    "text": "Consulta el horario de respuesta el viernes."
+  },
+  {
+    "sonaId": "33",
+    "text": "Ir a la sala de oración del Eid por un lado y regresar por otro."
+  },
+  {
+    "sonaId": "34",
+    "text": "Orando por el funeral"
+  },
+  {
+    "sonaId": "35",
+    "text": "Visitar cementerios"
+  },
+  {
+    "sonaId": "36",
+    "text": "Suhoor"
+  },
+  {
+    "sonaId": "37",
+    "text": "Apresurándose a romper el ayuno, si el sol se ha puesto"
+  },
+  {
+    "sonaId": "38",
+    "text": "oración de ramadán"
+  },
+  {
+    "sonaId": "39",
+    "text": "Itikaf durante el Ramadán, especialmente en los últimos diez días del mismo."
+  },
+  {
+    "sonaId": "40",
+    "text": "Ayuno de seis días de Shawwal"
+  },
+  {
+    "sonaId": "41",
+    "text": "Ayuno tres días de cada mes."
+  },
+  {
+    "sonaId": "42",
+    "text": "Ayuno el día de Arafat"
+  },
+  {
+    "sonaId": "43",
+    "text": "Ayuno el día de Ashura"
+  },
+  {
+    "sonaId": "44",
+    "text": "Elegir un príncipe para viajar"
+  },
+  {
+    "sonaId": "45",
+    "text": "Glorifica a Dios al ascender y glorifica a Dios al descender."
+  },
+  {
+    "sonaId": "46",
+    "text": "Súplica al descender sobre una casa."
+  },
+  {
+    "sonaId": "47",
+    "text": "Comience en la mezquita si ha regresado de un viaje."
+  },
+  {
+    "sonaId": "48",
+    "text": "Súplica al usar un vestido nuevo."
+  },
+  {
+    "sonaId": "49",
+    "text": "Usando la sandalia de la derecha"
+  },
+  {
+    "sonaId": "50",
+    "text": "Nombrar mientras come"
+  },
+  {
+    "sonaId": "51",
+    "text": "Alabado sea Dios después de comer y beber."
+  },
+  {
+    "sonaId": "52",
+    "text": "Sentarse mientras bebe"
+  },
+  {
+    "sonaId": "53",
+    "text": "hacer gárgaras con leche"
+  },
+  {
+    "sonaId": "54",
+    "text": "No hay nada malo con la comida."
+  },
+  {
+    "sonaId": "55",
+    "text": "Comer con tres dedos"
+  },
+  {
+    "sonaId": "56",
+    "text": "Beber y recuperarse del agua de Zamzam"
+  },
+  {
+    "sonaId": "57",
+    "text": "Comer en Eid al-Fitr antes de ir a orar"
+  },
+  {
+    "sonaId": "58",
+    "text": "Leer más del Corán"
+  },
+  {
+    "sonaId": "59",
+    "text": "Mejorar tu voz leyendo el Corán"
+  },
+  {
+    "sonaId": "60",
+    "text": "Recuerda a Dios en cada situación."
+  },
+  {
+    "sonaId": "61",
+    "text": "Elogio"
+  },
+  {
+    "sonaId": "62",
+    "text": "El estornudo se regodeó"
+  },
+  {
+    "sonaId": "63",
+    "text": "Orar por el paciente"
+  },
+  {
+    "sonaId": "64",
+    "text": "Colocar la mano en el lugar del dolor, mientras se ora."
+  },
+  {
+    "sonaId": "65",
+    "text": "Súplica al escuchar el canto del gallo, y buscar refugio al escuchar el rebuzno del asno"
+  },
+  {
+    "sonaId": "66",
+    "text": "Súplica cuando cae la lluvia."
+  },
+  {
+    "sonaId": "67",
+    "text": "Recuerda a Dios al entrar a la casa."
+  },
+  {
+    "sonaId": "68",
+    "text": "Mención de Dios en el concilio"
+  },
+  {
+    "sonaId": "69",
+    "text": "Súplica al entrar al baño."
+  },
+  {
+    "sonaId": "70",
+    "text": "Orar cuando sopla el viento"
+  },
+  {
+    "sonaId": "71",
+    "text": "Orar cuando sopla el viento"
+  },
+  {
+    "sonaId": "72",
+    "text": "Súplica en tiempos de calamidad"
+  },
+  {
+    "sonaId": "73",
+    "text": "Revelando la paz"
+  },
+  {
+    "sonaId": "74",
+    "text": "Buscando conocimiento"
+  },
+  {
+    "sonaId": "75",
+    "text": "Pide permiso tres veces antes de entrar."
+  },
+  {
+    "sonaId": "76",
+    "text": "Matemáticas del recién nacido."
+  },
+  {
+    "sonaId": "77",
+    "text": "Aqeeqah para el recién nacido"
+  },
+  {
+    "sonaId": "78",
+    "text": "Exponiendo parte del cuerpo para que la lluvia pueda golpearlo."
+  },
+  {
+    "sonaId": "79",
+    "text": "clínica de pacientes"
+  },
+  {
+    "sonaId": "80",
+    "text": "Sonriente"
+  },
+  {
+    "sonaId": "81",
+    "text": "Visitando a Dios"
+  },
+  {
+    "sonaId": "82",
+    "text": "Un hombre le dice a su hermano que lo ama."
+  },
+  {
+    "sonaId": "83",
+    "text": "el respondio bostezando"
+  },
+  {
+    "sonaId": "84",
+    "text": "Pensar bien en las personas"
+  },
+  {
+    "sonaId": "85",
+    "text": "Ayudar a los padres con las tareas del hogar"
+  },
+  {
+    "sonaId": "86",
+    "text": "La Sunnah de Fitrah"
+  },
+  {
+    "sonaId": "87",
+    "text": "Patrocinio de huérfanos"
+  },
+  {
+    "sonaId": "88",
+    "text": "evitar la ira"
+  },
+  {
+    "sonaId": "89",
+    "text": "Llorando por temor a Dios"
+  },
+  {
+    "sonaId": "90",
+    "text": "Caridad continua"
+  },
+  {
+    "sonaId": "91",
+    "text": "Construyendo mezquitas"
+  },
+  {
+    "sonaId": "92",
+    "text": "Tolerancia en la compra y venta."
+  },
+  {
+    "sonaId": "93",
+    "text": "Eliminar daños de la carretera"
+  },
+  {
+    "sonaId": "94",
+    "text": "Caridad"
+  },
+  {
+    "sonaId": "95",
+    "text": "Haz muchas buenas obras durante los diez días de Dhul-Hijjah."
+  },
+  {
+    "sonaId": "96",
+    "text": "mata al gecko"
+  },
+  {
+    "sonaId": "97",
+    "text": "Está prohibido contarle a una persona todo lo que ha oído."
+  },
+  {
+    "sonaId": "98",
+    "text": "Calcular la pensión alimenticia para la familia."
+  },
+  {
+    "sonaId": "99",
+    "text": "Arena en circunvalación"
+  },
+  {
+    "sonaId": "100",
+    "text": "Seguir haciendo buenas obras, aunque sean pequeñas."
+  }
+]
