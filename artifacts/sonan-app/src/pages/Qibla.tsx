@@ -1,8 +1,9 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { MapPin, RefreshCw, Navigation2, ChevronDown } from "lucide-react";
+import { MapPin, RefreshCw, Navigation2 } from "lucide-react";
 import PageLayout from "@/components/PageLayout";
 import { useTranslation } from "@/hooks/useTranslation";
+import { getCachedLocation, setCachedLocation } from "@/hooks/useLocationCache";
 
 const KAABA_LAT = 21.4225;
 const KAABA_LON = 39.8264;
@@ -32,24 +33,6 @@ const CARDINALS = [
   { label: "NW", deg: 315 },
 ];
 
-const CITY_COORDS: Array<{ name: string; nameAr: string; lat: number; lon: number }> = [
-  { name: "Mecca",        nameAr: "مكة المكرمة",   lat: 21.4225,  lon: 39.8262 },
-  { name: "Medina",       nameAr: "المدينة المنورة",lat: 24.4672,  lon: 39.6150 },
-  { name: "Cairo",        nameAr: "القاهرة",        lat: 30.0444,  lon: 31.2357 },
-  { name: "Istanbul",     nameAr: "إسطنبول",        lat: 41.0082,  lon: 28.9784 },
-  { name: "Dubai",        nameAr: "دبي",            lat: 25.2048,  lon: 55.2708 },
-  { name: "Riyadh",       nameAr: "الرياض",         lat: 24.6877,  lon: 46.7219 },
-  { name: "Casablanca",   nameAr: "الدار البيضاء",  lat: 33.5731,  lon: -7.5898 },
-  { name: "Kuala Lumpur", nameAr: "كوالالمبور",     lat: 3.1390,   lon: 101.6869 },
-  { name: "London",       nameAr: "لندن",           lat: 51.5074,  lon: -0.1278 },
-  { name: "Paris",        nameAr: "باريس",          lat: 48.8566,  lon: 2.3522 },
-  { name: "Jakarta",      nameAr: "جاكرتا",         lat: -6.2088,  lon: 106.8456 },
-  { name: "Karachi",      nameAr: "كراتشي",         lat: 24.8607,  lon: 67.0011 },
-  { name: "New York",     nameAr: "نيويورك",        lat: 40.7128,  lon: -74.0060 },
-  { name: "Toronto",      nameAr: "تورنتو",         lat: 43.6510,  lon: -79.3470 },
-  { name: "Sydney",       nameAr: "سيدني",          lat: -33.8688, lon: 151.2093 },
-];
-
 export default function Qibla() {
   const { t, language } = useTranslation();
   const isRtl = language === "ar";
@@ -58,8 +41,6 @@ export default function Qibla() {
   const [locationInfo, setLocationInfo] = useState<{ lat: number; lon: number; accuracy: number } | null>(null);
   const [qibla, setQibla] = useState(0);
   const [heading, setHeading] = useState<number | null>(null);
-  const [showCityPicker, setShowCityPicker] = useState(false);
-  const [selectedCity, setSelectedCity] = useState<string>("");
 
   const listenerRef = useRef<((e: DeviceOrientationEvent) => void) | null>(null);
 
@@ -87,7 +68,22 @@ export default function Qibla() {
   const getLocation = useCallback(() => {
     setStage("locating");
     setHeading(null);
-    setShowCityPicker(false);
+
+    // Try cached location first
+    const cached = getCachedLocation();
+    if (cached) {
+      const loc = { lat: cached.lat, lon: cached.lon, accuracy: cached.accuracy };
+      setLocationInfo(loc);
+      setQibla(calcQibla(loc.lat, loc.lon));
+      if (!("DeviceOrientationEvent" in window)) {
+        setStage("no_sensor");
+      } else if (isIOS) {
+        setStage("needs_permission");
+      } else {
+        startListener();
+      }
+      return;
+    }
 
     if (!navigator.geolocation) {
       setStage("location_error");
@@ -99,7 +95,17 @@ export default function Qibla() {
         const loc = { lat: pos.coords.latitude, lon: pos.coords.longitude, accuracy: pos.coords.accuracy };
         setLocationInfo(loc);
         setQibla(calcQibla(loc.lat, loc.lon));
-        setSelectedCity("");
+        
+        // Cache the location
+        setCachedLocation({
+          lat: loc.lat,
+          lon: loc.lon,
+          accuracy: loc.accuracy,
+          timestamp: Date.now(),
+          source: "gps",
+          label: "Your location",
+        });
+
         if (!("DeviceOrientationEvent" in window)) {
           setStage("no_sensor");
         } else if (isIOS) {
@@ -112,28 +118,6 @@ export default function Qibla() {
       { enableHighAccuracy: true, timeout: 12000 }
     );
   }, [isIOS, startListener]);
-
-  const selectCity = (city: (typeof CITY_COORDS)[0]) => {
-    const loc = { lat: city.lat, lon: city.lon, accuracy: 0 };
-    setLocationInfo(loc);
-    setQibla(calcQibla(city.lat, city.lon));
-    setSelectedCity(language === "ar" ? city.nameAr : city.name);
-    setShowCityPicker(false);
-    if (!("DeviceOrientationEvent" in window)) {
-      setStage("no_sensor");
-    } else if (isIOS) {
-      setStage("needs_permission");
-    } else {
-      startListener();
-    }
-  };
-
-  useEffect(() => {
-    getLocation();
-    return () => {
-      if (listenerRef.current) window.removeEventListener("deviceorientation", listenerRef.current, true);
-    };
-  }, []);
 
   const requestIOSPermission = async () => {
     try {
@@ -157,60 +141,6 @@ export default function Qibla() {
       backHref="/"
     >
       <div className="pb-28 mt-4 flex flex-col items-center gap-5">
-
-        {/* ── City picker button (always visible) ── */}
-        <div className="w-full">
-          <button
-            onClick={() => setShowCityPicker((v) => !v)}
-            className="w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm font-medium transition-all"
-            style={{
-              background: "var(--gold-muted)",
-              border: "1px solid var(--gold-border)",
-              color: "var(--text-gold)",
-            }}
-          >
-            <span>
-              {selectedCity
-                ? (isRtl ? `المدينة: ${selectedCity}` : `City: ${selectedCity}`)
-                : (isRtl ? "اختر مدينة (اختياري)" : "Select a city (optional)")}
-            </span>
-            <ChevronDown
-              className="w-4 h-4 transition-transform"
-              style={{ transform: showCityPicker ? "rotate(180deg)" : "none" }}
-            />
-          </button>
-
-          <AnimatePresence>
-            {showCityPicker && (
-              <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: "auto" }}
-                exit={{ opacity: 0, height: 0 }}
-                className="overflow-hidden mt-2"
-              >
-                <div
-                  className="rounded-xl p-3 grid grid-cols-2 gap-2"
-                  style={{ background: "hsl(var(--card))", border: "1px solid var(--gold-border)" }}
-                >
-                  {CITY_COORDS.map((city) => (
-                    <button
-                      key={city.name}
-                      onClick={() => selectCity(city)}
-                      className="px-3 py-2 rounded-lg text-sm text-left transition-all"
-                      style={{
-                        background: "var(--bg-tertiary)",
-                        border: "1px solid var(--gold-border)",
-                        color: "var(--text-primary)",
-                      }}
-                    >
-                      {language === "ar" ? city.nameAr : city.name}
-                    </button>
-                  ))}
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
 
         {/* ── Locating ── */}
         {stage === "locating" && (
@@ -460,7 +390,7 @@ export default function Qibla() {
             <MapPin className="w-5 h-5 flex-shrink-0 mt-0.5" style={{ color: "var(--text-teal)" }} />
             <div className="flex-1 min-w-0">
               <p className="text-xs font-semibold mb-0.5" style={{ color: "var(--text-muted)" }}>
-                {selectedCity || (isRtl ? "موقعك" : "Your location")}
+                {isRtl ? "موقعك الحالي" : "Your current location"}
               </p>
               <p className="text-sm font-medium" style={{ color: "var(--text-primary)" }}>
                 {locationInfo.lat.toFixed(4)}°, {locationInfo.lon.toFixed(4)}°

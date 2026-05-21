@@ -3,7 +3,7 @@ import { Switch, Route, Router as WouterRouter } from "wouter";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { initDailyNotifications, getPermissionStatus, isNotificationEnabled } from "@/lib/notificationService";
+import { initDailyNotifications, isNotificationEnabled } from "@/lib/notificationService";
 import Navigation from "@/components/Navigation";
 import TranslationLoadingOverlay from "@/components/TranslationLoadingOverlay";
 import NotFound from "@/pages/not-found";
@@ -55,8 +55,8 @@ function Router() {
 
 function App() {
   useEffect(() => {
-    if (getPermissionStatus() === "granted" && isNotificationEnabled()) {
-      initDailyNotifications();
+    if (isNotificationEnabled()) {
+      void initDailyNotifications();
     }
   }, []);
 

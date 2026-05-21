@@ -3,8 +3,10 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Clock, Compass, BookOpen, Wind, RefreshCw } from "lucide-react";
 import { useTranslation } from "@/hooks/useTranslation";
+import { useContentTranslation } from "@/hooks/useContentTranslation";
 import { getTodayItems } from "@/lib/notificationService";
 import type { ContentItem } from "@/lib/contentData";
+import type { Language } from "@/lib/translations";
 
 /* ── Main content cards ── */
 const mainCards = [
@@ -33,6 +35,11 @@ function DailyDhikr({ language }: { language: string }) {
   const [items, setItems] = useState<ContentItem[]>([]);
   const { t } = useTranslation();
   const isRtl = language === "ar";
+  const { translatedItems } = useContentTranslation(
+    items,
+    language as Language
+  );
+  const translatedText = translatedItems[idx]?.translatedText;
 
   useEffect(() => {
     const loaded = getTodayItems();
@@ -83,6 +90,19 @@ function DailyDhikr({ language }: { language: string }) {
         </p>
         {item.source && (
           <p className="mt-1 text-xs" style={{ color: "var(--text-muted)" }}>📚 {item.source}</p>
+        )}
+        {!isRtl && (
+          <div
+            className="mt-3 px-3 py-2 rounded-xl"
+            style={{ background: "var(--teal-muted)", border: "1px solid var(--teal-border)" }}
+          >
+            <p
+              className="text-sm leading-relaxed"
+              style={{ color: "var(--text-teal)", direction: "ltr", textAlign: "left", lineHeight: 1.75 }}
+            >
+              {translatedText && translatedText !== item.arabic ? translatedText : item.arabic}
+            </p>
+          </div>
         )}
       </div>
     </motion.div>

@@ -68,7 +68,8 @@ export function useContentTranslation(
 
       try {
         const arabicTexts = items.map((item) => item.arabic);
-        const batchSize = 3; // Reduced batch size to avoid rate limiting
+        const isSmallSet = arabicTexts.length <= 6;
+        const batchSize = isSmallSet ? arabicTexts.length : 3;
         const translations: string[] = [];
 
         // Translate in batches with progress updates
@@ -79,8 +80,8 @@ export function useContentTranslation(
           
           console.log(`📦 Translating batch ${batchNum}/${totalBatches} (${batch.length} items)`);
 
-          // Translate with low concurrency (1 parallel request) to avoid rate limiting
-          const batchResults = await translateBatch(batch, targetLang, 1);
+          // Small daily reminder sets should feel instant; larger screens stay gentle on rate limits.
+          const batchResults = await translateBatch(batch, targetLang, isSmallSet ? 4 : 1);
           translations.push(...batchResults);
 
           // Update progress
@@ -89,7 +90,7 @@ export function useContentTranslation(
 
           // Add significant delay between batches to avoid API rate limiting (429 errors)
           // MyMemory has rate limits, so we space out requests
-          if (i + batchSize < arabicTexts.length) {
+          if (!isSmallSet && i + batchSize < arabicTexts.length) {
             await new Promise(resolve => setTimeout(resolve, 1500)); // 1.5 second delay
           }
         }

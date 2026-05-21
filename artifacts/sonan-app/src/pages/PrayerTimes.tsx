@@ -1,8 +1,9 @@
 import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { MapPin, RefreshCw, ChevronDown } from "lucide-react";
+import { MapPin, RefreshCw } from "lucide-react";
 import PageLayout from "@/components/PageLayout";
 import { useTranslation } from "@/hooks/useTranslation";
+import { getCachedLocation, setCachedLocation, clearLocationCache } from "@/hooks/useLocationCache";
 
 interface PrayerTime {
   nameKey: string;
@@ -10,21 +11,6 @@ interface PrayerTime {
   time: string;
   isNext?: boolean;
 }
-
-const POPULAR_CITIES = [
-  { name: "Mecca",     nameAr: "مكة المكرمة",  country: "SA" },
-  { name: "Medina",    nameAr: "المدينة المنورة",country: "SA" },
-  { name: "Cairo",     nameAr: "القاهرة",       country: "EG" },
-  { name: "Istanbul",  nameAr: "إسطنبول",       country: "TR" },
-  { name: "Dubai",     nameAr: "دبي",           country: "AE" },
-  { name: "Riyadh",    nameAr: "الرياض",        country: "SA" },
-  { name: "Casablanca",nameAr: "الدار البيضاء", country: "MA" },
-  { name: "Kuala Lumpur",nameAr: "كوالالمبور",  country: "MY" },
-  { name: "London",    nameAr: "لندن",          country: "GB" },
-  { name: "Paris",     nameAr: "باريس",         country: "FR" },
-  { name: "Jakarta",   nameAr: "جاكرتا",        country: "ID" },
-  { name: "Karachi",   nameAr: "كراتشي",        country: "PK" },
-];
 
 const PRAYER_KEYS: Array<{ key: string; nameAr: string; apiKey: string }> = [
   { key: "fajr",    nameAr: "الفجر",   apiKey: "Fajr" },
@@ -74,7 +60,6 @@ export default function PrayerTimes() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [countdown, setCountdown] = useState("");
-  const [showCityPicker, setShowCityPicker] = useState(false);
 
   const buildPrayers = useCallback((timings: Record<string, string>): PrayerTime[] => {
     return PRAYER_KEYS.map(({ key, nameAr, apiKey }) => ({
@@ -94,6 +79,17 @@ export default function PrayerTimes() {
         );
         const data = await res.json();
         if (data.code === 200 && data.data?.timings) {
+          // Cache the location
+          const meta = data.data?.meta || {};
+          const location = {
+            lat: meta?.latitude || 0,
+            lon: meta?.longitude || 0,
+            accuracy: 0,
+            timestamp: Date.now(),
+            source: "city" as const,
+            label,
+          };
+          setCachedLocation(location);
           setPrayers(markNext(buildPrayers(data.data.timings)));
           setCityLabel(label);
         } else {
@@ -112,8 +108,17 @@ export default function PrayerTimes() {
     setLoading(true);
     setError(false);
 
+    // Try to use cached location first
+    const cached = getCachedLocation();
+    if (cached && cached.source === "gps") {
+      // Reload prayer times from GPS coordinates
+      loadByCity(cached.label, "", cached.label);
+      return;
+    }
+
     if (!navigator.geolocation) {
-      loadByCity("Cairo", "EG", "Cairo");
+      setError(true);
+      setLoading(false);
       return;
     }
 
@@ -126,24 +131,38 @@ export default function PrayerTimes() {
           );
           const data = await res.json();
           if (data.code === 200 && data.data?.timings) {
+            const location = {
+              lat: latitude,
+              lon: longitude,
+              accuracy: pos.coords.accuracy,
+              timestamp: Date.now(),
+              source: "gps" as const,
+              label: data.data?.meta?.timezone || (isRtl ? "موقعك" : "Your location"),
+            };
+            setCachedLocation(location);
             setPrayers(markNext(buildPrayers(data.data.timings)));
-            const meta = data.data?.meta;
-            setCityLabel(meta?.timezone || isRtl ? "موقعك" : "Your location");
+            setCityLabel(location.label);
           } else {
-            loadByCity("Cairo", "EG", "Cairo");
+            setError(true);
           }
         } catch {
-          loadByCity("Cairo", "EG", "Cairo");
+          setError(true);
+        } finally {
+          setLoading(false);
         }
       },
-      () => loadByCity("Cairo", "EG", "Cairo"),
+      () => {
+        // Location access denied or unavailable - show error
+        setError(true);
+        setLoading(false);
+      },
       { enableHighAccuracy: false, timeout: 10000, maximumAge: 300_000 }
     );
   }, [buildPrayers, loadByCity, isRtl]);
 
   useEffect(() => {
     loadByGPS();
-  }, []);
+  }, [loadByGPS]);
 
   const nextPrayer = prayers.find((p) => p.isNext) || null;
 
@@ -164,29 +183,22 @@ export default function PrayerTimes() {
     >
       <div className="pb-24 mt-4 space-y-5">
 
-        {/* ── Location bar ── */}
-        <div className="flex items-center justify-between">
-          <button
-            onClick={() => setShowCityPicker((v) => !v)}
-            className="flex items-center gap-2 px-3 py-2 rounded-xl transition-all"
+        {/* ── Location Display & Refresh ── */}
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex items-center gap-2 px-3 py-2 rounded-xl flex-1"
             style={{
               background: "var(--gold-muted)",
               border: "1px solid var(--gold-border)",
               color: "var(--text-gold)",
-            }}
-          >
+            }}>
             <MapPin className="w-4 h-4 flex-shrink-0" />
-            <span className="text-sm font-medium truncate max-w-[140px]">
-              {cityLabel || (isRtl ? "اختر مدينة" : "Select city")}
+            <span className="text-sm font-medium truncate">
+              {cityLabel || (isRtl ? "جاري تحديد الموقع..." : "Detecting location...")}
             </span>
-            <ChevronDown
-              className="w-4 h-4 flex-shrink-0 transition-transform"
-              style={{ transform: showCityPicker ? "rotate(180deg)" : "none" }}
-            />
-          </button>
+          </div>
           <button
             onClick={loadByGPS}
-            className="p-2 rounded-xl transition-all"
+            className="p-2 rounded-xl transition-all flex-shrink-0"
             style={{
               background: "var(--gold-muted)",
               border: "1px solid var(--gold-border)",
@@ -196,41 +208,6 @@ export default function PrayerTimes() {
             <RefreshCw className="w-4 h-4" />
           </button>
         </div>
-
-        {/* ── City picker ── */}
-        <AnimatePresence>
-          {showCityPicker && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              exit={{ opacity: 0, height: 0 }}
-              className="overflow-hidden"
-            >
-              <div
-                className="rounded-2xl p-3 grid grid-cols-2 gap-2"
-                style={{ background: "hsl(var(--card))", border: "1px solid var(--gold-border)" }}
-              >
-                {POPULAR_CITIES.map((city) => (
-                  <button
-                    key={city.name}
-                    onClick={() => {
-                      loadByCity(city.name, city.country, language === "ar" ? city.nameAr : city.name);
-                      setShowCityPicker(false);
-                    }}
-                    className="px-3 py-2 rounded-xl text-sm font-medium text-left transition-all"
-                    style={{
-                      background: "var(--bg-tertiary)",
-                      border: "1px solid var(--gold-border)",
-                      color: "var(--text-primary)",
-                    }}
-                  >
-                    {language === "ar" ? city.nameAr : city.name}
-                  </button>
-                ))}
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
 
         {/* ── Loading ── */}
         {loading && (
@@ -251,7 +228,12 @@ export default function PrayerTimes() {
             style={{ background: "hsl(var(--card))", border: "1px solid rgba(239,68,68,0.3)" }}
           >
             <p className="font-semibold" style={{ color: "var(--text-primary)" }}>
-              {isRtl ? "تعذّر تحميل المواقيت" : "Could not load prayer times"}
+              {isRtl ? "تعذّر تحديد الموقع" : "Could not detect location"}
+            </p>
+            <p className="text-sm" style={{ color: "var(--text-muted)" }}>
+              {isRtl
+                ? "تأكد من تفعيل خدمة الموقع في هاتفك أو اختر مدينتك يدويًا"
+                : "Please enable location services on your device or select your city manually below"}
             </p>
             <button
               onClick={loadByGPS}

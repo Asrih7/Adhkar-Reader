@@ -6,7 +6,7 @@ import { useTranslation } from "@/hooks/useTranslation";
 import { useContentTranslation } from "@/hooks/useContentTranslation";
 import { useFavorites } from "@/hooks/useFavorites";
 import {
-  getTodayItems, refreshTodayItems, requestPermission, getPermissionStatus,
+  getTodayItems, refreshTodayItems, requestPermission, getPermissionStatus, getPermissionStatusAsync,
   isNotificationEnabled, setNotificationEnabled, getNotifHour, setNotifHour,
   initDailyNotifications, cancelDailyNotifications, sendNotifications,
 } from "@/lib/notificationService";
@@ -28,6 +28,58 @@ function formatHour(h: number): string {
   return `${display}:00 ${period}`;
 }
 
+function NotificationToggleRow({
+  checked,
+  isRtl,
+  onChange,
+}: {
+  checked: boolean;
+  isRtl: boolean;
+  onChange: () => void;
+}) {
+  return (
+    <motion.button
+      whileTap={{ scale: 0.985 }}
+      onClick={onChange}
+      className="w-full p-4 rounded-xl flex items-center gap-3"
+      style={{
+        direction: "ltr",
+        background: checked ? "var(--gold-muted)" : "hsl(var(--card))",
+        border: `${checked ? 2 : 1}px solid ${checked ? "var(--gold)" : "var(--gold-border)"}`,
+      }}
+    >
+      <span className="flex-shrink-0" style={{ color: checked ? "var(--text-teal)" : "var(--text-muted)" }}>
+        {checked ? <Bell className="w-5 h-5" /> : <BellOff className="w-5 h-5" />}
+      </span>
+
+      <div
+        className="flex-1 min-w-0"
+        style={{ direction: isRtl ? "rtl" : "ltr", textAlign: isRtl ? "right" : "left" }}
+      >
+        <p className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>
+          {isRtl ? "تفعيل التنبيهات اليومية" : "Daily Notifications"}
+        </p>
+        <p className="text-xs" style={{ color: "var(--text-muted)" }}>
+          {isRtl ? "٦ تذكيرات عشوائية كل يوم" : "6 random reminders every day"}
+        </p>
+      </div>
+
+      <div
+        className="flex-shrink-0 relative w-12 h-6 rounded-full transition-colors duration-200"
+        style={{ background: checked ? "var(--teal)" : "rgba(255,255,255,0.12)" }}
+      >
+        <motion.div
+          animate={{ x: checked ? 24 : 2 }}
+          initial={false}
+          transition={{ type: "spring", stiffness: 400, damping: 30 }}
+          className="absolute top-1 w-4 h-4 rounded-full bg-white shadow"
+          style={{ left: 0 }}
+        />
+      </div>
+    </motion.button>
+  );
+}
+
 export default function Notifications() {
   const { language, t } = useTranslation();
   const { isFavorite, toggleFavorite } = useFavorites();
@@ -42,25 +94,29 @@ export default function Notifications() {
   const { translatedItems, isTranslating, translationProgress } =
     useContentTranslation(dailyItems, language as Language);
 
-  useEffect(() => { setPermission(getPermissionStatus()); }, []);
+  useEffect(() => {
+    void getPermissionStatusAsync().then(setPermission);
+  }, []);
 
   const handleRequestPermission = async () => {
     const granted = await requestPermission();
     setPermission(granted ? "granted" : "denied");
-    if (granted && enabled) initDailyNotifications();
+    if (granted && enabled) void initDailyNotifications();
   };
 
   const handleToggleEnabled = (val: boolean) => {
     setEnabled(val);
     setNotificationEnabled(val);
-    if (val && permission === "granted") initDailyNotifications();
-    else cancelDailyNotifications();
+    if (val && permission === "granted") void initDailyNotifications();
+    else void cancelDailyNotifications();
   };
 
   const handleChangeHour = (h: number) => {
     setHour(h);
     setNotifHour(h);
-    if (enabled && permission === "granted") { cancelDailyNotifications(); initDailyNotifications(); }
+    if (enabled && permission === "granted") {
+      void cancelDailyNotifications().then(() => initDailyNotifications());
+    }
   };
 
   const handleRefresh = () => {
@@ -85,27 +141,11 @@ export default function Notifications() {
           </h3>
 
           <div className="space-y-2.5">
-            {/* Enable toggle */}
-            <div className="p-4 rounded-xl flex items-center justify-between"
-              style={{ background: "hsl(var(--card))", border: "1px solid var(--gold-border)" }}>
-              <div className="flex items-center gap-3">
-                {enabled ? <Bell className="w-5 h-5" style={{ color: "var(--text-teal)" }} /> : <BellOff className="w-5 h-5" style={{ color: "var(--text-muted)" }} />}
-                <div>
-                  <p className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>
-                    {isArabic ? "تفعيل التنبيهات اليومية" : "Daily Notifications"}
-                  </p>
-                  <p className="text-xs" style={{ color: "var(--text-muted)" }}>
-                    {isArabic ? "3 تذكيرات عشوائية كل يوم" : "3 random reminders every day"}
-                  </p>
-                </div>
-              </div>
-              <div className="w-11 h-6 rounded-full flex items-center px-1 cursor-pointer transition-all"
-                style={{ background: enabled ? "var(--teal)" : "hsl(var(--muted))" }}
-                onClick={() => handleToggleEnabled(!enabled)}>
-                <motion.div animate={{ x: enabled ? 20 : 0 }} transition={{ type: "spring", stiffness: 300, damping: 25 }}
-                  className="w-4 h-4 rounded-full bg-white shadow" />
-              </div>
-            </div>
+            <NotificationToggleRow
+              checked={enabled}
+              isRtl={isArabic}
+              onChange={() => handleToggleEnabled(!enabled)}
+            />
 
             {/* Permission */}
             <motion.button whileTap={{ scale: 0.98 }} onClick={permission === "default" ? handleRequestPermission : undefined}

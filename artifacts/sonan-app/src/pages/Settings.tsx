@@ -66,6 +66,207 @@ function OptionCard({
   );
 }
 
+const settingsCopy: Record<Language, Record<string, string>> = {
+  ar: {
+    translatingTitle: "جاري الترجمة...",
+    translatingDescription: "يتم ترجمة المحتوى في الخلفية",
+    appearance: "المظهر",
+    dark: "داكن",
+    nightMode: "خلفية ليلية",
+    light: "فاتح",
+    dayMode: "خلفية نهارية",
+    language: "اللغة",
+    directionNote: "سيتم تطبيق التغيير فوراً",
+    fontSize: "حجم الخط",
+    sampleText: "نص تجريبي",
+    audio: "الصوت",
+    appSounds: "أصوات التطبيق",
+    enabled: "مفعّل",
+    disabled: "معطّل",
+    offlineMode: "وضع بدون إنترنت",
+    downloadSuccess: "تم التنزيل بنجاح",
+    downloadFailed: "فشل التنزيل",
+    downloadData: "تنزيل البيانات",
+    rateApp: "قيّم التطبيق",
+    thanks: "شكراً على تقييمك!",
+    editReview: "تعديل التقييم",
+    question: "ما رأيك في التطبيق؟",
+    rating1: "ضعيف",
+    rating2: "مقبول",
+    rating3: "جيد",
+    rating4: "جيد جداً",
+    rating5: "ممتاز!",
+    commentPlaceholder: "أضف تعليقاً (اختياري)...",
+    submitReview: "إرسال التقييم",
+    aboutTitle: "تطبيق الأذكار والسنن",
+  },
+  en: {
+    translatingTitle: "Translating...",
+    translatingDescription: "Content is being translated in the background",
+    appearance: "Appearance",
+    dark: "Dark",
+    nightMode: "Night mode",
+    light: "Light",
+    dayMode: "Day mode",
+    language: "Language",
+    directionNote: "Direction and layout update immediately",
+    fontSize: "Font Size",
+    sampleText: "Sample Text",
+    audio: "Audio",
+    appSounds: "App Sounds",
+    enabled: "Enabled",
+    disabled: "Disabled",
+    offlineMode: "Offline Mode",
+    downloadSuccess: "Downloaded successfully",
+    downloadFailed: "Download failed",
+    downloadData: "Download Data",
+    rateApp: "Rate the App",
+    thanks: "Thank you for your feedback!",
+    editReview: "Edit review",
+    question: "How do you like the app?",
+    rating1: "Poor",
+    rating2: "Fair",
+    rating3: "Good",
+    rating4: "Very Good",
+    rating5: "Excellent!",
+    commentPlaceholder: "Add a comment (optional)...",
+    submitReview: "Submit Review",
+    aboutTitle: "Adhkar & Sonan App",
+  },
+  fr: {
+    translatingTitle: "Traduction...",
+    translatingDescription: "Le contenu est traduit en arrière-plan",
+    appearance: "Apparence",
+    dark: "Sombre",
+    nightMode: "Mode nuit",
+    light: "Clair",
+    dayMode: "Mode jour",
+    language: "Langue",
+    directionNote: "La direction et la mise en page se mettent à jour immédiatement",
+    fontSize: "Taille de police",
+    sampleText: "Texte d'exemple",
+    audio: "Audio",
+    appSounds: "Sons de l'application",
+    enabled: "Activé",
+    disabled: "Désactivé",
+    offlineMode: "Mode hors ligne",
+    downloadSuccess: "Téléchargé avec succès",
+    downloadFailed: "Échec du téléchargement",
+    downloadData: "Télécharger les données",
+    rateApp: "Évaluer l'application",
+    thanks: "Merci pour votre avis !",
+    editReview: "Modifier l'avis",
+    question: "Que pensez-vous de l'application ?",
+    rating1: "Mauvais",
+    rating2: "Correct",
+    rating3: "Bon",
+    rating4: "Très bon",
+    rating5: "Excellent !",
+    commentPlaceholder: "Ajouter un commentaire (facultatif)...",
+    submitReview: "Envoyer l'avis",
+    aboutTitle: "Application Adhkar et Sonan",
+  },
+  es: {
+    translatingTitle: "Traduciendo...",
+    translatingDescription: "El contenido se está traduciendo en segundo plano",
+    appearance: "Apariencia",
+    dark: "Oscuro",
+    nightMode: "Modo nocturno",
+    light: "Claro",
+    dayMode: "Modo diurno",
+    language: "Idioma",
+    directionNote: "La dirección y el diseño se actualizan inmediatamente",
+    fontSize: "Tamaño de fuente",
+    sampleText: "Texto de muestra",
+    audio: "Audio",
+    appSounds: "Sonidos de la aplicación",
+    enabled: "Activado",
+    disabled: "Desactivado",
+    offlineMode: "Modo sin conexión",
+    downloadSuccess: "Descargado correctamente",
+    downloadFailed: "Error de descarga",
+    downloadData: "Descargar datos",
+    rateApp: "Calificar la aplicación",
+    thanks: "¡Gracias por tu opinión!",
+    editReview: "Editar reseña",
+    question: "¿Qué te parece la aplicación?",
+    rating1: "Malo",
+    rating2: "Regular",
+    rating3: "Bueno",
+    rating4: "Muy bueno",
+    rating5: "¡Excelente!",
+    commentPlaceholder: "Agrega un comentario (opcional)...",
+    submitReview: "Enviar reseña",
+    aboutTitle: "Aplicación Adhkar y Sonan",
+  },
+  tr: {
+    translatingTitle: "Çevriliyor...",
+    translatingDescription: "İçerik arka planda çevriliyor",
+    appearance: "Görünüm",
+    dark: "Koyu",
+    nightMode: "Gece modu",
+    light: "Açık",
+    dayMode: "Gündüz modu",
+    language: "Dil",
+    directionNote: "Yön ve düzen hemen güncellenir",
+    fontSize: "Yazı Tipi Boyutu",
+    sampleText: "Örnek Metin",
+    audio: "Ses",
+    appSounds: "Uygulama Sesleri",
+    enabled: "Etkin",
+    disabled: "Devre dışı",
+    offlineMode: "Çevrimdışı Mod",
+    downloadSuccess: "Başarıyla indirildi",
+    downloadFailed: "İndirme başarısız",
+    downloadData: "Verileri İndir",
+    rateApp: "Uygulamayı Değerlendir",
+    thanks: "Geri bildiriminiz için teşekkürler!",
+    editReview: "İncelemeyi düzenle",
+    question: "Uygulamayı nasıl buldunuz?",
+    rating1: "Kötü",
+    rating2: "Orta",
+    rating3: "İyi",
+    rating4: "Çok iyi",
+    rating5: "Mükemmel!",
+    commentPlaceholder: "Yorum ekleyin (isteğe bağlı)...",
+    submitReview: "İncelemeyi Gönder",
+    aboutTitle: "Adhkar ve Sonan Uygulaması",
+  },
+  id: {
+    translatingTitle: "Menerjemahkan...",
+    translatingDescription: "Konten sedang diterjemahkan di latar belakang",
+    appearance: "Tampilan",
+    dark: "Gelap",
+    nightMode: "Mode malam",
+    light: "Terang",
+    dayMode: "Mode siang",
+    language: "Bahasa",
+    directionNote: "Arah dan tata letak langsung diperbarui",
+    fontSize: "Ukuran Font",
+    sampleText: "Teks Contoh",
+    audio: "Audio",
+    appSounds: "Suara Aplikasi",
+    enabled: "Aktif",
+    disabled: "Nonaktif",
+    offlineMode: "Mode Offline",
+    downloadSuccess: "Berhasil diunduh",
+    downloadFailed: "Unduhan gagal",
+    downloadData: "Unduh Data",
+    rateApp: "Beri Nilai Aplikasi",
+    thanks: "Terima kasih atas masukan Anda!",
+    editReview: "Edit ulasan",
+    question: "Bagaimana pendapat Anda tentang aplikasi ini?",
+    rating1: "Buruk",
+    rating2: "Cukup",
+    rating3: "Baik",
+    rating4: "Sangat baik",
+    rating5: "Luar biasa!",
+    commentPlaceholder: "Tambahkan komentar (opsional)...",
+    submitReview: "Kirim Ulasan",
+    aboutTitle: "Aplikasi Adhkar & Sonan",
+  },
+};
+
 /* ─────────────────────────────────────────
    Toggle row — always LTR layout so the
    toggle pill stays on the right regardless
@@ -167,22 +368,15 @@ export default function Settings() {
   const { theme, setTheme } = useTheme();
   const { t, language, switchLanguage } = useTranslation();
   const { toast } = useToast();
+  const st = (key: string) => settingsCopy[language][key] ?? settingsCopy.en[key] ?? key;
 
   const handleSwitchLanguage = (lang: Language) => {
     if (lang === language) return;
     switchLanguage(lang);
     if (lang !== "ar") {
       toast({
-        title: "جاري الترجمة... Translating content",
-        description: lang === "en"
-          ? "Content is being translated in the background"
-          : lang === "fr"
-          ? "Le contenu est en cours de traduction"
-          : lang === "es"
-          ? "El contenido se está traduciendo"
-          : lang === "tr"
-          ? "İçerik çevriliyor"
-          : "Konten sedang diterjemahkan",
+        title: settingsCopy[lang].translatingTitle,
+        description: settingsCopy[lang].translatingDescription,
         duration: 4000,
       });
     }
@@ -252,7 +446,7 @@ export default function Settings() {
           transition={{ delay: sectionDelay[0] }}
         >
           <SectionTitle icon={<Sun className="w-4 h-4" />}>
-            المظهر · Appearance
+            {st("appearance")}
           </SectionTitle>
           <div className="grid grid-cols-2 gap-3">
             {/* Dark */}
@@ -260,10 +454,10 @@ export default function Settings() {
               <Moon className="w-5 h-5 flex-shrink-0" style={{ color: "var(--text-gold)" }} />
               <div className="flex-1 text-left">
                 <p className="font-semibold text-sm" style={{ color: "var(--text-primary)" }}>
-                  {language === "ar" ? "داكن" : "Dark"}
+                  {st("dark")}
                 </p>
                 <p className="text-xs" style={{ color: "var(--text-muted)" }}>
-                  {language === "ar" ? "خلفية ليلية" : "Night mode"}
+                  {st("nightMode")}
                 </p>
               </div>
               {theme === "dark" && (
@@ -276,10 +470,10 @@ export default function Settings() {
               <Sun className="w-5 h-5 flex-shrink-0" style={{ color: "var(--text-gold)" }} />
               <div className="flex-1 text-left">
                 <p className="font-semibold text-sm" style={{ color: "var(--text-primary)" }}>
-                  {language === "ar" ? "فاتح" : "Light"}
+                  {st("light")}
                 </p>
                 <p className="text-xs" style={{ color: "var(--text-muted)" }}>
-                  {language === "ar" ? "خلفية نهارية" : "Day mode"}
+                  {st("dayMode")}
                 </p>
               </div>
               {theme === "light" && (
@@ -296,7 +490,7 @@ export default function Settings() {
           transition={{ delay: sectionDelay[1] }}
         >
           <SectionTitle icon={<Globe className="w-4 h-4" />}>
-            اللغة · Language
+            {st("language")}
           </SectionTitle>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-2.5">
             {languages.map((lang) => {
@@ -340,9 +534,7 @@ export default function Settings() {
             className="mt-2 text-xs text-center"
             style={{ color: "var(--text-muted)" }}
           >
-            {language === "ar"
-              ? "سيتم تطبيق التغيير فوراً"
-              : "Direction & layout update immediately"}
+            {st("directionNote")}
           </p>
         </motion.section>
 
@@ -353,7 +545,7 @@ export default function Settings() {
           transition={{ delay: sectionDelay[2] }}
         >
           <SectionTitle icon={<Type className="w-4 h-4" />}>
-            {language === "ar" ? "حجم الخط" : "Font Size"}
+            {st("fontSize")}
           </SectionTitle>
           <div
             className="p-4 rounded-xl space-y-3"
@@ -384,7 +576,7 @@ export default function Settings() {
                 style={{ fontSize: `${fontSize}px`, color: "var(--text-primary)" }}
                 className="font-medium leading-relaxed"
               >
-                نص تجريبي · Sample Text
+                {st("sampleText")}
               </p>
             </div>
           </div>
@@ -397,12 +589,12 @@ export default function Settings() {
           transition={{ delay: sectionDelay[3] }}
         >
           <SectionTitle icon={<Volume2 className="w-4 h-4" />}>
-            {language === "ar" ? "الصوت" : "Audio"}
+            {st("audio")}
           </SectionTitle>
           <ToggleRow
             icon={<Volume2 className="w-5 h-5" />}
-            label={language === "ar" ? "أصوات التطبيق" : "App Sounds"}
-            sublabel={soundEnabled ? (language === "ar" ? "مفعّل" : "Enabled") : (language === "ar" ? "معطّل" : "Disabled")}
+            label={st("appSounds")}
+            sublabel={soundEnabled ? st("enabled") : st("disabled")}
             checked={soundEnabled}
             isRtl={language === "ar"}
             onChange={() => setSoundEnabled((v) => !v)}
@@ -416,13 +608,13 @@ export default function Settings() {
           transition={{ delay: sectionDelay[4] }}
         >
           <SectionTitle icon={<Download className="w-4 h-4" />}>
-            {language === "ar" ? "وضع بدون إنترنت" : "Offline Mode"}
+            {st("offlineMode")}
           </SectionTitle>
           <div className="space-y-2.5">
             <ToggleRow
               icon={<Smartphone className="w-5 h-5" />}
-              label={language === "ar" ? "وضع بدون إنترنت" : "Offline Mode"}
-              sublabel={offlineMode ? (language === "ar" ? "مفعّل" : "Enabled") : (language === "ar" ? "معطّل" : "Disabled")}
+              label={st("offlineMode")}
+              sublabel={offlineMode ? st("enabled") : st("disabled")}
               checked={offlineMode}
               isRtl={language === "ar"}
               onChange={() => setOfflineMode((v) => !v)}
@@ -443,14 +635,14 @@ export default function Settings() {
                 onClick={async () => {
                   try {
                     await fetch("/data/adhkar-data.json").then((r) => r.json());
-                    alert(language === "ar" ? "تم التنزيل بنجاح ✓" : "Downloaded successfully ✓");
+                    alert(`${st("downloadSuccess")} ✓`);
                   } catch {
-                    alert(language === "ar" ? "فشل التنزيل" : "Download failed");
+                    alert(st("downloadFailed"));
                   }
                 }}
               >
                 <Download className="w-4 h-4" />
-                {language === "ar" ? "تنزيل البيانات" : "Download Data"}
+                {st("downloadData")}
               </motion.button>
             )}
           </div>
@@ -463,7 +655,7 @@ export default function Settings() {
           transition={{ delay: sectionDelay[5] }}
         >
           <SectionTitle icon={<Star className="w-4 h-4" />}>
-            {language === "ar" ? "قيّم التطبيق" : "Rate the App"}
+            {st("rateApp")}
           </SectionTitle>
 
           <div
@@ -482,7 +674,7 @@ export default function Settings() {
               >
                 <div className="text-4xl mb-2">🌟</div>
                 <p className="font-bold text-base" style={{ color: "var(--text-primary)" }}>
-                  {language === "ar" ? "شكراً على تقييمك!" : "Thank you for your feedback!"}
+                  {st("thanks")}
                 </p>
                 <div className="flex justify-center gap-0.5">
                   {[1, 2, 3, 4, 5].map((s) => (
@@ -510,16 +702,14 @@ export default function Settings() {
                   className="text-xs mt-2"
                   style={{ color: "var(--text-muted)" }}
                 >
-                  {language === "ar" ? "تعديل التقييم" : "Edit review"}
+                  {st("editReview")}
                 </button>
               </motion.div>
             ) : (
               /* Rating form */
               <div className="space-y-4">
                 <p className="text-sm font-medium text-center" style={{ color: "var(--text-secondary)" }}>
-                  {language === "ar"
-                    ? "ما رأيك في التطبيق؟"
-                    : "How do you like the app?"}
+                  {st("question")}
                 </p>
 
                 {/* Stars */}
@@ -529,9 +719,7 @@ export default function Settings() {
 
                 {rating > 0 && (
                   <p className="text-center text-xs" style={{ color: "var(--text-muted)" }}>
-                    {["", "ضعيف", "مقبول", "جيد", "جيد جداً", "ممتاز!"][rating]}
-                    {" · "}
-                    {["", "Poor", "Fair", "Good", "Very Good", "Excellent!"][rating]}
+                    {st(`rating${rating}`)}
                   </p>
                 )}
 
@@ -544,9 +732,7 @@ export default function Settings() {
                   <textarea
                     rows={3}
                     placeholder={
-                      language === "ar"
-                        ? "أضف تعليقاً (اختياري)..."
-                        : "Add a comment (optional)..."
+                      st("commentPlaceholder")
                     }
                     value={reviewText}
                     onChange={(e) => setReviewText(e.target.value)}
@@ -570,7 +756,7 @@ export default function Settings() {
                     cursor: rating ? "pointer" : "not-allowed",
                   }}
                 >
-                  {language === "ar" ? "إرسال التقييم" : "Submit Review"}
+                  {st("submitReview")}
                 </motion.button>
               </div>
             )}
@@ -591,7 +777,7 @@ export default function Settings() {
           <Info className="w-5 h-5 flex-shrink-0" style={{ color: "var(--text-teal)" }} />
           <div className="flex-1">
             <p className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>
-              {language === "ar" ? "تطبيق الأذكار والسنن" : "Adhkar & Sonan App"}
+              {st("aboutTitle")}
             </p>
             <p className="text-xs" style={{ color: "var(--text-muted)" }}>
               v1.0.0 · SA7Tech
