@@ -14,6 +14,7 @@ const CATEGORY_LABEL: Record<string, string> = {
   sleepingSonan: "سنن النوم",       homeSonan: "سنن المنزل",
   advices: "نصائح الحياة",          marriageAdvice: "نصائح الزواج",
   wifeTips: "سنن مع الزوجة",
+  forgettableSonan: "السنن المنسية",
 };
 
 const CATEGORY_LABEL_EN: Record<string, string> = {
@@ -23,6 +24,7 @@ const CATEGORY_LABEL_EN: Record<string, string> = {
   sleepingSonan: "Sleeping Sonan",   homeSonan: "Home Sonan",
   advices: "Life Advice",            marriageAdvice: "Marriage Advice",
   wifeTips: "Wife Tips",
+  forgettableSonan: "Forgotten Sunnah",
 };
 
 function ProgressBar({ progress }: { progress: number }) {

@@ -15,7 +15,9 @@ import SonanDetail from "@/pages/SonanDetail";
 import Advices from "@/pages/Advices";
 import AdvicesDetail from "@/pages/AdvicesDetail";
 import ForgettableSonan from "@/pages/ForgettableSonan";
+import ForgettableSonanDetail from "@/pages/ForgettableSonanDetail";
 import SonanWithWife from "@/pages/SonanWithWife";
+import SonanWithWifeDetail from "@/pages/SonanWithWifeDetail";
 import Tasbeeh from "@/pages/Tasbeeh";
 import PrayerTimes from "@/pages/PrayerTimes";
 import Qibla from "@/pages/Qibla";
@@ -39,7 +41,9 @@ function Router() {
       <Route path="/advices" component={Advices} />
       <Route path="/advices/:id" component={AdvicesDetail} />
       <Route path="/forgettable" component={ForgettableSonan} />
+      <Route path="/forgettable/:id" component={ForgettableSonanDetail} />
       <Route path="/wife" component={SonanWithWife} />
+      <Route path="/wife/:id" component={SonanWithWifeDetail} />
       <Route path="/tasbeeh" component={Tasbeeh} />
       <Route path="/prayer-times" component={PrayerTimes} />
       <Route path="/qibla" component={Qibla} />

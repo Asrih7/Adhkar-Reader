@@ -1,92 +1,100 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useLocation } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
 import PageLayout from "@/components/PageLayout";
 import { useTranslation } from "@/hooks/useTranslation";
 
-const TOTAL = 30;
+interface TextItem {
+  id: string;
+  title: string;
+  text: string;
+  source?: string;
+  category: string;
+}
+
+interface TextCollection {
+  title: string;
+  subtitle: string;
+  items: TextItem[];
+}
+
+const container = { hidden: {}, show: { transition: { staggerChildren: 0.03 } } };
+const rowAnim = { hidden: { opacity: 0, y: 10 }, show: { opacity: 1, y: 0, transition: { duration: 0.3 } } };
 
 export default function ForgettableSonan() {
-  const [current, setCurrent] = useState(1);
-  const [direction, setDirection] = useState(0);
-  const { t } = useTranslation();
+  const [, navigate] = useLocation();
+  const { language, t } = useTranslation();
+  const [data, setData] = useState<TextCollection | null>(null);
+  const [loading, setLoading] = useState(true);
+  const isRtl = language === "ar";
 
-  const goTo = (next: number) => {
-    if (next < 1 || next > TOTAL) return;
-    setDirection(next > current ? -1 : 1);
-    setCurrent(next);
-  };
+  useEffect(() => {
+    setLoading(true);
+    const file = language === "ar" ? "forgettable-sonan-data.json" : `forgettable-sonan-data.${language}.json`;
+
+    fetch(`${import.meta.env.BASE_URL}data/${file}`)
+      .then((r) => r.ok ? r.json() : fetch(`${import.meta.env.BASE_URL}data/forgettable-sonan-data.json`).then((r2) => r2.json()))
+      .then((json: TextCollection) => { setData(json); setLoading(false); })
+      .catch(() => setLoading(false));
+  }, [language]);
 
   return (
-    <PageLayout title={t("forgettableSonan")} subtitle={`${current} من ${TOTAL}`} backHref="/">
-      <div className="pt-6 pb-10">
-        {/* Image viewer */}
-        <div className="relative rounded-2xl overflow-hidden mb-6" style={{ background: "rgba(13,35,24,0.8)", border: "1px solid rgba(212,175,55,0.15)", minHeight: "70vw", maxHeight: "70vh" }}>
-          <AnimatePresence mode="wait" custom={direction}>
-            <motion.img
-              key={current}
-              src={`${import.meta.env.BASE_URL}img/SM${current}.jpg`}
-              alt={`سنة منسية ${current}`}
-              className="w-full h-full object-contain"
-              style={{ maxHeight: "70vh" }}
-              custom={direction}
-              initial={{ opacity: 0, x: direction * 60 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -direction * 60 }}
-              transition={{ duration: 0.28, ease: "easeInOut" }}
-              onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
-            />
-          </AnimatePresence>
-        </div>
-
-        {/* Controls */}
-        <div className="flex items-center justify-between gap-4">
-          <button
-            onClick={() => goTo(current + 1)}
-            disabled={current >= TOTAL}
-            className="flex-1 py-3.5 rounded-2xl font-bold text-sm transition-all disabled:opacity-30"
-            style={{
-              background: current < TOTAL ? "rgba(212,175,55,0.15)" : "rgba(255,255,255,0.04)",
-              border: "1px solid rgba(212,175,55,0.2)",
-              color: "#d4af37",
-            }}
-          >
-            التالي →
-          </button>
-
-          {/* Dots */}
-          <div className="flex gap-1 flex-wrap justify-center" style={{ maxWidth: "120px" }}>
-            {[...Array(TOTAL)].map((_, i) => (
-              <button
-                key={i}
-                onClick={() => goTo(i + 1)}
-                className="rounded-full transition-all"
-                style={{
-                  width: i + 1 === current ? "16px" : "5px",
-                  height: "5px",
-                  background: i + 1 === current ? "#d4af37" : "rgba(212,175,55,0.25)",
-                }}
-              />
-            ))}
+    <PageLayout title={t("forgettableSonan")} subtitle={data?.subtitle ?? t("forgettableSonanSubtitle")} backHref="/">
+      <div className="pt-4 pb-10">
+        {!loading && data && (
+          <div className="mb-4 flex items-center justify-end">
+            <span
+              className="text-xs font-bold px-3 py-1 rounded-full"
+              style={{ background: "var(--gold-muted)", color: "var(--text-gold)", border: "1px solid var(--gold-border)" }}
+            >
+              {isRtl ? `${data.items.length} سنة` : `${data.items.length} Sunnahs`}
+            </span>
           </div>
+        )}
 
-          <button
-            onClick={() => goTo(current - 1)}
-            disabled={current <= 1}
-            className="flex-1 py-3.5 rounded-2xl font-bold text-sm transition-all disabled:opacity-30"
-            style={{
-              background: current > 1 ? "rgba(212,175,55,0.15)" : "rgba(255,255,255,0.04)",
-              border: "1px solid rgba(212,175,55,0.2)",
-              color: "#d4af37",
-            }}
-          >
-            ← السابق
-          </button>
-        </div>
+        <AnimatePresence>
+          {loading && (
+            <motion.div key="skeleton" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+              <div className="space-y-2">
+                {[...Array(10)].map((_, i) => (
+                  <div key={i} className="h-16 rounded-2xl animate-pulse"
+                    style={{ background: "var(--gold-muted)", border: "1px solid var(--gold-border)" }} />
+                ))}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
-        {/* Page indicator */}
-        <p className="text-center text-emerald-200/30 text-xs mt-4">
-          {current} / {TOTAL}
-        </p>
+        {!loading && data && (
+          <motion.div variants={container} initial="hidden" animate="show" className="space-y-2">
+            {data.items.map((item, idx) => (
+              <motion.div key={item.id} variants={rowAnim}>
+                <motion.button whileTap={{ scale: 0.97 }} onClick={() => navigate(`/forgettable/${item.id}`)} className="w-full">
+                  <div
+                    className="flex items-center gap-3 px-4 py-4 rounded-2xl"
+                    style={{ background: "hsl(var(--card))", border: "1px solid var(--gold-border)", direction: isRtl ? "rtl" : "ltr" }}
+                  >
+                    <span
+                      className="flex-shrink-0 w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold"
+                      style={{ background: "var(--gold-muted)", border: "1px solid var(--gold-border)", color: "var(--text-gold)" }}
+                    >
+                      {idx + 1}
+                    </span>
+                    <div className={`flex-1 min-w-0 ${isRtl ? "text-right" : "text-left"}`}>
+                      <p className="font-semibold text-sm leading-snug" style={{ color: "var(--text-primary)" }}>{item.title}</p>
+                      <p className="text-xs mt-1 line-clamp-2" style={{ color: "var(--text-muted)" }}>{item.text}</p>
+                    </div>
+                    <span style={{ color: "var(--text-gold)", transform: isRtl ? "none" : "scaleX(-1)" }}>
+                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
+                      </svg>
+                    </span>
+                  </div>
+                </motion.button>
+              </motion.div>
+            ))}
+          </motion.div>
+        )}
       </div>
     </PageLayout>
   );
