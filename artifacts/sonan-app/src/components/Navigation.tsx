@@ -71,7 +71,7 @@ function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) 
               }}
             >
               <h2 className="text-lg font-bold gold-text">
-                {language === "ar" ? "تطبيق الأذكار" : "Adhkar App"}
+                {t('appName')}
               </h2>
               <button
                 onClick={onClose}
@@ -185,7 +185,7 @@ function DesktopSidebar() {
         }}
       >
         <h2 className="text-lg font-bold gold-text">
-          {language === "ar" ? "تطبيق الأذكار" : "Adhkar App"}
+          {t('appName')}
         </h2>
       </div>
       <div className="p-3 space-y-0.5">

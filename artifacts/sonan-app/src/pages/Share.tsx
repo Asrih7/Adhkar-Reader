@@ -13,7 +13,7 @@ const socialPlatforms = [
 
 export default function Share() {
   const handleShare = (platform: string) => {
-    const shareText = "تطبيق الأذكار - تطبيق إسلامي جميل وسهل الاستخدام للأذكار والسنن والأدعية المأثورة";
+    const shareText = "سنن و نصائح الرسول - تطبيق إسلامي جميل وسهل الاستخدام للأذكار والسنن والأدعية المأثورة";
     const shareUrl = window.location.href;
 
     const urls: { [key: string]: string } = {
@@ -27,7 +27,7 @@ export default function Share() {
       window.open(urls[platform], "_blank", "width=600,height=400");
     } else {
       navigator.share?.({
-        title: "تطبيق الأذكار",
+        title: "سنن و نصائح الرسول",
         text: shareText,
         url: shareUrl,
       });

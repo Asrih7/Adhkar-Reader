@@ -35,7 +35,7 @@ function CardActions({
     try { await navigator.clipboard.writeText(shareText); setCopied(true); setTimeout(() => setCopied(false), 2000); } catch { /**/ }
   };
   const handleShare = async () => {
-    if (navigator.share) { try { await navigator.share({ title: "تطبيق الأذكار", text: shareText }); } catch { /**/ } } else handleCopy();
+    if (navigator.share) { try { await navigator.share({ title: "سنن و نصائح الرسول", text: shareText }); } catch { /**/ } } else handleCopy();
   };
 
   return (

@@ -123,7 +123,7 @@ self.addEventListener("push", (event: PushEvent) => {
 
   event.waitUntil(
     self.registration.showNotification(
-      data.title || "تطبيق الأذكار",
+      data.title || "سنن و نصائح الرسول",
       config as NotificationOptions
     )
   );

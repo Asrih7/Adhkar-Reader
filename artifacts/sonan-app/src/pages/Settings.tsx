@@ -98,7 +98,7 @@ const settingsCopy: Record<Language, Record<string, string>> = {
     rating5: "ممتاز!",
     commentPlaceholder: "أضف تعليقاً (اختياري)...",
     submitReview: "إرسال التقييم",
-    aboutTitle: "تطبيق الأذكار والسنن",
+    aboutTitle: "سنن و نصائح الرسول",
   },
   en: {
     translatingTitle: "Translating...",
