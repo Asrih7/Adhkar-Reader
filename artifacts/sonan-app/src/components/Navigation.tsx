@@ -6,6 +6,7 @@ import {
   Book, Headphones, Bell, Star, Share2, Settings, Menu, X,
 } from "lucide-react";
 import { useTranslation } from "@/hooks/useTranslation";
+import { useMenu } from "@/contexts/MenuContext";
 
 interface NavItem {
   href: string;
@@ -29,13 +30,13 @@ const navItems: NavItem[] = [
   { href: "/settings",     labelKey: "settings",     icon: <Settings  className="w-5 h-5" /> },
 ];
 
-/* Bottom nav shows: Home, Adhkar, Prayer Times, Favorites, Settings */
+/* Bottom nav shows: Home, Adhkar, Prayer Times, Favorites, Share, Settings */
 const bottomNavItems: NavItem[] = [
   { href: "/",             labelKey: "home",         icon: <Home      className="w-5 h-5" /> },
   { href: "/adhkar",       labelKey: "adhkar",       icon: <Zap       className="w-5 h-5" /> },
   { href: "/prayer-times", labelKey: "prayerTimes",  icon: <Clock     className="w-5 h-5" /> },
   { href: "/favorites",    labelKey: "favorites",    icon: <Star      className="w-5 h-5" /> },
-  { href: "/settings",     labelKey: "settings",     icon: <Settings  className="w-5 h-5" /> },
+  { href: "/share",        labelKey: "share",        icon: <Share2    className="w-5 h-5" /> },
 ];
 
 /* ── Sidebar (mobile overlay) ── */
@@ -61,9 +62,11 @@ function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) 
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
             className="fixed inset-y-0 left-0 w-72 z-50 glass overflow-y-auto"
             style={{ borderRight: "1px solid var(--gold-border)" }}
+            role="navigation"
+            aria-label={t("menu") || "Menu"}
           >
             <div
-              className="sticky top-0 flex items-center justify-between p-4"
+              className="sticky top-0 flex items-center justify-between px-4 py-2"
               style={{
                 borderBottom: "1px solid var(--gold-border)",
                 background: "hsl(var(--card)/80%)",
@@ -82,7 +85,7 @@ function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) 
               </button>
             </div>
 
-            <div className="p-3 space-y-0.5">
+            <div className="px-3 pt-0 pb-3 space-y-0.5">
               {navItems.map((item, i) => {
                 const isActive = location === item.href;
                 return (
@@ -94,7 +97,9 @@ function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) 
                   >
                     <Link
                       href={item.href}
-                      onClick={onClose}
+                      onClick={(e) => {
+                        onClose();
+                      }}
                       className="flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all"
                       style={{
                         background: isActive ? "var(--gold-muted)" : "transparent",
@@ -132,6 +137,8 @@ function BottomNav() {
     <nav
       className="fixed bottom-0 left-0 right-0 z-40 glass safe-bottom"
       style={{ borderTop: "1px solid var(--gold-border)" }}
+      role="navigation"
+      aria-label={t("navigation") || "Main navigation"}
     >
       <div className="flex justify-around items-center max-w-screen-lg mx-auto">
         {bottomNavItems.map((item) => {
@@ -221,7 +228,8 @@ function DesktopSidebar() {
 
 /* ── Main export ── */
 export default function Navigation() {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const { t } = useTranslation();
+  const { sidebarOpen, setSidebarOpen } = useMenu();
   const [isMobile, setIsMobile] = useState(
     typeof window !== "undefined" ? window.innerWidth < 768 : true
   );
@@ -236,19 +244,6 @@ export default function Navigation() {
     <>
       {isMobile ? (
         <>
-          <motion.button
-            whileTap={{ scale: 0.92 }}
-            onClick={() => setSidebarOpen(true)}
-            className="fixed top-3.5 left-4 z-30 p-2 rounded-xl"
-            style={{
-              background: "var(--gold-muted)",
-              border: "1px solid var(--gold-border)",
-              color: "var(--text-gold)",
-            }}
-          >
-            <Menu className="w-5 h-5" />
-          </motion.button>
-
           <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
           <BottomNav />
         </>

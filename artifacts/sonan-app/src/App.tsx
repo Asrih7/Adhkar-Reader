@@ -4,6 +4,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { initDailyNotifications, isNotificationEnabled } from "@/lib/notificationService";
+import { MenuProvider } from "@/contexts/MenuContext";
+import ErrorBoundary from "@/components/ErrorBoundary";
 import Navigation from "@/components/Navigation";
 import TranslationLoadingOverlay from "@/components/TranslationLoadingOverlay";
 import NotFound from "@/pages/not-found";
@@ -65,21 +67,25 @@ function App() {
   }, []);
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
-          {/* Navigation handles mobile (hamburger + bottom nav) and desktop (fixed sidebar) */}
-          <Navigation />
+    <ErrorBoundary>
+      <QueryClientProvider client={queryClient}>
+        <MenuProvider>
+          <TooltipProvider>
+            <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
+              {/* Navigation handles mobile (hamburger + bottom nav) and desktop (fixed sidebar) */}
+              <Navigation />
 
-          {/* Page content — offset for desktop sidebar */}
-          <div className="md:ml-64">
-            <Router />
-          </div>
-        </WouterRouter>
-        <Toaster />
-        <TranslationLoadingOverlay />
-      </TooltipProvider>
-    </QueryClientProvider>
+              {/* Page content — offset for desktop sidebar */}
+              <div className="md:ml-64">
+                <Router />
+              </div>
+            </WouterRouter>
+            <Toaster />
+            <TranslationLoadingOverlay />
+          </TooltipProvider>
+        </MenuProvider>
+      </QueryClientProvider>
+    </ErrorBoundary>
   );
 }
 

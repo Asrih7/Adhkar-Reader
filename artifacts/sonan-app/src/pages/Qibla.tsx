@@ -71,7 +71,7 @@ export default function Qibla() {
 
     // Try cached location first
     const cached = getCachedLocation();
-    if (cached) {
+    if (cached && (cached.source === "gps" || cached.lat !== 0 || cached.lon !== 0)) {
       const loc = { lat: cached.lat, lon: cached.lon, accuracy: cached.accuracy };
       setLocationInfo(loc);
       setQibla(calcQibla(loc.lat, loc.lon));

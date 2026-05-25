@@ -69,6 +69,33 @@ export default function PrayerTimes() {
     }));
   }, []);
 
+  const loadByCoords = useCallback(
+    async (latitude: number, longitude: number, accuracy: number, label?: string) => {
+      const res = await fetch(
+        `https://api.aladhan.com/v1/timings?latitude=${latitude}&longitude=${longitude}&method=2`
+      );
+      const data = await res.json();
+      if (data.code !== 200 || !data.data?.timings) {
+        throw new Error("Prayer timings unavailable");
+      }
+
+      const locationLabel =
+        label || data.data?.meta?.timezone || (isRtl ? "موقعك" : "Your location");
+
+      setCachedLocation({
+        lat: latitude,
+        lon: longitude,
+        accuracy,
+        timestamp: Date.now(),
+        source: "gps",
+        label: locationLabel,
+      });
+      setPrayers(markNext(buildPrayers(data.data.timings)));
+      setCityLabel(locationLabel);
+    },
+    [buildPrayers, isRtl]
+  );
+
   const loadByCity = useCallback(
     async (cityName: string, countryCode: string, label: string) => {
       setLoading(true);
@@ -110,9 +137,13 @@ export default function PrayerTimes() {
 
     // Try to use cached location first
     const cached = getCachedLocation();
-    if (cached && cached.source === "gps") {
-      // Reload prayer times from GPS coordinates
-      loadByCity(cached.label, "", cached.label);
+    if (cached?.source === "gps") {
+      loadByCoords(cached.lat, cached.lon, cached.accuracy, cached.label)
+        .catch(() => {
+          clearLocationCache();
+          setError(true);
+        })
+        .finally(() => setLoading(false));
       return;
     }
 
@@ -125,6 +156,8 @@ export default function PrayerTimes() {
     navigator.geolocation.getCurrentPosition(
       async (pos) => {
         try {
+          await loadByCoords(pos.coords.latitude, pos.coords.longitude, pos.coords.accuracy);
+          return;
           const { latitude, longitude } = pos.coords;
           const res = await fetch(
             `https://api.aladhan.com/v1/timings?latitude=${latitude}&longitude=${longitude}&method=2`
@@ -158,7 +191,7 @@ export default function PrayerTimes() {
       },
       { enableHighAccuracy: false, timeout: 10000, maximumAge: 300_000 }
     );
-  }, [buildPrayers, loadByCity, isRtl]);
+  }, [buildPrayers, loadByCity, isRtl, loadByCoords]);
 
   useEffect(() => {
     loadByGPS();

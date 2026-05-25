@@ -27,6 +27,26 @@ export interface ReciterInfo {
   arabicName: string;
 }
 
+// API Response types
+interface SurahApiResponse {
+  number: number;
+  name: string;
+  englishName: string;
+  englishNameTranslation: string;
+  numberOfAyahs: number;
+  revelationType: string;
+}
+
+interface AyahApiResponse {
+  number: number;
+  text: string;
+  numberInSurah: number;
+}
+
+interface AyahWithTranslation extends AyahApiResponse {
+  translation?: string;
+}
+
 /**
  * All available reciters on cdn.islamic.network
  * IDs match exactly the CDN path format: /quran/audio-surah/<quality>/<id>/<surah>.mp3
@@ -68,9 +88,9 @@ export function getRecitationAudioUrl(
 export async function getSurahs(): Promise<QuranSurah[]> {
   try {
     const res = await fetch("https://api.alquran.cloud/v1/surah");
-    const data = await res.json();
+    const data: { code: number; data: SurahApiResponse[] } = await res.json();
     if (data.code === 200) {
-      return data.data.map((s: any) => ({
+      return data.data.map((s: SurahApiResponse) => ({
         number: s.number,
         name: s.name,
         englishName: s.englishName,

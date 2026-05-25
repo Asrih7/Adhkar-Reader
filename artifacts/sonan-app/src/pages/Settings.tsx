@@ -406,6 +406,7 @@ export default function Settings() {
   useEffect(() => {
     localStorage.setItem("fontSize", fontSize.toString());
     document.documentElement.style.fontSize = `${fontSize}px`;
+    window.dispatchEvent(new CustomEvent("fontSizeChange", { detail: { fontSize } }));
   }, [fontSize]);
 
   useEffect(() => {

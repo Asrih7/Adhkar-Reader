@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Search, BookOpen, AlignRight, ArrowRight, ChevronLeft } from "lucide-react";
 import PageLayout from "@/components/PageLayout";
-import { getSurahs, getSurahWithText } from "@/lib/quranApi";
+import { getSurahs } from "@/lib/quranApi";
 import type { QuranSurah } from "@/lib/quranApi";
 import { useTranslation } from "@/hooks/useTranslation";
 
@@ -61,7 +61,9 @@ export default function QuranPage() {
   const [surahs, setSurahs] = useState<QuranSurah[]>([]);
   const [selectedSurahNum, setSelectedSurahNum] = useState<number | null>(null);
   const [surahText, setSurahText] = useState<QuranSurah | null>(null);
-  const [fontSize, setFontSize] = useState(18);
+  const [fontSize, setFontSize] = useState(() =>
+    parseInt(localStorage.getItem("fontSize") || "18", 10)
+  );
   const [searchQuery, setSearchQuery] = useState("");
   const [showTranslation, setShowTranslation] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
@@ -76,6 +78,18 @@ export default function QuranPage() {
         setIsLoading(false);
       })
       .catch(() => setIsLoading(false));
+  }, []);
+
+  useEffect(() => {
+    const syncFontSize = () => {
+      setFontSize(parseInt(localStorage.getItem("fontSize") || "18", 10));
+    };
+    window.addEventListener("storage", syncFontSize);
+    window.addEventListener("fontSizeChange", syncFontSize);
+    return () => {
+      window.removeEventListener("storage", syncFontSize);
+      window.removeEventListener("fontSizeChange", syncFontSize);
+    };
   }, []);
 
   /* When surah selected: load content + switch to content view on mobile */
@@ -112,6 +126,23 @@ export default function QuranPage() {
 
   const currentSurah = surahs.find((s) => s.number === selectedSurahNum);
   const isRtl = language === "ar";
+  const desktopCanShowContent =
+    typeof window !== "undefined" &&
+    window.matchMedia("(min-width: 1024px)").matches;
+
+  const getSurahDisplayName = (sura: QuranSurah) =>
+    language === "ar" ? sura.name : sura.englishName;
+
+  const getSurahSubtitle = (sura: QuranSurah) =>
+    language === "ar"
+      ? `${sura.numberOfAyahs} آية`
+      : `${sura.englishNameTranslation} · ${sura.numberOfAyahs} ayahs`;
+
+  const handleFontSizeChange = (value: number) => {
+    setFontSize(value);
+    localStorage.setItem("fontSize", value.toString());
+    window.dispatchEvent(new CustomEvent("fontSizeChange", { detail: { fontSize: value } }));
+  };
 
   if (isLoading) {
     return (
@@ -166,7 +197,7 @@ export default function QuranPage() {
                 min="14"
                 max="28"
                 value={fontSize}
-                onChange={(e) => setFontSize(parseInt(e.target.value))}
+                onChange={(e) => handleFontSizeChange(parseInt(e.target.value, 10))}
                 className="w-20 h-2 rounded-lg"
               />
               <span className="text-xs font-bold w-8" style={{ color: "var(--text-gold)" }}>
@@ -246,9 +277,9 @@ export default function QuranPage() {
                               className="font-bold text-sm truncate"
                               style={{ color: isActive ? "var(--text-gold)" : "var(--text-primary)" }}
                             >
-                              {sura.name}
+                              {getSurahDisplayName(sura)}
                             </p>
-                            <p className="text-xs mt-0.5 truncate" style={{ color: "var(--text-secondary)" }}>
+                            <p className="text-xs mt-0.5 truncate" style={{ color: "var(--text-secondary)", display: language === "ar" ? "none" : undefined }}>
                               {sura.englishName} · {sura.numberOfAyahs} {isRtl ? "آية" : "ayahs"}
                             </p>
                             <p className="text-xs mt-0.5" style={{ color: "var(--text-muted)" }}>
@@ -275,7 +306,7 @@ export default function QuranPage() {
 
           {/* ── Surah Content ── hide on mobile when list view is active ── */}
           <AnimatePresence mode="wait">
-            {(mobileView === "content" || window.innerWidth >= 1024) && (
+            {(mobileView === "content" || desktopCanShowContent) && (
               <motion.div
                 key="surah-content"
                 initial={{ opacity: 0 }}
@@ -300,14 +331,13 @@ export default function QuranPage() {
                           className="text-3xl font-bold amiri mb-1"
                           style={{ color: "var(--text-primary)" }}
                         >
-                          {currentSurah.name}
+                          {language === "ar" ? currentSurah.name : currentSurah.englishName}
                         </h1>
-                        <h2 className="text-base font-semibold" style={{ color: "var(--text-gold)" }}>
-                          {currentSurah.englishName}
-                        </h2>
-                        <p className="text-sm" style={{ color: "var(--text-secondary)" }}>
-                          {currentSurah.englishNameTranslation}
-                        </p>
+                        {language !== "ar" && (
+                          <p className="text-sm" style={{ color: "var(--text-secondary)" }}>
+                            {currentSurah.englishNameTranslation}
+                          </p>
+                        )}
                       </div>
 
                       <div className="divider" />
