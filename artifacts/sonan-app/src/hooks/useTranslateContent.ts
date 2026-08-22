@@ -61,8 +61,8 @@ export function useTranslateContent(
     setError(null);
 
     try {
-      const result = await translateText(textToTranslate, languages);
-      setTranslations(result);
+      const entries = await Promise.all(languages.map(async (language) => [language, await translateText(textToTranslate, language)] as const));
+      setTranslations(Object.fromEntries(entries) as Record<Language, string>);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Translation failed');
       console.error('Translation error:', err);

@@ -115,8 +115,8 @@ self.addEventListener("push", (event: PushEvent) => {
 
   const config: any = {
     body: data.body || "إشعار جديد",
-    icon: "/islamic-icon.png",
-    badge: "/islamic-badge.png",
+    icon: "/icon-192.png",
+    badge: "/icon-192.png",
     tag: data.tag || "adhkar",
     requireInteraction: data.requireInteraction || false,
   };
@@ -140,12 +140,12 @@ self.addEventListener("notificationclick", (event: NotificationEvent) => {
     } as ClientQueryOptions) as Promise<WindowClient[]>).then((clientList: WindowClient[]) => {
       for (let i = 0; i < clientList.length; i++) {
         const client = clientList[i];
-        if (client.url === "/" && "focus" in client) {
+        if (new URL(client.url).origin === self.location.origin && "focus" in client) {
           return client.focus();
         }
       }
       if (self.clients.openWindow) {
-        return self.clients.openWindow("/");
+        return self.clients.openWindow(self.location.origin + "/");
       }
       return undefined;
     })

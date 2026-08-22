@@ -6,6 +6,7 @@ import PageLayout from "@/components/PageLayout";
 import { useFavorites } from "@/hooks/useFavorites";
 import { useTranslation } from "@/hooks/useTranslation";
 import type { ContentItem } from "@/lib/contentData";
+import { copyText, shareContent } from "@/lib/shareService";
 
 interface TextItem {
   id: string;
@@ -79,20 +80,14 @@ export default function TextCollectionDetail({ dataName, backHref, fallbackTitle
     : "";
 
   const handleCopy = async () => {
-    try {
-      await navigator.clipboard.writeText(shareText);
+    if (await copyText(shareText)) {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
-    } catch { /**/ }
+    }
   };
 
   const handleShare = async () => {
-    if (navigator.share) {
-      try { await navigator.share({ title: translatedItem?.title ?? t(fallbackTitleKey), text: shareText }); }
-      catch { /**/ }
-    } else {
-      await handleCopy();
-    }
+    await shareContent({ title: translatedItem?.title ?? t(fallbackTitleKey), text: shareText, url: window.location.href });
   };
 
   return (

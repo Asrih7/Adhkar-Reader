@@ -4,6 +4,7 @@ import { MapPin, RefreshCw, Navigation2 } from "lucide-react";
 import PageLayout from "@/components/PageLayout";
 import { useTranslation } from "@/hooks/useTranslation";
 import { getCachedLocation, setCachedLocation } from "@/hooks/useLocationCache";
+import { reverseGeocodeLocation } from "@/lib/locationService";
 
 const KAABA_LAT = 21.4225;
 const KAABA_LON = 39.8264;
@@ -69,10 +70,8 @@ export default function Qibla() {
     setStage("locating");
     setHeading(null);
 
-    // Try cached location first
-    const cached = getCachedLocation();
-    if (cached && (cached.source === "gps" || cached.lat !== 0 || cached.lon !== 0)) {
-      const loc = { lat: cached.lat, lon: cached.lon, accuracy: cached.accuracy };
+    const activateForLocation = (latitude: number, longitude: number, accuracy: number) => {
+      const loc = { lat: latitude, lon: longitude, accuracy };
       setLocationInfo(loc);
       setQibla(calcQibla(loc.lat, loc.lon));
       if (!("DeviceOrientationEvent" in window)) {
@@ -82,42 +81,39 @@ export default function Qibla() {
       } else {
         startListener();
       }
-      return;
-    }
+    };
 
     if (!navigator.geolocation) {
       setStage("location_error");
       return;
     }
 
+    // Always request a fresh position so the Qibla direction follows travel.
     navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        const loc = { lat: pos.coords.latitude, lon: pos.coords.longitude, accuracy: pos.coords.accuracy };
-        setLocationInfo(loc);
-        setQibla(calcQibla(loc.lat, loc.lon));
-        
-        // Cache the location
+      async (pos) => {
+        const { latitude, longitude, accuracy } = pos.coords;
+        const label = await reverseGeocodeLocation(latitude, longitude, language);
         setCachedLocation({
-          lat: loc.lat,
-          lon: loc.lon,
-          accuracy: loc.accuracy,
+          lat: latitude,
+          lon: longitude,
+          accuracy,
           timestamp: Date.now(),
           source: "gps",
-          label: "Your location",
+          label,
         });
-
-        if (!("DeviceOrientationEvent" in window)) {
-          setStage("no_sensor");
-        } else if (isIOS) {
-          setStage("needs_permission");
+        activateForLocation(latitude, longitude, accuracy);
+      },
+      () => {
+        const cached = getCachedLocation();
+        if (cached?.source === "gps") {
+          activateForLocation(cached.lat, cached.lon, cached.accuracy);
         } else {
-          startListener();
+          setStage("location_error");
         }
       },
-      () => setStage("location_error"),
-      { enableHighAccuracy: true, timeout: 12000 }
+      { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
     );
-  }, [isIOS, startListener]);
+  }, [isIOS, language, startListener]);
 
   const requestIOSPermission = async () => {
     try {

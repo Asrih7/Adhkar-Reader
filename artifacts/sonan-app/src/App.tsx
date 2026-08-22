@@ -29,6 +29,7 @@ import Settings from "@/pages/Settings";
 import Share from "@/pages/Share";
 import Quran from "@/pages/Quran";
 import QuranAudio from "@/pages/QuranAudio";
+import Companion from "@/pages/Companion";
 
 const queryClient = new QueryClient();
 
@@ -52,8 +53,10 @@ function Router() {
       <Route path="/favorites" component={Favorites} />
       <Route path="/notifications" component={Notifications} />
       <Route path="/settings" component={Settings} />
+      <Route path="/share" component={Share} />
       <Route path="/quran" component={Quran} />
       <Route path="/quran-audio" component={QuranAudio} />
+      <Route path="/companion" component={Companion} />
       <Route component={NotFound} />
     </Switch>
   );

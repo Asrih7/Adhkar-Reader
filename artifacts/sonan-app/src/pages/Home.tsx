@@ -10,6 +10,7 @@ import type { Language } from "@/lib/translations";
 
 /* ── Main content cards ── */
 const mainCards = [
+  { href: "/companion", icon: "🌟", titleKey: "companion", subtitleKey: "companionSubtitle", gradient: "from-teal-500/10 to-amber-500/5" },
   { href: "/adhkar",     icon: "🤲", titleKey: "adhkar",          subtitleKey: "adhkarSubtitle",           gradient: "from-amber-500/10 to-yellow-500/5" },
   { href: "/sonan",      icon: "☀️", titleKey: "sonan",           subtitleKey: "sonanSubtitle",            gradient: "from-orange-500/10 to-amber-500/5" },
   { href: "/advices",    icon: "📖", titleKey: "advice",          subtitleKey: "adviceSubtitle",           gradient: "from-teal-500/10 to-emerald-500/5" },

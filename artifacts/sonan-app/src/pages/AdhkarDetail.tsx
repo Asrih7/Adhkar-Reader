@@ -6,6 +6,7 @@ import PageLayout from "@/components/PageLayout";
 import { useTranslation } from "@/hooks/useTranslation";
 import { useFavorites } from "@/hooks/useFavorites";
 import type { ContentItem } from "@/lib/contentData";
+import { copyText, shareContent } from "@/lib/shareService";
 
 interface DhikrItem {
   id: number;
@@ -32,10 +33,10 @@ function CardActions({
   const shareText = arabic + (translatedText && translatedText !== arabic ? "\n\n" + translatedText : "") + (source ? "\n📚 " + source : "");
 
   const handleCopy = async () => {
-    try { await navigator.clipboard.writeText(shareText); setCopied(true); setTimeout(() => setCopied(false), 2000); } catch { /**/ }
+    if (await copyText(shareText)) { setCopied(true); setTimeout(() => setCopied(false), 2000); }
   };
   const handleShare = async () => {
-    if (navigator.share) { try { await navigator.share({ title: "سنن و نصائح الرسول", text: shareText }); } catch { /**/ } } else handleCopy();
+    await shareContent({ title: "سنن و نصائح الرسول", text: shareText, url: window.location.href });
   };
 
   return (

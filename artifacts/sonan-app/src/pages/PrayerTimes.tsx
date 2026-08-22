@@ -4,6 +4,7 @@ import { MapPin, RefreshCw } from "lucide-react";
 import PageLayout from "@/components/PageLayout";
 import { useTranslation } from "@/hooks/useTranslation";
 import { getCachedLocation, setCachedLocation, clearLocationCache } from "@/hooks/useLocationCache";
+import { reverseGeocodeLocation } from "@/lib/locationService";
 
 interface PrayerTime {
   nameKey: string;
@@ -79,8 +80,7 @@ export default function PrayerTimes() {
         throw new Error("Prayer timings unavailable");
       }
 
-      const locationLabel =
-        label || data.data?.meta?.timezone || (isRtl ? "موقعك" : "Your location");
+      const locationLabel = label || await reverseGeocodeLocation(latitude, longitude, language);
 
       setCachedLocation({
         lat: latitude,
@@ -93,59 +93,12 @@ export default function PrayerTimes() {
       setPrayers(markNext(buildPrayers(data.data.timings)));
       setCityLabel(locationLabel);
     },
-    [buildPrayers, isRtl]
-  );
-
-  const loadByCity = useCallback(
-    async (cityName: string, countryCode: string, label: string) => {
-      setLoading(true);
-      setError(false);
-      try {
-        const res = await fetch(
-          `https://api.aladhan.com/v1/timingsByCity?city=${encodeURIComponent(cityName)}&country=${countryCode}&method=2`
-        );
-        const data = await res.json();
-        if (data.code === 200 && data.data?.timings) {
-          // Cache the location
-          const meta = data.data?.meta || {};
-          const location = {
-            lat: meta?.latitude || 0,
-            lon: meta?.longitude || 0,
-            accuracy: 0,
-            timestamp: Date.now(),
-            source: "city" as const,
-            label,
-          };
-          setCachedLocation(location);
-          setPrayers(markNext(buildPrayers(data.data.timings)));
-          setCityLabel(label);
-        } else {
-          setError(true);
-        }
-      } catch {
-        setError(true);
-      } finally {
-        setLoading(false);
-      }
-    },
-    [buildPrayers]
+    [buildPrayers, isRtl, language]
   );
 
   const loadByGPS = useCallback(() => {
     setLoading(true);
     setError(false);
-
-    // Try to use cached location first
-    const cached = getCachedLocation();
-    if (cached?.source === "gps") {
-      loadByCoords(cached.lat, cached.lon, cached.accuracy, cached.label)
-        .catch(() => {
-          clearLocationCache();
-          setError(true);
-        })
-        .finally(() => setLoading(false));
-      return;
-    }
 
     if (!navigator.geolocation) {
       setError(true);
@@ -153,45 +106,40 @@ export default function PrayerTimes() {
       return;
     }
 
+    // Ask for a fresh position so travel from Tetouan to London or Alicante is detected.
     navigator.geolocation.getCurrentPosition(
       async (pos) => {
         try {
           await loadByCoords(pos.coords.latitude, pos.coords.longitude, pos.coords.accuracy);
-          return;
-          const { latitude, longitude } = pos.coords;
-          const res = await fetch(
-            `https://api.aladhan.com/v1/timings?latitude=${latitude}&longitude=${longitude}&method=2`
-          );
-          const data = await res.json();
-          if (data.code === 200 && data.data?.timings) {
-            const location = {
-              lat: latitude,
-              lon: longitude,
-              accuracy: pos.coords.accuracy,
-              timestamp: Date.now(),
-              source: "gps" as const,
-              label: data.data?.meta?.timezone || (isRtl ? "موقعك" : "Your location"),
-            };
-            setCachedLocation(location);
-            setPrayers(markNext(buildPrayers(data.data.timings)));
-            setCityLabel(location.label);
+        } catch {
+          const cached = getCachedLocation();
+          if (cached?.source === "gps") {
+            await loadByCoords(cached.lat, cached.lon, cached.accuracy, cached.label);
           } else {
+            clearLocationCache();
             setError(true);
           }
-        } catch {
-          setError(true);
         } finally {
           setLoading(false);
         }
       },
-      () => {
-        // Location access denied or unavailable - show error
-        setError(true);
+      async () => {
+        const cached = getCachedLocation();
+        if (cached?.source === "gps") {
+          try {
+            await loadByCoords(cached.lat, cached.lon, cached.accuracy, cached.label);
+          } catch {
+            clearLocationCache();
+            setError(true);
+          }
+        } else {
+          setError(true);
+        }
         setLoading(false);
       },
-      { enableHighAccuracy: false, timeout: 10000, maximumAge: 300_000 }
+      { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
     );
-  }, [buildPrayers, loadByCity, isRtl, loadByCoords]);
+  }, [loadByCoords]);
 
   useEffect(() => {
     loadByGPS();

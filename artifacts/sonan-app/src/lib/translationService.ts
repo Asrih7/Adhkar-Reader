@@ -139,3 +139,25 @@ export function clearCacheForLanguage(lang: Language): void {
       .forEach(k => localStorage.removeItem(k));
   } catch { /**/ }
 }
+
+
+export async function batchTranslateText(texts: string[], languages: Language[]): Promise<Array<Record<Language, string>>> {
+  const byLanguage = await Promise.all(languages.map(async (language) => [language, await translateBatch(texts, language)] as const));
+  return texts.map((_, index) => Object.fromEntries(byLanguage.map(([language, values]) => [language, values[index]])) as Record<Language, string>);
+}
+
+export async function translateContentObject<T extends object>(content: T, languages: Language[]): Promise<Record<Language, T>> {
+  const translated = {} as Record<Language, T>;
+  for (const language of languages) {
+    const values = Object.entries(content);
+    const strings = values.filter(([, value]) => typeof value === 'string').map(([, value]) => value as string);
+    const translatedStrings = await translateBatch(strings, language);
+    let stringIndex = 0;
+    translated[language] = Object.fromEntries(values.map(([key, value]) => [key, typeof value === 'string' ? translatedStrings[stringIndex++] : value])) as T;
+  }
+  return translated;
+}
+
+export const translationService = {
+  translateContent: translateContentObject,
+};

@@ -6,7 +6,13 @@ import type { Language } from '@/lib/translations';
 
 const DAILY_KEY = 'daily_notif_v3';
 const NOTIF_ENABLED_KEY = 'notif_enabled';
-const SCHEDULE_HOURS = [6.5, 8.5, 12, 15.5, 18, 21];
+const NOTIF_HOUR_KEY = 'notif_hour';
+const DEFAULT_START_HOUR = 6;
+const SLOT_OFFSETS = [0, 2, 5, 8, 11, 14];
+function getScheduleHours(): number[] {
+  const start = Math.max(0, Math.min(23, getNotifHour()));
+  return SLOT_OFFSETS.map((offset) => (start + offset) % 24);
+}
 const NATIVE_ID_BASE = 6100;
 const NATIVE_CHANNEL_ID = 'daily-reminders';
 
@@ -37,7 +43,11 @@ type LocalNotificationsApi = {
 const _handles: ScheduleHandle[] = [];
 
 function isNative(): boolean {
-  return typeof window !== 'undefined' && Capacitor.isNativePlatform();
+  try {
+    return typeof window !== 'undefined' && Capacitor.isNativePlatform();
+  } catch {
+    return false;
+  }
 }
 
 async function getLocalNotifications(): Promise<LocalNotificationsApi | null> {
@@ -51,7 +61,10 @@ async function getLocalNotifications(): Promise<LocalNotificationsApi | null> {
 }
 
 function getTodayStr(): string {
-  return new Date().toISOString().split('T')[0];
+  const now = new Date();
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const day = String(now.getDate()).padStart(2, '0');
+  return `${now.getFullYear()}-${month}-${day}`;
 }
 
 function getAllItems(): ContentItem[] {
@@ -123,7 +136,7 @@ export function getTodayItems(): ContentItem[] {
 }
 
 export function refreshTodayItems(): ContentItem[] {
-  const items = pickRandom(getAllItems(), SCHEDULE_HOURS.length);
+  const items = pickRandom(getAllItems(), getScheduleHours().length);
   const data: DailyData = { date: getTodayStr(), items, sentSlots: [] };
   try { localStorage.setItem(DAILY_KEY, JSON.stringify(data)); } catch { /**/ }
   return items;
@@ -153,11 +166,11 @@ function wasSentToday(slotIndex: number): boolean {
 }
 
 export function isNotificationEnabled(): boolean {
-  return localStorage.getItem(NOTIF_ENABLED_KEY) !== 'false';
+  try { return localStorage.getItem(NOTIF_ENABLED_KEY) !== 'false'; } catch { return true; }
 }
 
 export function setNotificationEnabled(enabled: boolean): void {
-  localStorage.setItem(NOTIF_ENABLED_KEY, enabled.toString());
+  try { localStorage.setItem(NOTIF_ENABLED_KEY, enabled.toString()); } catch { /* private mode */ }
 }
 
 export function getPermissionStatus(): NotificationPermission | 'unsupported' {
@@ -191,7 +204,7 @@ async function sendOne(item: ContentItem, slotIndex: number): Promise<void> {
   if (typeof window === 'undefined') return;
 
   const lang = (localStorage.getItem('language') || 'ar') as Language;
-  const hour = SCHEDULE_HOURS[slotIndex] ?? 8;
+  const hour = getScheduleHours()[slotIndex] ?? DEFAULT_START_HOUR;
   const emoji = slotEmoji(hour);
   const title = `${emoji} ${getCategoryLabel(item.category, lang)}`;
   const body = await getNotificationBody(item, lang);
@@ -240,7 +253,7 @@ export async function initDailyNotifications(): Promise<void> {
     if (permission.display !== 'granted') return;
     await ensureNativeChannel(native);
     await native.cancel({
-      notifications: SCHEDULE_HOURS.map((_, slotIdx) => ({ id: notificationId(slotIdx) })),
+      notifications: getScheduleHours().map((_, slotIdx) => ({ id: notificationId(slotIdx) })),
     });
   } else if (getPermissionStatus() !== 'granted') {
     return;
@@ -254,7 +267,7 @@ export async function initDailyNotifications(): Promise<void> {
   const nowMs = now.getTime();
   const lang = (localStorage.getItem('language') || 'ar') as Language;
 
-  SCHEDULE_HOURS.forEach((fractionalHour, slotIdx) => {
+  getScheduleHours().forEach((fractionalHour, slotIdx) => {
     const item = items[slotIdx];
     if (!item || wasSentToday(slotIdx)) return;
 
@@ -263,16 +276,16 @@ export async function initDailyNotifications(): Promise<void> {
     if (target.getTime() <= nowMs) target.setDate(target.getDate() + 1);
 
     if (native) {
-      native.schedule({
+      void getNotificationBody(item, lang).then((body) => native.schedule({
         notifications: [{
           id: notificationId(slotIdx),
           title: `${slotEmoji(fractionalHour)} ${getCategoryLabel(item.category, lang)}`,
-          body: item.arabic.length > 120 ? `${item.arabic.slice(0, 120)}...` : item.arabic,
+          body,
           schedule: { at: target },
           channelId: NATIVE_CHANNEL_ID,
-          smallIcon: 'ic_stat_icon_config_sample',
+          smallIcon: 'ic_launcher',
         }],
-      }).catch(() => undefined);
+      })).catch(() => undefined);
     } else {
       const delay = target.getTime() - nowMs;
       const h: ScheduleHandle = { id: setTimeout(() => { void sendOne(item, slotIdx); }, delay) };
@@ -298,12 +311,20 @@ export async function cancelDailyNotifications(): Promise<void> {
   const native = await getLocalNotifications();
   if (native) {
     await native.cancel({
-      notifications: SCHEDULE_HOURS.map((_, slotIdx) => ({ id: notificationId(slotIdx) })),
+      notifications: getScheduleHours().map((_, slotIdx) => ({ id: notificationId(slotIdx) })),
     });
   }
 }
 
-export function getNotifHour(): number { return 8; }
-export function setNotifHour(_h: number): void { /** multi-slot schedule */ }
+export function getNotifHour(): number {
+  try {
+    const stored = Number(localStorage.getItem(NOTIF_HOUR_KEY));
+    return Number.isFinite(stored) ? Math.max(0, Math.min(23, stored)) : DEFAULT_START_HOUR;
+  } catch { return DEFAULT_START_HOUR; }
+}
+export function setNotifHour(hour: number): void {
+  const normalized = Math.max(0, Math.min(23, Math.round(hour)));
+  try { localStorage.setItem(NOTIF_HOUR_KEY, String(normalized)); } catch { /* private mode */ }
+}
 export function wasSentTodayLegacy(): boolean { return false; }
 export function markSent(): void { /** legacy no-op */ }

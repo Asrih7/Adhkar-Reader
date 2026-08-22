@@ -2,8 +2,11 @@ import { createRoot } from "react-dom/client";
 import App from "./App";
 import "./index.css";
 
-// Initialize theme from localStorage with proper style application
-const theme = localStorage.getItem("theme") || "dark";
+// Initialize theme from the saved preference; ?theme=light/dark is useful for QA and store previews.
+const previewTheme = new URLSearchParams(window.location.search).get("theme");
+const theme = previewTheme === "light" || previewTheme === "dark"
+  ? previewTheme
+  : (localStorage.getItem("theme") || "dark");
 const root = document.documentElement;
 
 if (theme === "dark") {

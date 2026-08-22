@@ -6,6 +6,7 @@ import { useTranslation } from "@/hooks/useTranslation";
 import { useContentTranslation } from "@/hooks/useContentTranslation";
 import { useFavorites } from "@/hooks/useFavorites";
 import type { Language } from "@/lib/translations";
+import { copyText, shareContent } from "@/lib/shareService";
 
 const CATEGORY_LABEL: Record<string, string> = {
   morningAdhkar: "أذكار الصباح",   eveningAdhkar: "أذكار المساء",
@@ -48,11 +49,10 @@ function ItemActions({
   const shareText = arabic + (translatedText && translatedText !== arabic ? "\n\n" + translatedText : "") + (source ? "\n📚 " + source : "");
 
   const handleCopy = async () => {
-    try { await navigator.clipboard.writeText(shareText); setCopied(true); setTimeout(() => setCopied(false), 2000); } catch { /**/ }
+    if (await copyText(shareText)) { setCopied(true); setTimeout(() => setCopied(false), 2000); }
   };
   const handleShare = async () => {
-    if (navigator.share) { try { await navigator.share({ title: "سنن و نصائح الرسول", text: shareText }); } catch { /**/ } }
-    else handleCopy();
+    await shareContent({ title: "سنن و نصائح الرسول", text: shareText, url: window.location.href });
   };
 
   return (

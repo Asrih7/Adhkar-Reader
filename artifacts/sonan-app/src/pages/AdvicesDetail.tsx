@@ -6,6 +6,7 @@ import PageLayout from "@/components/PageLayout";
 import { useTranslation } from "@/hooks/useTranslation";
 import { useFavorites } from "@/hooks/useFavorites";
 import type { ContentItem } from "@/lib/contentData";
+import { copyText, shareContent } from "@/lib/shareService";
 
 interface AdviceContent {
   intro?: string;
@@ -73,12 +74,10 @@ export default function AdvicesDetail() {
     : "";
 
   const handleCopy = async () => {
-    try { await navigator.clipboard.writeText(shareText); setCopied(true); setTimeout(() => setCopied(false), 2000); }
-    catch { /**/ }
+    if (await copyText(shareText)) { setCopied(true); setTimeout(() => setCopied(false), 2000); }
   };
   const handleShare = async () => {
-    if (navigator.share) { try { await navigator.share({ title: "نصائح نبوية", text: shareText }); } catch { /**/ } }
-    else handleCopy();
+    await shareContent({ title: advice?.title ?? "نصيحة نبوية", text: shareText, url: window.location.href });
   };
 
   return (

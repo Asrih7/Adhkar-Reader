@@ -32,10 +32,12 @@ function NotificationToggleRow({
   checked,
   isRtl,
   onChange,
+  t,
 }: {
   checked: boolean;
   isRtl: boolean;
   onChange: () => void;
+  t: (key: string) => string;
 }) {
   return (
     <motion.button
@@ -57,10 +59,10 @@ function NotificationToggleRow({
         style={{ direction: isRtl ? "rtl" : "ltr", textAlign: isRtl ? "right" : "left" }}
       >
         <p className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>
-          {isRtl ? "تفعيل التنبيهات اليومية" : "Daily Notifications"}
+          {t("dailyNotifications")}
         </p>
         <p className="text-xs" style={{ color: "var(--text-muted)" }}>
-          {isRtl ? "٦ تذكيرات عشوائية كل يوم" : "6 random reminders every day"}
+          {t("reminderCount")}
         </p>
       </div>
 
@@ -128,7 +130,7 @@ export default function Notifications() {
   const permissionColor = permission === "granted" ? "var(--text-teal)" : permission === "denied" ? "#ef4444" : "var(--text-gold)";
 
   return (
-    <PageLayout title={t("notifications")} subtitle={isArabic ? "تذكيرات يومية من السنة النبوية" : "Daily Reminders from the Sunnah"}>
+    <PageLayout title={t("notifications")} subtitle={t("remindersDescription")}>
       {isTranslating && <ProgressBar progress={translationProgress} />}
 
       <div className="pb-4 mt-4 space-y-6">
@@ -137,7 +139,7 @@ export default function Notifications() {
         <motion.section initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }}>
           <h3 className="text-sm font-bold mb-3 flex items-center gap-2" style={{ color: "var(--text-gold)" }}>
             <Bell className="w-4 h-4" style={{ color: "var(--text-teal)" }} />
-            {isArabic ? "إعدادات التنبيهات" : "Notification Settings"}
+            {t("notifications")}
           </h3>
 
           <div className="space-y-2.5">
@@ -145,6 +147,7 @@ export default function Notifications() {
               checked={enabled}
               isRtl={isArabic}
               onChange={() => handleToggleEnabled(!enabled)}
+              t={t}
             />
 
             {/* Permission */}
@@ -152,11 +155,9 @@ export default function Notifications() {
               disabled={permission !== "default"}
               className="w-full p-3.5 rounded-xl flex items-center justify-between transition-all"
               style={{ background: "hsl(var(--card))", border: `1px solid ${permission === "granted" ? "var(--teal-border)" : "var(--gold-border)"}`, cursor: permission === "default" ? "pointer" : "default" }}>
-              <span className="text-sm" style={{ color: "var(--text-secondary)" }}>{isArabic ? "إذن المتصفح" : "Browser Permission"}</span>
+              <span className="text-sm" style={{ color: "var(--text-secondary)" }}>{t("browserPermission")}</span>
               <span className="text-sm font-bold" style={{ color: permissionColor }}>
-                {permission === "granted" ? (isArabic ? "مفعّل ✓" : "Granted ✓")
-                  : permission === "denied" ? (isArabic ? "محجوب ✗" : "Denied ✗")
-                  : (isArabic ? "اطلب الإذن" : "Request Permission")}
+                {permission === "granted" ? t("granted") : permission === "denied" ? t("denied") : t("requestPermission")}
               </span>
             </motion.button>
 
@@ -168,7 +169,7 @@ export default function Notifications() {
                   <div className="flex items-center gap-2 mb-3">
                     <Clock className="w-4 h-4" style={{ color: "var(--text-teal)" }} />
                     <span className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>
-                      {isArabic ? "وقت الإشعار" : "Notification Time"}
+                      {t("notificationTime")}
                     </span>
                     <span className="ms-auto text-sm font-bold" style={{ color: "var(--text-gold)" }}>{formatHour(hour)}</span>
                   </div>
@@ -188,7 +189,7 @@ export default function Notifications() {
                 className="w-full py-3 rounded-xl text-sm font-semibold flex items-center justify-center gap-2"
                 style={{ background: "var(--gold-muted)", border: "1px solid var(--gold-border)", color: "var(--text-gold)" }}>
                 <Bell className="w-4 h-4" />
-                {isArabic ? "إرسال إشعار تجريبي" : "Send Test Notification"}
+                {t("sendTestNotification")}
               </motion.button>
             )}
           </div>
@@ -199,7 +200,7 @@ export default function Notifications() {
           <div className="flex items-center justify-between mb-3">
             <h3 className="text-sm font-bold flex items-center gap-2" style={{ color: "var(--text-gold)" }}>
               <span>✨</span>
-              {isArabic ? "تذكيرات اليوم" : "Today's Reminders"}
+              {t("todayReminders")}
             </h3>
             <motion.button whileTap={{ scale: 0.88 }} onClick={handleRefresh}
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold"
@@ -207,12 +208,12 @@ export default function Notifications() {
               <motion.div animate={refreshed ? { rotate: 360 } : { rotate: 0 }} transition={{ duration: 0.5 }}>
                 <RefreshCw className="w-3.5 h-3.5" />
               </motion.div>
-              <span>{isArabic ? "تحديث" : "Refresh"}</span>
+              <span>{t("refresh")}</span>
             </motion.button>
           </div>
 
           <p className="text-xs mb-4" style={{ color: "var(--text-muted)", textAlign: isArabic ? "right" : "left" }}>
-            {isArabic ? "يتم اختيار ٣ تذكيرات عشوائية كل يوم من جميع المحتوى" : "3 random reminders selected daily from all content"}
+            {t("remindersDescription")}
           </p>
 
           {/* Translating indicator */}
@@ -222,7 +223,7 @@ export default function Notifications() {
                 className="mb-4 px-4 py-2.5 rounded-xl flex items-center gap-3 text-sm"
                 style={{ background: "var(--teal-muted)", border: "1px solid var(--teal-border)", color: "var(--text-teal)" }}>
                 <div className="w-4 h-4 rounded-full border-2 border-current border-t-transparent animate-spin flex-shrink-0" />
-                <span>{isArabic ? "جاري الترجمة..." : "Translating…"} <span className="font-bold">{translationProgress}%</span></span>
+                <span>{t("translating")} <span className="font-bold">{translationProgress}%</span></span>
               </motion.div>
             )}
           </AnimatePresence>
@@ -243,7 +244,7 @@ export default function Notifications() {
                         <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold"
                           style={{ background: "var(--gold-muted)", color: "var(--text-gold)", border: "1px solid var(--gold-border)" }}>
                           <span>✨</span>
-                          <span>{isArabic ? `تذكير ${idx + 1}` : `Reminder ${idx + 1}`}</span>
+                          <span>{`${t("todayReminders")} ${idx + 1}`}</span>
                         </span>
                         <div className="flex items-center gap-2">
                           {item.source && (
@@ -292,7 +293,7 @@ export default function Notifications() {
         <motion.section initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.16 }}>
           <h3 className="text-sm font-bold mb-3 flex items-center gap-2" style={{ color: "var(--text-gold)" }}>
             <span>🕌</span>
-            {isArabic ? "إشعارات الصلاة" : "Prayer Notifications"}
+            {t("prayerAlerts")}
           </h3>
           <div className="space-y-2.5">
             <div className="p-4 rounded-xl" style={{ background: "hsl(var(--card))", border: "1px solid var(--gold-border)" }}>
